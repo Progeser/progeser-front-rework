@@ -1,9 +1,10 @@
 // Import des composants de page
-import Utilisateurs from '@/views/Utilisateurs.vue';
 import Home from "@/components/Home.vue";
 import Batiments from "@/components/Batiments.vue";
 import Plantes from "@/components/Plantes.vue";
 import Pots from "@/components/Pots.vue";
+import Demandes from "@/components/Demandes.vue";
+import Utilisateurs from "@/components/Utilisateurs.vue";
 
 // Définition des routes
 const routes = [
