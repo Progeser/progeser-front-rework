@@ -1,19 +1,18 @@
 
 
 // Définition des routes
-
-import {RouteRecordRaw} from "vue-router";
-
-const routes: RouteRecordRaw[] = [
+const routes = [
   {
     path: '/',
     name: 'Home',
     component: () => import('../pages/index.vue'),
+    icon : 'mdi-home',
   },
   {
     path: '/batiments',
     name: 'Batiments',
     component: () => import('../pages/index.vue'),
+    icon : 'mdi-home',
   },
   {
     path: '/plantes',
