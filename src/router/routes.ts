@@ -1,5 +1,3 @@
-
-
 // Définition des routes
 const routes = [
   {
