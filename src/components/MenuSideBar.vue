@@ -4,12 +4,13 @@
     <v-navigation-drawer v-model="drawer" app>
       <v-list>
         <v-list-item-group>
-          <v-list-item v-for="(item, i) in routes" :key="i" @click="goTo(item.path)">
-            <v-list-item-content class="d-flex align-center">
-              <v-icon>{{ item.icon }}</v-icon>
-              <v-list-item-title>{{ item.name }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
+          <router-link to="{{ item.path }}" v-for="(item, i) in routes" :key="i">
+            <v-list-item>
+              <v-list-item-content class="d-flex align-center">
+                <v-list-item-title>{{ item.name }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </router-link>
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
@@ -39,9 +40,6 @@ import routes from "@/router/routes";
 
 const drawer = ref(false);
 
-const goTo = (link: string) => {
-  console.log('Navigating to:', link);
-};
 </script>
 
 <style scoped>

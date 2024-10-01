@@ -1,48 +1,39 @@
-// Import des composants de page
-import Home from "@/components/Home.vue";
-import Batiments from "@/components/Batiments.vue";
-import Plantes from "@/components/Plantes.vue";
-import Pots from "@/components/Pots.vue";
-import Demandes from "@/components/Demandes.vue";
-import Utilisateurs from "@/components/Utilisateurs.vue";
+
 
 // Définition des routes
-const routes = [
+
+import {RouteRecordRaw} from "vue-router";
+
+const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Home',
-    component: Home,
-    icon : 'mdi-home',
+    component: () => import('../pages/index.vue'),
   },
   {
     path: '/batiments',
     name: 'Batiments',
-    component: Batiments,
-    icon : 'mdi-home',
+    component: () => import('../pages/index.vue'),
   },
   {
     path: '/plantes',
     name: 'Plantes',
-    component: Plantes,
-    icon : 'mdi-flower',
+    component: () => import('../pages/index.vue'),
   },
   {
     path: '/pots',
     name: 'Pots',
-    component: Pots,
-    icon : 'mdi-pot',
+    component: () => import('../pages/index.vue'),
   },
   {
     path: '/demandes',
     name: 'Demandes',
-    component: Demandes,
-    icon : 'mdi-document-file',
+    component: () => import('../pages/index.vue'),
   },
   {
     path: '/utilisateurs',
     name: 'Utilisateurs',
-    component: Utilisateurs,
-    icon : 'mdi-account',
+    component: () => import('../pages/index.vue'),
   },
 ];
 
