@@ -36,4 +36,14 @@ const routes: RouteRecordRaw[] = [
   },
 ];
 
+export const icons = {
+  Home: 'mdi-home',
+  Batiments: 'mdi-city',
+  Plantes: 'mdi-flower',
+  Pots: 'mdi-pot',
+  Demandes: 'mdi-bell',
+  Utilisateurs: 'mdi-account',
+};
+
+
 export default routes;
