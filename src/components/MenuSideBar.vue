@@ -26,7 +26,7 @@
           <v-app-bar-nav-icon @click="drawer = !drawer" />
         </v-col>
         <v-col class="d-flex" cols="auto">
-          <v-toolbar-title>Unisers</v-toolbar-title>
+          <v-toolbar-title>Uniser</v-toolbar-title>
         </v-col>
       </v-row>
     </v-app-bar>
@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import routes, { icons } from "@/router/routes";
-import {useRoute} from "vue-router";
+import { useRoute } from "vue-router";
 
 const drawer = ref(false);
 const route = useRoute();
@@ -55,7 +55,12 @@ const route = useRoute();
   border-radius: 4px;
 }
 
+.active-link .v-list-item {
+  background-color: #00B0B0 !important;
+  border-radius: 4px;
+}
+
 .active-link .text-white {
-  font-weight: normal;
+  font-weight: 900;
 }
 </style>
