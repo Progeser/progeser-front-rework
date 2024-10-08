@@ -7,17 +7,21 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    Batiment: typeof import('./src/pages/batiment.vue')['default']
     Batiments: typeof import('./src/components/Batiments.vue')['default']
+    Demande: typeof import('./src/pages/demande.vue')['default']
     Demandes: typeof import('./src/components/Demandes.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
-    Home: typeof import('./src/components/Home.vue')['default']
+    Home: typeof import('./src/pages/home.vue')['default']
     MenuSideBar: typeof import('./src/components/MenuSideBar.vue')['default']
     Plante: typeof import('./src/components/Plante.vue')['default']
     Plantes: typeof import('./src/components/Plantes.vue')['default']
+    Pot: typeof import('./src/pages/pot.vue')['default']
     PotIcon: typeof import('./src/components/PotIcon.vue')['default']
     Pots: typeof import('./src/components/Pots.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Utilisateur: typeof import('./src/pages/utilisateur.vue')['default']
     Utilisateurs: typeof import('./src/components/Utilisateurs.vue')['default']
   }
 }

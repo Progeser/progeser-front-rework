@@ -31,6 +31,7 @@
       </v-row>
     </v-app-bar>
     <v-main style="background-color: white;">
+        <router-view />
     </v-main>
   </v-app>
 </template>
