@@ -10,5 +10,5 @@
 
 <script lang="ts" setup>
   //
-import MenuSideBar from "@/components/MenuSideBar.vue";
+import MenuSideBar from "@/components/MenuSideBarComponent.vue";
 </script>

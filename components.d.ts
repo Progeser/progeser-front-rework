@@ -14,6 +14,7 @@ declare module 'vue' {
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Home: typeof import('./src/pages/home.vue')['default']
     MenuSideBar: typeof import('./src/components/MenuSideBar.vue')['default']
+    MenuSideBarComponent: typeof import('./src/components/MenuSideBarComponent.vue')['default']
     Plante: typeof import('./src/components/Plante.vue')['default']
     Plantes: typeof import('./src/components/Plantes.vue')['default']
     Pot: typeof import('./src/pages/pot.vue')['default']

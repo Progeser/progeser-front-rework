@@ -6,38 +6,38 @@ import {RouteRecordRaw} from "vue-router";
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'Home',
-    component: () => import('@/pages/home.vue'),
+    name: 'Accueil',
+    component: () => import('@/pages/accueilPage.vue'),
   },
   {
     path: '/batiments',
     name: 'Batiments',
-    component: () => import('@/pages/batiment.vue'),
+    component: () => import('@/pages/batimentPage.vue'),
   },
   {
     path: '/plantes',
     name: 'Plantes',
-    component: () => import('@/pages/index.vue'),
+    component: () => import('@/pages/accueilPage.vue'),
   },
   {
     path: '/pots',
     name: 'Pots',
-    component: () => import('@/pages/pot.vue'),
+    component: () => import('@/pages/potPage.vue'),
   },
   {
     path: '/demandes',
     name: 'Demandes',
-    component: () => import('@/pages/demande.vue'),
+    component: () => import('@/pages/demandePage.vue'),
   },
   {
     path: '/utilisateurs',
     name: 'Utilisateurs',
-    component: () => import('@/pages/utilisateur.vue'),
+    component: () => import('@/pages/utilisateurPage.vue'),
   },
 ];
 
 export const icons = {
-  Home: 'mdi-home',
+  Accueil: 'mdi-home',
   Batiments: 'mdi-city',
   Plantes: 'mdi-flower',
   Pots: 'mdi-pot',
