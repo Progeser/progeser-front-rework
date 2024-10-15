@@ -1,11 +1,14 @@
 <template>
   <v-app>
     <v-main>
-      <router-view />
+      <MenuSideBar>
+        <router-view />
+      </MenuSideBar >
     </v-main>
   </v-app>
 </template>
 
 <script lang="ts" setup>
   //
+import MenuSideBar from "@/components/MenuSideBarComponent.vue";
 </script>
