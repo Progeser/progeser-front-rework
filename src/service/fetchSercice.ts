@@ -1,12 +1,19 @@
-import axios, {AxiosRequestConfig, AxiosResponse} from 'axios';
+import axios, {AxiosResponse} from 'axios';
+import {useAuthStore} from "@/store/AuthStore";
 
-class ApiService {
+class FetchService {
   private readonly baseUrl: string = `${import.meta.env.VITE_API_URL}`;
 
+  private authStore = useAuthStore()
+
+  private login: string = "dev+grower@progeser.com"
+  private pass: string = "password"
+
   // GET request
-  public async get<T>(endpoint: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  public async get<T>(endpoint: string): Promise<AxiosResponse<T>> {
     try {
-      return await axios.get<T>(`${this.baseUrl}${endpoint}`, config);
+      const bearer: string = await this.authStore.getBearer(this.login,this.pass)
+      return await axios.get<T>(`${this.baseUrl}${endpoint}`, {headers:{Authorization: bearer}});
     } catch (error) {
       this.handleError(error);
       throw error;
@@ -14,9 +21,10 @@ class ApiService {
   }
 
   // POST request
-  public async post<T, U>(endpoint: string, data: U, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  public async post<T, U>(endpoint: string, data: U): Promise<AxiosResponse<T>> {
     try {
-      return await axios.post<T>(`${this.baseUrl}${endpoint}`, data, config);
+      const bearer: string = await this.authStore.getBearer(this.login,this.pass)
+      return await axios.post<T>(`${this.baseUrl}${endpoint}`, data, {headers:{Authorization: bearer}});
     } catch (error) {
       this.handleError(error);
       throw error;
@@ -24,9 +32,10 @@ class ApiService {
   }
 
   // PUT request
-  public async put<T, U>(endpoint: string, data: U, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  public async put<T, U>(endpoint: string, data: U): Promise<AxiosResponse<T>> {
     try {
-      return await axios.put<T>(`${this.baseUrl}${endpoint}`, data, config);
+      const bearer: string = await this.authStore.getBearer(this.login,this.pass)
+      return await axios.put<T>(`${this.baseUrl}${endpoint}`, data, {headers:{Authorization: bearer}});
     } catch (error) {
       this.handleError(error);
       throw error;
@@ -34,9 +43,10 @@ class ApiService {
   }
 
   // DELETE request
-  public async delete<T>(endpoint: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
+  public async delete<T>(endpoint: string): Promise<AxiosResponse<T>> {
     try {
-      return await axios.delete<T>(`${this.baseUrl}${endpoint}`, config);
+      const bearer: string = await this.authStore.getBearer(this.login,this.pass)
+      return await axios.delete<T>(`${this.baseUrl}${endpoint}`, {headers:{Authorization: bearer}});
     } catch (error) {
       this.handleError(error);
       throw error;
@@ -54,4 +64,4 @@ class ApiService {
   }
 }
 
-export default ApiService;
+export default FetchService;

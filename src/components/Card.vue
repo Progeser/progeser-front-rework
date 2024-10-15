@@ -1,5 +1,5 @@
 <template>
-  <v-card class="mx-auto rounded-lg" :max-width="width">
+  <v-card class="mx-auto rounded-lg" :min-width="width">
     <div class="position-relative">
       <v-btn icon="mdi-pencil" class="bg-white mr-1 position-absolute btn-position" style="z-index: 2"/>
       <v-img :height="imgHeight" :src="imgSource" cover/>
