@@ -7,25 +7,34 @@
       </div>
       </v-row>
   </v-container>
+  <v-pagination v-if="paginationInformation"
+                v-model="pageNumber"
+                :length="paginationInformation!.totalPages"/>
 </template>
 
 <script setup lang="ts">
 
-import FetchService from "@/service/fetchSercice";
-import {onBeforeMount, ref, Ref} from "vue";
-import {Plant} from "@/model/Plant";
-import Card from "@/components/Card.vue";
-import { AxiosResponse } from "axios";
+  import FetchService from "@/service/fetchSercice";
+  import {onBeforeMount, ref, Ref, watch} from "vue";
+  import {Plant} from "@/model/Plant";
+  import Card from "@/components/Card.vue";
+  import { GenericPagination } from "@/model/GenericPagination";
 
-const fetchService : FetchService = new FetchService()
-let plantsList: Ref<Plant[]> = ref<Plant[]>([]);
+  const fetchService : FetchService = new FetchService();
+  let plantsList: Ref<Plant[]> = ref<Plant[]>([]);
+  let pageNumber: Ref<number> = ref<number>(2);
+  let paginationInformation: Ref<GenericPagination<Plant[]> | undefined> = ref<GenericPagination<Plant[]> | undefined>();
+
+  const updatePlants = async () => {
+    paginationInformation.value = await fetchService.getWithPagination<Plant[]>(`plants?page[number]=${pageNumber.value}&page[size]=10`);
+    plantsList.value = paginationInformation.value.content;
+  } 
 
 onBeforeMount(async () => {
-  let test : AxiosResponse<Plant[], any> = await fetchService.get<Plant[]>('plants?page[number]=1&page[size]=10')
-  plantsList.value = test.data
+  updatePlants();
 })
 
-
+watch(pageNumber, () => {
+  updatePlants();
+})
 </script>
-
-<style scoped/>

@@ -1,19 +1,43 @@
 import axios, {AxiosResponse} from 'axios';
 import {useAuthStore} from "@/store/AuthStore";
+import { GenericPagination } from '@/model/GenericPagination';
 
 class FetchService {
   private readonly baseUrl: string = `${import.meta.env.VITE_API_URL}`;
 
-  private authStore = useAuthStore()
+  private readonly authStore = useAuthStore()
 
-  private login: string = "dev+grower@progeser.com"
-  private pass: string = "password"
+  private readonly login: string = "dev+grower@progeser.com"
+  private readonly pass: string = "password"
 
   // GET request
-  public async get<T>(endpoint: string): Promise<AxiosResponse<T>> {
+  public async get<T>(endpoint: string): Promise<T> {
     try {
       const bearer: string = await this.authStore.getBearer(this.login,this.pass)
-      return await axios.get<T>(`${this.baseUrl}${endpoint}`, {headers:{Authorization: bearer}});
+      const response: AxiosResponse<T> =  await axios.get<T>(`${this.baseUrl}${endpoint}`, {headers:{Authorization: bearer}});
+      return response.data
+    } catch (error) {
+      this.handleError(error);
+      throw error;
+    }
+  }
+
+  // GET request with pagination
+  public async getWithPagination<T>(endpoint: string): Promise<GenericPagination<T>> {
+    try {
+      const bearer: string = await this.authStore.getBearer(this.login, this.pass);
+      const response : AxiosResponse<T> = await axios.get<T>(`${this.baseUrl}${endpoint}`, {
+        headers: { Authorization: bearer }
+      });
+
+      return new GenericPagination(
+        response.headers['pagination-current-page'],
+        response.headers['pagination-per'],
+        response.headers['pagination-total-pages'],
+        response.headers['pagination-total-count'],
+        response.data
+      );
+  
     } catch (error) {
       this.handleError(error);
       throw error;
@@ -21,10 +45,11 @@ class FetchService {
   }
 
   // POST request
-  public async post<T, U>(endpoint: string, data: U): Promise<AxiosResponse<T>> {
+  public async post<T, U>(endpoint: string, data: U): Promise<T> {
     try {
       const bearer: string = await this.authStore.getBearer(this.login,this.pass)
-      return await axios.post<T>(`${this.baseUrl}${endpoint}`, data, {headers:{Authorization: bearer}});
+      const response: AxiosResponse<T> = await axios.post<T>(`${this.baseUrl}${endpoint}`, data, {headers:{Authorization: bearer}});
+      return response.data
     } catch (error) {
       this.handleError(error);
       throw error;
@@ -32,10 +57,11 @@ class FetchService {
   }
 
   // PUT request
-  public async put<T, U>(endpoint: string, data: U): Promise<AxiosResponse<T>> {
+  public async put<T, U>(endpoint: string, data: U): Promise<T> {
     try {
       const bearer: string = await this.authStore.getBearer(this.login,this.pass)
-      return await axios.put<T>(`${this.baseUrl}${endpoint}`, data, {headers:{Authorization: bearer}});
+      const response: AxiosResponse<T> = await axios.put<T>(`${this.baseUrl}${endpoint}`, data, {headers:{Authorization: bearer}});
+      return response.data
     } catch (error) {
       this.handleError(error);
       throw error;
@@ -43,10 +69,11 @@ class FetchService {
   }
 
   // DELETE request
-  public async delete<T>(endpoint: string): Promise<AxiosResponse<T>> {
+  public async delete<T>(endpoint: string): Promise<T> {
     try {
       const bearer: string = await this.authStore.getBearer(this.login,this.pass)
-      return await axios.delete<T>(`${this.baseUrl}${endpoint}`, {headers:{Authorization: bearer}});
+      const response: AxiosResponse<T> = await axios.delete<T>(`${this.baseUrl}${endpoint}`, {headers:{Authorization: bearer}});
+      return response.data
     } catch (error) {
       this.handleError(error);
       throw error;
