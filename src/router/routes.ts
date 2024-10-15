@@ -36,7 +36,7 @@ const routes: RouteRecordRaw[] = [
   },
 ];
 
-export const icons = {
+export const icons: Record<string, string> = {
   Accueil: 'mdi-home',
   Batiments: 'mdi-city',
   Plantes: 'mdi-flower',

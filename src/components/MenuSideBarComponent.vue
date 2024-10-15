@@ -12,7 +12,7 @@
           >
             <v-list-item>
               <v-list-item-content class="d-flex align-center">
-                <v-icon class="mr-3 text-white">{{ icons[item.name] }}</v-icon>
+                <v-icon class="mr-3 text-white">{{ icons[item.name as string] }}</v-icon>
                 <v-list-item-title class="text-white">{{ item.name }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -26,7 +26,7 @@
           <v-app-bar-nav-icon @click="drawer = !drawer" />
         </v-col>
         <v-col class="d-flex" cols="auto">
-          <v-toolbar-title>Uniser</v-toolbar-title>
+          <img src="@/assets/logo.webp" alt="Logo" height="40">
         </v-col>
       </v-row>
     </v-app-bar>
