@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Batiment: typeof import('./src/pages/batimentPage.vue')['default']
     Batiments: typeof import('./src/components/Batiments.vue')['default']
+    Card: typeof import('./src/components/Card.vue')['default']
     Demande: typeof import('./src/pages/demandePage.vue')['default']
     Demandes: typeof import('./src/components/Demandes.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']

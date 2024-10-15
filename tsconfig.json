@@ -16,6 +16,7 @@
     ],
     "allowJs": true,
     "strict": true,
+    "noEmit": true,
     "strictNullChecks": true,
     "noUnusedLocals": true,
     "esModuleInterop": true,
