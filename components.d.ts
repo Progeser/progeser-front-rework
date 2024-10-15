@@ -8,8 +8,22 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Card: typeof import('./src/components/Card.vue')['default']
+    Batiment: typeof import('./src/pages/batimentPage.vue')['default']
+    Batiments: typeof import('./src/components/Batiments.vue')['default']
+    Demande: typeof import('./src/pages/demandePage.vue')['default']
+    Demandes: typeof import('./src/components/Demandes.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    Home: typeof import('./src/pages/accueilPage.vue')['default']
+    MenuSideBar: typeof import('./src/components/MenuSideBarComponent.vue')['default']
+    MenuSideBarComponent: typeof import('./src/components/MenuSideBarComponent.vue')['default']
+    Plante: typeof import('./src/components/Plante.vue')['default']
+    Plantes: typeof import('./src/components/Plantes.vue')['default']
+    Pot: typeof import('./src/pages/potPage.vue')['default']
+    PotIcon: typeof import('./src/components/PotIcon.vue')['default']
+    Pots: typeof import('./src/components/Pots.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Utilisateur: typeof import('./src/pages/utilisateurPage.vue')['default']
+    Utilisateurs: typeof import('./src/components/Utilisateurs.vue')['default']
   }
 }
