@@ -14,21 +14,21 @@
 
 <script setup lang="ts">
 
-  import FetchService from "@/service/fetchSercice";
   import {onBeforeMount, ref, Ref, watch} from "vue";
   import {Plant} from "@/model/Plant";
   import Card from "@/components/Card.vue";
   import { GenericPagination } from "@/model/GenericPagination";
+  import PlantRepository from "@/repository/plantRepository";
 
-  const fetchService : FetchService = new FetchService();
+  const plantRepository: PlantRepository = new PlantRepository()
   let plantsList: Ref<Plant[]> = ref<Plant[]>([]);
-  let pageNumber: Ref<number> = ref<number>(2);
+  let pageNumber: Ref<number> = ref<number>(1);
   let paginationInformation: Ref<GenericPagination<Plant[]> | undefined> = ref<GenericPagination<Plant[]> | undefined>();
 
   const updatePlants = async () => {
-    paginationInformation.value = await fetchService.getWithPagination<Plant[]>(`plants?page[number]=${pageNumber.value}&page[size]=10`);
+    paginationInformation.value = await plantRepository.getPlantsPage(pageNumber.value)
     plantsList.value = paginationInformation.value.content;
-  } 
+  }
 
 onBeforeMount(async () => {
   updatePlants();
