@@ -7,13 +7,13 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    Batiment: typeof import('./src/pages/batimentPage.vue')['default']
+    Batiment: typeof import('./src/pages/buildingPage.vue')['default']
     Batiments: typeof import('./src/components/Batiments.vue')['default']
     Card: typeof import('./src/components/Card.vue')['default']
-    Demande: typeof import('./src/pages/demandePage.vue')['default']
+    Demande: typeof import('./src/pages/requestPage.vue')['default']
     Demandes: typeof import('./src/components/Demandes.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
-    Home: typeof import('./src/pages/accueilPage.vue')['default']
+    Home: typeof import('./src/pages/homePage.vue')['default']
     MenuSideBar: typeof import('./src/components/MenuSideBarComponent.vue')['default']
     MenuSideBarComponent: typeof import('./src/components/MenuSideBarComponent.vue')['default']
     Plante: typeof import('./src/components/Plante.vue')['default']
@@ -23,7 +23,7 @@ declare module 'vue' {
     Pots: typeof import('./src/components/Pots.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    Utilisateur: typeof import('./src/pages/utilisateurPage.vue')['default']
+    Utilisateur: typeof import('./src/pages/userPage.vue')['default']
     Utilisateurs: typeof import('./src/components/Utilisateurs.vue')['default']
   }
 }

@@ -1,4 +1,4 @@
-export interface PlantStage {
+export interface SpeciesStage {
   id: number;
   created_at: string;
   duration: number;

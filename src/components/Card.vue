@@ -1,7 +1,7 @@
 <template>
   <v-card class="mx-auto rounded-lg" :min-width="width">
     <div class="position-relative">
-      <v-btn icon="mdi-pencil" class="bg-white mr-1 position-absolute btn-position" style="z-index: 2"/>
+      <v-btn icon="mdi-pencil" class="bg-white mr-1 position-absolute btn-position" style="z-index: 2" @click="exec()"/>
       <v-img :height="imgHeight" :src="imgSource" cover/>
     </div>
     <v-card-title> {{title}} </v-card-title>
@@ -28,6 +28,10 @@ defineProps({
   imgHeight : {
     type : Number,
     default : 200
+  },
+  exec : {
+    type : Function,
+    default : () => null
   }
 })
 
