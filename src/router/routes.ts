@@ -1,6 +1,3 @@
-
-// Définition des routes
-
 import {RouteRecordRaw} from "vue-router";
 
 const routes: RouteRecordRaw[] = [
@@ -17,7 +14,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/plantes',
     name: 'Plantes',
-    component: () => import('@/pages/plantePage.vue'),
+    component: () => import('@/pages/plantPage.vue'),
   },
   {
     path: '/pots',
