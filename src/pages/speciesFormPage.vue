@@ -1,7 +1,12 @@
 <template>
   <div v-if="species">
-    <h1>{{ species.name }}</h1>
+    <h1>
+      <v-text-field type="text"
+                    label="Nom"
+                    v-model="species.name"/>
+    </h1>
     <h2>Stage :</h2>
+    <v-btn @click="addStage"/>
     <v-list>
       <draggable
         v-model="stages"
@@ -21,7 +26,7 @@
             <template #prepend>
               <v-icon class="mr-4">mdi-drag</v-icon>
             </template>
-            <v-row align="center">
+            <v-row align="center" class="pa-2">
               <v-col cols="3" verrical-align="middle">
                 <v-text-field
                   v-model="element.name"
@@ -35,15 +40,6 @@
                   v-model="element.position"
                   :value="index"
                   label="Position"
-                  density="compact"
-                  variant="outlined"
-                  readonly
-                />
-              </v-col>
-              <v-col cols="2">
-                <v-text-field
-                  v-model="element.id"
-                  label="ID"
                   density="compact"
                   variant="outlined"
                   readonly
@@ -85,21 +81,23 @@ const updatePlants = async () => {
   stages.value = species.value.plant_stages;
 };
 
-// Mise à jour des positions après chaque changement dans stages
 watch(stages, (newStages) => {
   newStages.forEach((stage, index) => {
     stage.position = index;
   });
 }, { deep: true });
 
+
+const addStage = () => {
+  stages.value.push(new SpeciesStage());
+}
+
 const onDragEnd = async () => {
   drag.value = false;
-  // Mettre à jour les positions
   stages.value.forEach((stage, index) => {
     stage.position = index;
   });
 
-  // Ici vous pouvez ajouter la logique pour sauvegarder les changements
   try {
     // Exemple:
     // await speciesRepository.updateStages(stages.value);
