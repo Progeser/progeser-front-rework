@@ -31,7 +31,7 @@
   }
 
 onBeforeMount(async () => {
-  updatePlants();
+  await updatePlants();
 })
 
 watch(pageNumber, () => {
