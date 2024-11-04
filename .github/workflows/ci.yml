@@ -21,6 +21,12 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Setup Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+
       - name: Install dependencies
         run: npm ci
 
@@ -32,8 +38,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           npx sonar-scanner \
-            -Dsonar.projectKey=Progeser_progeser-front-rework \
-            -Dsonar.organization=progeser \
+            -Dsonar.projectKey=mon-projet-sonarcloud \
+            -Dsonar.organization=mon-organisation-sonarcloud \
             -Dsonar.sources=. \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
