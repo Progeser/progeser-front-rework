@@ -1,9 +1,9 @@
 export default {
   menu: {
     name: {
-      home : 'Acceuil',
+      home : 'Accueil',
       buildings: 'Batiments',
-      species: 'Espéces',
+      species: 'Espèces',
       containers: 'Conteneurs',
       requests: 'Demandes',
       users: 'Utilisateurs'
