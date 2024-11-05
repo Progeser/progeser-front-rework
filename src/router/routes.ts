@@ -7,6 +7,12 @@ const routes: RouteRecordRaw[] = [
     props: true,
     component: () => import('@/pages/speciesFormPage.vue'),
   },
+  {
+    path: '/buildings/:id/compartiments',
+    name: 'compartiments',
+    props: true,
+    component: () => import('@/pages/compartimentPage.vue'),
+  }
 ];
 
 export default routes;
