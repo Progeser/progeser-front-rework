@@ -12,6 +12,22 @@ export default {
   common: {
     edit: 'Modifier',
     save: 'Enregistrer',
-    cancel: 'Annuler'
+    cancel: 'Annuler',
+    add: 'Ajouter',
+    send: 'Envoyer',
+    delete: 'Suprimer'
+  },
+  form: {
+    species: {
+      nameTitle: 'Nom : ',
+      stageTitle: 'Étapes : ',
+      drag: {
+        name: 'Nom',
+        time: 'Durée'
+      },
+      error: {
+        time: 'La durée doit être supérieure à 0'
+      }
+    }
   }
 }

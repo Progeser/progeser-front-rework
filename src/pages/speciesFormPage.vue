@@ -1,70 +1,69 @@
 <template>
-    <v-col class="ma-5" v-if="species">
-        <div class="d-flex align-center">
-            <h1 class="mr-2">Nom :</h1>
-            <v-text-field
-                v-model="species.name"
-                variant="plain"
-                class="custom-input"
-                hide-details
-            ></v-text-field>
-        </div>
-        <h2>Stage :</h2>
-        <v-btn @click="addStage">Ajouter <v-icon icon="mdi-plus"/></v-btn>
-        <v-list>
-            <draggable
-                v-model="stages"
-                tag="div"
-                :component-data="{
+  <div class="ma-5" v-if="species">
+    <v-row class="ma-5">
+      <h1 class="mr-2">{{t('form.species.nameTitle')}}</h1>
+      <v-text-field
+        v-model="species.name"
+        variant="plain"
+        class="custom-input"
+        hide-details
+      />
+      <v-btn color="error" @click="deleteSpecies()" class="mr-5">{{t('common.delete')}}</v-btn>
+    </v-row>
+    <v-row class="ma-5">
+      <h2>{{t('form.species.stageTitle')}}</h2>
+      <v-btn @click="addStage" class="ml-2" variant="outlined" color="primary">
+        {{t('common.add')}}
+        <v-icon icon="mdi-plus"/>
+      </v-btn>
+    </v-row>
+    <draggable
+      v-model="stages"
+      tag="div"
+      :component-data="{
           tag: 'ul',
           type: 'transition-group',
         }"
-                item-key="id"
-                :animation="200"
-                ghost-class="ghost-class"
-                @start="drag=true"
-                @end="onDragEnd"
-                class="border"
-            >
-                <template #item="{ element, index }">
-                    <v-list-item :key="element.id" class="drag-item pa-4">
-                        <template #prepend>
-                            <v-icon class="mr-4">mdi-drag</v-icon>
-                        </template>
-                        <v-row align="center" class="pa-2">
-                            <v-col cols="3" verrical-align="middle">
-                                <v-text-field
-                                    v-model="element.name"
-                                    label="Nom"
-                                    density="compact"
-                                    variant="outlined"
-                                />
-                            </v-col>
-                            <v-col cols="2">
-                                <v-text-field
-                                    v-model="element.position"
-                                    :value="index"
-                                    label="Position"
-                                    density="compact"
-                                    variant="outlined"
-                                    readonly
-                                />
-                            </v-col>
-                            <v-col cols="3">
-                                <v-text-field
-                                    v-model="element.duration"
-                                    label="Durée"
-                                    density="compact"
-                                    variant="outlined"
-                                    type="number"
-                                />
-                            </v-col>
-                        </v-row>
-                    </v-list-item>
-                </template>
-            </draggable>
-        </v-list>
-    </v-col>
+      item-key="id"
+      :animation="200"
+      ghost-class="ghost-class"
+      @start="drag=true"
+      @end="onDragEnd"
+      class="border ma-2"
+    >
+      <template #item="{ element }">
+        <v-list-item :key="element.id" class="drag-item">
+          <v-row class="d-flex align-center">
+            <v-col cols="auto">
+              <v-icon>mdi-drag</v-icon>
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="element.name"
+                :label="t('form.species.drag.name')"
+                density="compact"
+                variant="outlined"
+              />
+            </v-col>
+            <v-col>
+              <v-text-field
+                v-model="element.duration"
+                :label="t('form.species.drag.time')"
+                density="compact"
+                variant="outlined"
+                type="number"
+                :rules="[validationTime]"
+              />
+            </v-col>
+          </v-row>
+        </v-list-item>
+      </template>
+    </draggable>
+    <v-row class="d-flex justify-space-between align-center">
+      <v-btn @click="router.push({ name: 'species' })">{{t('common.cancel')}}</v-btn>
+      <v-btn @click="sendSpecies()" color="primary">{{t('common.send')}}</v-btn>
+    </v-row>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -73,71 +72,87 @@ import {Species} from "@/model/Species";
 import SpeciesRepository from "@/repository/speciesRepository";
 import {SpeciesStage} from "@/model/SpeciesStage";
 import draggable from 'vuedraggable';
+import {useRouter} from "vue-router";
+import {useI18n} from "vue-i18n";
 
 const speciesRepository = new SpeciesRepository();
-const species: Ref<Species | null> = ref<Species | null>(null);
+const species: Ref<Species> = ref<Species>(new Species());
 const stages: Ref<SpeciesStage[]> = ref([]);
 const drag = ref(false);
+const router = useRouter()
+const { t } = useI18n()
 
 const props = defineProps<{ id: number }>();
 
 const updatePlants = async () => {
+  if(props.id.toString() !== '0'){
     species.value = await speciesRepository.getSpecies(props.id);
     stages.value = species.value.plant_stages;
+  }
 };
 
 watch(stages, (newStages) => {
-    newStages.forEach((stage, index) => {
-        stage.position = index;
-    });
+  newStages.forEach((stage, index) => {
+    stage.position = index;
+  });
 }, {deep: true});
 
 
 const addStage = () => {
-    stages.value.push(new SpeciesStage());
+  stages.value.push(new SpeciesStage());
 }
 
 const onDragEnd = async () => {
-    drag.value = false;
-    stages.value.forEach((stage, index) => {
-        stage.position = index;
-    });
-
-    try {
-        // Exemple:
-        // await speciesRepository.updateStages(stages.value);
-    } catch (error) {
-        console.error('Erreur lors de la mise à jour des stages:', error);
-    }
+  drag.value = false;
+  stages.value.forEach((stage, index) => {
+    stage.position = index;
+  });
 };
 
+const sendSpecies = () => {
+  species.value.plant_stages = stages.value;
+  if (props.id.toString() !== '0'){
+    speciesRepository.putSpecies(species.value.id!,species.value)
+  }else{
+    speciesRepository.postSpecies(species.value)
+  }
+  router.push({ name: 'species' })
+}
+
+const deleteSpecies = async () => {
+  await speciesRepository.deleteSpecies(species.value.id!)
+  await router.push({name: 'species'})
+}
+
+const validationTime = (value: number) => {
+  return value >= 1 || t('form.species.error.time');
+}
+
 onBeforeMount(async () => {
-    await updatePlants();
+  await updatePlants();
 });
 </script>
 
 <style scoped>
 .drag-item {
-    cursor: move;
-}
-
-.ghost-class {
-    opacity: 0.5;
-    background: #c8ebfb;
-}
-
-.drag-item:hover {
-    background: rgba(0, 0, 0, 0.04);
+  cursor: move;
+  width: 100%;
 }
 
 .v-list-item {
-    transition: background-color 0.2s ease;
+  width: 100%;
+  background: white;
+}
+
+.v-row {
+  width: 100%;
+  margin: 0;
 }
 
 .custom-input :deep(input) {
-    font-size: 2em !important;
-    font-weight: bold;
-    height: auto !important;
-    padding: 0 !important;
+  font-size: 2em !important;
+  font-weight: bold;
+  height: auto !important;
+  padding: 0 !important;
 }
 </style>

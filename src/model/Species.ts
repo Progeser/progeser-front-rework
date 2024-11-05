@@ -1,9 +1,11 @@
 import {SpeciesStage} from "@/model/SpeciesStage";
 
-export interface Species {
-  id: number;
-  created_at: string;
-  name: string;
-  plant_stages: SpeciesStage[];
-  updated_at: string;
+export class Species {
+  constructor(
+    public id: number | null = null,
+    public created_at: string = '',
+    public name: string = '',
+    public plant_stages: SpeciesStage[] = [],
+    public updated_at: string = ''
+  ) {}
 }
