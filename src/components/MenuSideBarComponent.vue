@@ -5,7 +5,7 @@
         <v-list-item-group>
           <router-link
             :to="item.path"
-            v-for="(item, i) in routes"
+            v-for="(item, i) in menuRoutes"
             :key="i"
             :class="['router-link-hover', { 'active-link': route.path === item.path }]"
             style="text-decoration: none;"
@@ -13,7 +13,7 @@
             <v-list-item>
               <v-list-item-content class="d-flex align-center">
                 <v-icon class="mr-3 text-white">{{ icons[item.name as string] }}</v-icon>
-                <v-list-item-title class="text-white">{{ item.name }}</v-list-item-title>
+                <v-list-item-title class="text-white">{{ t(`menu.name.${String(item.name)}`) }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </router-link>
@@ -30,19 +30,21 @@
         </v-col>
       </v-row>
     </v-app-bar>
-    <v-main style="background-color: white;">
-        <router-view />
+    <v-main class="bg-grey-lighten-2">
+        <slot/>
     </v-main>
   </v-app>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import routes, { icons } from "@/router/routes";
+import menuRoutes, { icons } from "@/router/menuRoutes";
 import { useRoute } from "vue-router";
+import {useI18n} from "vue-i18n";
 
 const drawer = ref(false);
 const route = useRoute();
+const { t } = useI18n();
 </script>
 
 <style scoped>
