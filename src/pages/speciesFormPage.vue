@@ -1,5 +1,9 @@
 <template>
   <div class="ma-5" v-if="species">
+    <v-row class=" justify-space-between align-center">
+      <h1>{{t('form.species.title')}}</h1>
+      <v-btn color="error" @click="deleteSpecies()" class="mr-5 align-self-center">{{t('common.delete')}}</v-btn>
+    </v-row>
     <v-row class="ma-5">
       <h1 class="mr-2 align-self-center">{{t('form.species.nameTitle')}}</h1>
       <v-text-field
@@ -8,7 +12,6 @@
         class="custom-input mr-5 align-self-center"
         hide-details
       />
-      <v-btn color="error" @click="deleteSpecies()" class="mr-5 align-self-center">{{t('common.delete')}}</v-btn>
     </v-row>
     <v-row class="ma-5">
       <h2>{{t('form.species.stageTitle')}}</h2>

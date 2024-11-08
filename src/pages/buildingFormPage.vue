@@ -1,33 +1,30 @@
 <template>
-  <div class="ma-5" v-if="building">
-    <v-row class="ma-5 justify-space-between align-center">
-      <h1 class="mr-2">{{ t('form.building.title') }}</h1>
-      <v-btn icon @click="deleteBuilding" v-if="props.id.toString() !== '0'">
-        <v-icon color="error">mdi-delete</v-icon>
-      </v-btn>
+  <div class="ma-10" v-if="building">
+    <v-row class=" justify-space-between align-center">
+      <h1>{{t('form.building.title')}}</h1>
+      <v-btn color="error" @click="deleteBuilding()" class="align-self-center">{{t('common.delete')}}</v-btn>
     </v-row>
-
-    <v-row class="ma-5">
-      <v-text-field
-        v-model="building.name"
-        variant="plain"
-        class="custom-input"
-        hide-details
-        :label="t('form.building.name')"
-      />
-    </v-row>
-
-    <v-row class="ma-5">
-      <v-textarea
-        v-model="building.description"
-        variant="outlined"
-        class="custom-input"
-        :label="t('form.building.description')"
-        rows="5"
-        auto-grow
-      />
-    </v-row>
-
+    <v-col class="ma-5">
+      <v-col>
+        <h2 class="mr-2 align-self-center">{{t('form.building.nameTitle')}}</h2>
+        <v-text-field
+          v-model="building.name"
+          variant="outlined"
+          class="custom-input align-self-center"
+          hide-details
+        />
+      </v-col>
+      <v-col>
+        <h2 class="mr-2">{{t('form.building.description')}}</h2>
+        <v-textarea
+          v-model="building.description"
+          variant="outlined"
+          class="custom-input"
+          rows="5"
+          auto-grow
+        />
+      </v-col>
+    </v-col>
     <v-row class="d-flex justify-space-between align-center">
       <v-btn @click="router.push({ name: 'buildings' })">{{ t('common.cancel') }}</v-btn>
       <v-btn @click="sendBuilding()" color="primary">{{ t('common.send') }}</v-btn>
