@@ -1,6 +1,11 @@
 <template>
   <v-app>
-    <v-navigation-drawer v-model="drawer" app style="background-color: #008B8B;">
+    <v-navigation-drawer
+      v-model="drawer"
+      app
+      class="position-fixed"
+      style="background-color: #008B8B; height: 100vh;"
+    >
       <v-list>
         <v-list-item-group>
           <router-link
@@ -31,7 +36,7 @@
       </v-row>
     </v-app-bar>
     <v-main class="bg-grey-lighten-2">
-        <slot/>
+      <slot/>
     </v-main>
   </v-app>
 </template>
@@ -40,7 +45,7 @@
 import { ref } from 'vue';
 import menuRoutes, { icons } from "@/router/menuRoutes";
 import { useRoute } from "vue-router";
-import {useI18n} from "vue-i18n";
+import { useI18n } from "vue-i18n";
 
 const drawer = ref(false);
 const route = useRoute();

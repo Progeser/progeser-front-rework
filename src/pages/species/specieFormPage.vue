@@ -23,9 +23,9 @@
         v-model="stages"
         tag="div"
         :component-data="{
-            tag: 'ul',
-            type: 'transition-group',
-          }"
+      tag: 'ul',
+      type: 'transition-group',
+    }"
         item-key="id"
         :animation="200"
         ghost-class="ghost-class"
@@ -36,7 +36,7 @@
         <template #item="{ element }">
           <v-list-item :key="element.id" class="drag-item">
             <v-row class="d-flex align-center">
-              <v-col cols="auto">
+              <v-col cols="auto" class="icon-col d-flex align-center">
                 <v-icon>mdi-drag</v-icon>
               </v-col>
               <v-col>
