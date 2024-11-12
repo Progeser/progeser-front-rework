@@ -19,6 +19,7 @@ export default {
   },
   form: {
     species: {
+      title: 'Espèce',
       nameTitle: 'Nom : ',
       stageTitle: 'Étapes : ',
       drag: {
@@ -28,6 +29,14 @@ export default {
       error: {
         time: 'La durée doit être supérieure à 0'
       }
-    }
+    },
+    building: {
+      title: 'Batiment',
+      nameTitle: 'Nom : ',
+      description: 'Description : ',
+      error: {
+        name: 'Le nom ne doit pas être vide'
+      }
+    },
   }
 }
