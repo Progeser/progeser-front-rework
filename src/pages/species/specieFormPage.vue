@@ -1,67 +1,67 @@
 <template>
   <div class="ma-10" v-if="species">
-    <v-row class=" justify-space-between align-center">
+    <v-row class="justify-space-between align-center">
       <h1>{{t('form.species.title')}}</h1>
       <v-btn color="error" @click="deleteSpecies()" class="align-self-center">{{t('common.delete')}}</v-btn>
     </v-row>
-    <v-row class="ma-5">
-      <h1 class="mr-2 align-self-center">{{t('form.species.nameTitle')}}</h1>
+    <v-col class="ma-5">
+      <h2 class="mr-2 mb-4 align-self-center">{{t('form.species.nameTitle')}}</h2>
       <v-text-field
         v-model="species.name"
         variant="outlined"
-        class="custom-input mr-5 align-self-center"
+        class="custom-input align-self-center mb-4"
         hide-details
       />
-    </v-row>
-    <v-row class="ma-5">
-      <h2>{{t('form.species.stageTitle')}}</h2>
-      <v-btn @click="addStage" class="ml-2" variant="outlined" color="primary">
-        {{t('common.add')}}
-        <v-icon icon="mdi-plus"/>
-      </v-btn>
-    </v-row>
-    <draggable
-      v-model="stages"
-      tag="div"
-      :component-data="{
-          tag: 'ul',
-          type: 'transition-group',
-        }"
-      item-key="id"
-      :animation="200"
-      ghost-class="ghost-class"
-      @start="drag=true"
-      @end="onDragEnd"
-      class="border ma-2"
-    >
-      <template #item="{ element }">
-        <v-list-item :key="element.id" class="drag-item">
-          <v-row class="d-flex align-center">
-            <v-col cols="auto">
-              <v-icon>mdi-drag</v-icon>
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="element.name"
-                :label="t('form.species.drag.name')"
-                density="compact"
-                variant="outlined"
-              />
-            </v-col>
-            <v-col>
-              <v-text-field
-                v-model="element.duration"
-                :label="t('form.species.drag.time')"
-                density="compact"
-                variant="outlined"
-                type="number"
-                :rules="[validationTime]"
-              />
-            </v-col>
-          </v-row>
-        </v-list-item>
-      </template>
-    </draggable>
+      <v-row class="mb-4">
+        <h2 class="mr-2">{{t('form.species.stageTitle')}}</h2>
+        <v-btn @click="addStage" class="ml-2" variant="outlined" color="primary">
+          {{t('common.add')}}
+          <v-icon icon="mdi-plus"/>
+        </v-btn>
+      </v-row>
+      <draggable
+        v-model="stages"
+        tag="div"
+        :component-data="{
+      tag: 'ul',
+      type: 'transition-group',
+    }"
+        item-key="id"
+        :animation="200"
+        ghost-class="ghost-class"
+        @start="drag=true"
+        @end="onDragEnd"
+        class="border"
+      >
+        <template #item="{ element }">
+          <v-list-item :key="element.id" class="drag-item">
+            <v-row class="d-flex align-center">
+              <v-col cols="auto" class="icon-col d-flex align-center">
+                <v-icon>mdi-drag</v-icon>
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="element.name"
+                  :label="t('form.species.drag.name')"
+                  density="compact"
+                  variant="outlined"
+                />
+              </v-col>
+              <v-col>
+                <v-text-field
+                  v-model="element.duration"
+                  :label="t('form.species.drag.time')"
+                  density="compact"
+                  variant="outlined"
+                  type="number"
+                  :rules="[validationTime]"
+                />
+              </v-col>
+            </v-row>
+          </v-list-item>
+        </template>
+      </draggable>
+    </v-col>
     <v-row class="d-flex justify-space-between align-center">
       <v-btn @click="router.push({ name: 'species' })">{{t('common.cancel')}}</v-btn>
       <v-btn @click="sendSpecies()" color="primary">{{t('common.send')}}</v-btn>
@@ -153,9 +153,16 @@ onBeforeMount(async () => {
 }
 
 .custom-input :deep(input) {
-  font-size: 2em !important;
-  font-weight: bold;
+  font-size: 1em !important;
   height: auto !important;
-  padding: 0 !important;
+  padding: 0.5em !important;
+}
+
+.ma-10 {
+  margin: 10px;
+}
+
+.ma-5 {
+  margin: 5px;
 }
 </style>

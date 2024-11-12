@@ -36,7 +36,8 @@ export default {
       description: 'Description : ',
       error: {
         name: 'Le nom ne doit pas être vide'
-      }
+      },
+      confirmDelete: 'Voulez-vous vraiment supprimer ce batiment ?'
     },
     compartiment: {
       title: 'Compartiment',
