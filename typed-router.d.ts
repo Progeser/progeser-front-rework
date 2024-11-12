@@ -20,10 +20,8 @@ declare module 'vue-router/auto-routes' {
   export interface RouteNamedMap {
     '/building/buildingFormPage': RouteRecordInfo<'/building/buildingFormPage', '/building/buildingFormPage', Record<never, never>, Record<never, never>>,
     '/building/buildingsPage': RouteRecordInfo<'/building/buildingsPage', '/building/buildingsPage', Record<never, never>, Record<never, never>>,
-    '/buildingFormPage': RouteRecordInfo<'/buildingFormPage', '/buildingFormPage', Record<never, never>, Record<never, never>>,
-    '/buildingPage': RouteRecordInfo<'/buildingPage', '/buildingPage', Record<never, never>, Record<never, never>>,
-    '/compartimentFormPage': RouteRecordInfo<'/compartimentFormPage', '/compartimentFormPage', Record<never, never>, Record<never, never>>,
-    '/compartimentPage': RouteRecordInfo<'/compartimentPage', '/compartimentPage', Record<never, never>, Record<never, never>>,
+    '/compartiments/compartimentFormPage': RouteRecordInfo<'/compartiments/compartimentFormPage', '/compartiments/compartimentFormPage', Record<never, never>, Record<never, never>>,
+    '/compartiments/compartimentPage': RouteRecordInfo<'/compartiments/compartimentPage', '/compartiments/compartimentPage', Record<never, never>, Record<never, never>>,
     '/containers/containersPage': RouteRecordInfo<'/containers/containersPage', '/containers/containersPage', Record<never, never>, Record<never, never>>,
     '/homePage': RouteRecordInfo<'/homePage', '/homePage', Record<never, never>, Record<never, never>>,
     '/requestPage': RouteRecordInfo<'/requestPage', '/requestPage', Record<never, never>, Record<never, never>>,

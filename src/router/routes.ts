@@ -17,13 +17,13 @@ const routes: RouteRecordRaw[] = [
     path: '/buildings/:id/compartiments',
     name: 'compartiments',
     props: true,
-    component: () => import('@/pages/compartimentPage.vue'),
+    component: () => import('@/pages/compartiments/compartimentPage.vue'),
   },
   {
     path: '/buildings/:idBuilding/compartiments/form/:idCompartiment',
     name: 'compartimentForm',
     props: true,
-    component: () => import('@/pages/compartimentFormPage.vue'),
+    component: () => import('@/pages/compartiments/compartimentFormPage.vue'),
   }
 ];
 
