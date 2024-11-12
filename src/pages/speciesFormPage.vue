@@ -112,14 +112,14 @@ const onDragEnd = async () => {
   });
 };
 
-const sendSpecies = () => {
+const sendSpecies = async () => {
   species.value.plant_stages = stages.value;
   if (props.id.toString() !== '0'){
-    speciesRepository.putSpecies(species.value.id!,species.value)
+    await speciesRepository.putSpecies(species.value.id!,species.value)
   }else{
-    speciesRepository.postSpecies(species.value)
+    await speciesRepository.postSpecies(species.value)
   }
-  router.push({ name: 'species' })
+  await router.push({ name: 'species' })
 }
 
 const deleteSpecies = async () => {
