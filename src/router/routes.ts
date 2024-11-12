@@ -18,6 +18,12 @@ const routes: RouteRecordRaw[] = [
     name: 'compartiments',
     props: true,
     component: () => import('@/pages/compartimentPage.vue'),
+  },
+  {
+    path: '/buildings/:idBuilding/compartiments/form/:idCompartiment',
+    name: 'compartimentForm',
+    props: true,
+    component: () => import('@/pages/compartimentFormPage.vue'),
   }
 ];
 

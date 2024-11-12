@@ -38,5 +38,13 @@ export default {
         name: 'Le nom ne doit pas être vide'
       }
     },
+    compartiment: {
+      title: 'Compartiment',
+      nameTitle: 'Nom : ',
+      error: {
+        name: 'Le nom ne doit pas être vide'
+      },
+      confirmDelete : 'Voulez-vous vraiment supprimer ce compartiment ?'
+    }
   }
 }

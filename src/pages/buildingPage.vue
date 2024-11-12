@@ -10,7 +10,7 @@
     <v-row class="justify-md">
       <div v-for="building in buildingsList" :key="building.id!" class="ma-5">
         <card :title="building.name"
-              @click="navigateToCompartiments(building.id!)"
+              @click.capture="navigateToCompartiments(building.id!)"
               img-source="https://img.freepik.com/vecteurs-premium/dessin-batiment-mot-citation-citi-dessine-dessus_951778-115567.jpg"
               :exec="() => navigateToBuildingForm(building.id!)"
         />
