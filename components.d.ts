@@ -7,7 +7,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    Batiment: typeof import('./src/pages/buildingPage.vue')['default']
+    Batiment: typeof import('./src/pages/building/buildingsPage.vue')['default']
     Batiments: typeof import('./src/components/Batiments.vue')['default']
     Card: typeof import('./src/components/Card.vue')['default']
     Demande: typeof import('./src/pages/requestPage.vue')['default']
@@ -18,7 +18,7 @@ declare module 'vue' {
     MenuSideBarComponent: typeof import('./src/components/MenuSideBarComponent.vue')['default']
     Plante: typeof import('./src/components/Plante.vue')['default']
     Plantes: typeof import('./src/components/Plantes.vue')['default']
-    Pot: typeof import('./src/pages/potPage.vue')['default']
+    Pot: typeof import('./src/pages/containers/containersPage.vue')['default']
     PotIcon: typeof import('./src/components/PotIcon.vue')['default']
     Pots: typeof import('./src/components/Pots.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

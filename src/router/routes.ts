@@ -5,7 +5,7 @@ const routes: RouteRecordRaw[] = [
     path: '/species/form/:id',
     name: 'SpeciesForm',
     props: true,
-    component: () => import('@/pages/speciesFormPage.vue'),
+    component: () => import('@/pages/species/specieFormPage.vue'),
   },
   {
       path: '/buildings/form/:id',
