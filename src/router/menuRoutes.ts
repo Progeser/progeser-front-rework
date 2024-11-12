@@ -2,7 +2,7 @@ import {RouteRecordRaw} from "vue-router";
 
 const menuRoutes: RouteRecordRaw[] = [
   {
-    path: '/',
+    path: '/home',
     name: 'home',
     component: () => import('@/pages/homePage.vue'),
   },

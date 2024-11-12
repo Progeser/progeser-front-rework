@@ -12,7 +12,7 @@
             :to="item.path"
             v-for="(item, i) in menuRoutes"
             :key="i"
-            :class="['router-link-hover', { 'active-link': route.path === item.path }]"
+            :class="['router-link-hover', { 'active-link': route.path.includes(item.path) }]"
             style="text-decoration: none;"
           >
             <v-list-item>
