@@ -1,8 +1,8 @@
 <template>
-  <div class="ma-5" v-if="species">
+  <div class="ma-10" v-if="species">
     <v-row class=" justify-space-between align-center">
       <h1>{{t('form.species.title')}}</h1>
-      <v-btn color="error" @click="deleteSpecies()" class="mr-5 align-self-center">{{t('common.delete')}}</v-btn>
+      <v-btn color="error" @click="deleteSpecies()" class="align-self-center">{{t('common.delete')}}</v-btn>
     </v-row>
     <v-row class="ma-5">
       <h1 class="mr-2 align-self-center">{{t('form.species.nameTitle')}}</h1>
@@ -112,14 +112,14 @@ const onDragEnd = async () => {
   });
 };
 
-const sendSpecies = () => {
+const sendSpecies = async () => {
   species.value.plant_stages = stages.value;
   if (props.id.toString() !== '0'){
-    speciesRepository.putSpecies(species.value.id!,species.value)
+    await speciesRepository.putSpecies(species.value.id!,species.value)
   }else{
-    speciesRepository.postSpecies(species.value)
+    await speciesRepository.postSpecies(species.value)
   }
-  router.push({ name: 'species' })
+  await router.push({ name: 'species' })
 }
 
 const deleteSpecies = async () => {

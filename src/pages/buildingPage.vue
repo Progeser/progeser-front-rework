@@ -10,6 +10,7 @@
     <v-row class="justify-md">
       <div v-for="building in buildingsList" :key="building.id!" class="ma-5">
         <card :title="building.name"
+              @click="navigateToCompartiments(building.id!)"
               img-source="https://img.freepik.com/vecteurs-premium/dessin-batiment-mot-citation-citi-dessine-dessus_951778-115567.jpg"
               :exec="() => navigateToBuildingForm(building.id!)"
         />
@@ -33,13 +34,20 @@ const buildingRepository: BuildingRepository = new BuildingRepository();
 let buildingsList: Ref<Building[]> = ref<Building[]>([]);
 let pageNumber: Ref<number> = ref<number>(1);
 let paginationInformation: Ref<GenericPagination<Building[]> | undefined> = ref<GenericPagination<Building[]> | undefined>();
-const {t} = useI18n()
 const router = useRouter()
+const {t} = useI18n()
 
 const updateBuildings = async () => {
   paginationInformation.value = await buildingRepository.getBuildingsPage(pageNumber.value);
   buildingsList.value = paginationInformation.value.content;
 };
+
+const navigateToCompartiments = (id : number) => {
+  router.push({
+    name: 'compartiments',
+    params: { id: id.toString() }
+  });
+}
 
 onBeforeMount(async () => {
   await updateBuildings();
