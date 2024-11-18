@@ -10,7 +10,7 @@
     <v-row class="justify-md">
       <div v-for="compartiment in compartimentList" :key="compartiment.id!" class="ma-5">
         <card :title="compartiment.name"
-              img-source="https://media.admagazine.fr/photos/6540db163fc6f8175185f57a/master/w_1600%2Cc_limit/GettyImages-1296861200.jpg"
+              img-source="https://serres.univ-lille.fr/fileadmin/_processed_/4/f/csm_33656_IMG_1477_cellule_e31e62c32f.jpg"
               :exec="() => navigateToCompartimentForm(compartiment.id!)"
               :description="makeDescription(compartiment)"
         />
