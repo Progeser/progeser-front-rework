@@ -39,5 +39,16 @@ export default {
       },
       confirmDelete: 'Voulez-vous vraiment supprimer ce batiment ?'
     },
+    compartiment: {
+      title: 'Compartiment',
+      nameTitle: 'Nom : ',
+      height : 'Hauteur : ',
+      width : 'Longueur : ',
+      error: {
+        name: 'Le nom ne doit pas être vide',
+        value: 'La valeur doit être supérieure a zero'
+      },
+      confirmDelete : 'Voulez-vous vraiment supprimer ce compartiment ?'
+    }
   }
 }

@@ -1,9 +1,11 @@
-interface Compartiment {
-  id: number;
-  created_at: Date;
-  height: number;
-  name: string;
-  occupancy: number;
-  updated_at: Date;
-  width: number;
+export class Compartiment {
+  constructor(
+    public id: number | null = null,
+    public created_at: string = "",
+    public height: number = 0,
+    public name: string = "",
+    public occupancy: number = 0,
+    public updated_at: string = "",
+    public width: number = 0
+  ) {}
 }

@@ -27,15 +27,16 @@ import {onMounted, ref, Ref, watch} from "vue";
 import Card from "@/components/Card.vue";
 import { GenericPagination } from "@/model/GenericPagination";
 import {useI18n} from "vue-i18n";
-//import {useRouter} from "vue-router";
+import {useRouter} from "vue-router";
 import CompartimentRepository from "@/repository/compartimentRepository";
+import {Compartiment} from "@/model/Compartiment";
 
 const compartimentRepository: CompartimentRepository = new CompartimentRepository()
 const speciesList: Ref<Compartiment[]> = ref<Compartiment[]>([]);
 const pageNumber: Ref<number> = ref<number>(1);
 const paginationInformation: Ref<GenericPagination<Compartiment[]> | undefined> = ref<GenericPagination<Compartiment[]> | undefined>();
 const {t} = useI18n()
-//const router = useRouter() todo
+const router = useRouter()
 
 const props = defineProps<{ id: number }>();
 
@@ -45,17 +46,17 @@ const updateCompartiments = async (buildingId : number) => {
 }
 
 const navigateToCompartimentForm = (id : number) => {
-  /*router.push({ todo
-    name: 'SpeciesForm',
-    params: { id: id.toString() }
-  });*/
+  router.push({
+    name: 'compartimentForm',
+    params: { idBuilding: props.id ,idCompartiment: id.toString() }
+  });
 };
 
 const navigateToNewCompartimentForm = () => {
-  /*router.push({ todo
-    name: 'SpeciesForm',
-    params: { id: 0 }
-  });*/
+  router.push({
+    name: 'compartimentForm',
+    params: { idBuilding: props.id ,idCompartiment: 0 }
+  });
 }
 
 onMounted(async () => {
