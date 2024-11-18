@@ -11,7 +11,6 @@
       <div v-for="container in containersList" :key="container.id!" class="ma-5">
         <Card
           :title="container.name"
-          @click="navigateToContainerDetails(container.id!)"
           img-source="https://easydrawings.net/wp-content/uploads/2020/09/flower-pot-drawing.jpg"
           :exec="() => navigateToContainerForm(container.id!)"
         />
@@ -42,13 +41,6 @@ const { t } = useI18n();
 const updateContainers = async () => {
   paginationInformation.value = await containerRepository.getContainersPage(pageNumber.value);
   containersList.value = paginationInformation.value.content;
-};
-
-const navigateToContainerDetails = (id: number) => {
-  router.push({
-    name: 'containerDetails',
-    params: { id: id.toString() }
-  });
 };
 
 onBeforeMount(async () => {

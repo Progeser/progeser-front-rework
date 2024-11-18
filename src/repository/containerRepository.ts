@@ -31,7 +31,7 @@ class ContainerRepository {
     containerOutput.name = data.name;
     containerOutput.area = data.area;
     containerOutput.dimensions = data.dimensions;
-    containerOutput.shape_name = data.shape?.name || '';
+    containerOutput.shape_name = data.shape || '';
     return containerOutput;
   }
 }

@@ -1,8 +1,8 @@
 export default {
   menu: {
     name: {
-      home : 'Accueil',
-      buildings: 'Batiments',
+      home: 'Accueil',
+      buildings: 'Bâtiments',
       species: 'Espèces',
       containers: 'Conteneurs',
       requests: 'Demandes',
@@ -15,7 +15,7 @@ export default {
     cancel: 'Annuler',
     add: 'Ajouter',
     send: 'Envoyer',
-    delete: 'Suprimer'
+    delete: 'Supprimer'
   },
   form: {
     species: {
@@ -33,13 +33,13 @@ export default {
       }
     },
     building: {
-      title: 'Batiment',
+      title: 'Bâtiment',
       nameTitle: 'Nom : ',
       description: 'Description : ',
       error: {
         name: 'Le nom ne doit pas être vide'
       },
-      confirmDelete: 'Voulez-vous vraiment supprimer ce batiment ?'
+      confirmDelete: 'Voulez-vous vraiment supprimer ce bâtiment ?'
     },
     compartiment: {
       title: 'Compartiment',
@@ -52,6 +52,21 @@ export default {
         value: 'La valeur doit être supérieure a zero'
       },
       confirmDelete : 'Voulez-vous vraiment supprimer ce compartiment ?'
+    },
+    container: {
+      title: 'Conteneur',
+      nameTitle: 'Nom : ',
+      description: 'Description : ',
+      shape: 'Forme : ',
+      areaTitle: 'Surface (en cm²) : ',
+      dimensions: 'Dimensions : ',
+      area: 'Aire',
+      error: {
+        name: 'Le nom ne doit pas être vide',
+        shape: 'La forme ne doit pas être vide',
+        areaOrDimensions: 'Vous devez renseigner soit la surface, soit les dimensions'
+      },
+      confirmDelete: 'Voulez-vous vraiment supprimer ce conteneur ?'
     }
   }
-}
+};
