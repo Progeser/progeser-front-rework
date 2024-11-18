@@ -101,6 +101,6 @@ onBeforeMount(async () => {
 }
 
 .v-messages__message {
-  font-size: 16px !important;
+  font-size: 1em !important;
 }
 </style>

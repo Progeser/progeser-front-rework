@@ -22,11 +22,13 @@ export default {
       title: 'Espèce',
       nameTitle: 'Nom : ',
       stageTitle: 'Étapes : ',
+      confirmDelete: 'Voulez-vous vraiment supprimer cette espèce ?',
       drag: {
         name: 'Nom',
         time: 'Durée'
       },
       error: {
+        name: 'Le nom ne doit pas être vide',
         time: 'La durée doit être supérieure à 0'
       }
     },
@@ -44,6 +46,7 @@ export default {
       nameTitle: 'Nom : ',
       height : 'Hauteur : ',
       width : 'Longueur : ',
+      occupation : 'Occupation : ',
       error: {
         name: 'Le nom ne doit pas être vide',
         value: 'La valeur doit être supérieure a zero'
