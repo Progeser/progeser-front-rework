@@ -4,20 +4,42 @@
       <h1>{{t('form.compartiment.title')}}</h1>
       <v-btn color="error" @click="deleteCompartiment()" class="align-self-center">{{t('common.delete')}}</v-btn>
     </v-row>
-    <v-col class="ma-5">
+    <div class="ma-5">
       <v-col>
         <h2 class="mr-2 align-self-center">{{t('form.compartiment.nameTitle')}}</h2>
         <v-text-field
           v-model="compartiment.name"
           variant="outlined"
           class="custom-input align-self-center"
-          hide-details
+          :rules="[isNotBlanck]"
         />
+        <v-row class="mt-2">
+          <v-col>
+            <h2 class="mr-2 align-self-center">{{t('form.compartiment.width')}}</h2>
+            <v-text-field type="number"
+                          variant="outlined"
+                          v-model="compartiment.width"
+                          :rules="[isStriclyPositive]"/>
+          </v-col>
+          <v-col>
+            <h2 class="mr-2 align-self-center">{{t('form.compartiment.height')}}</h2>
+            <v-text-field type="number"
+                          variant="outlined"
+                          v-model="compartiment.height"
+                          :rules="[isStriclyPositive]"/>
+          </v-col>
+        </v-row>
       </v-col>
-    </v-col>
+    </div>
     <v-row class="d-flex justify-space-between align-center">
-      <v-btn @click="router.push({ name: 'compartiments', params: {id: props.idBuilding} })">{{ t('common.cancel') }}</v-btn>
-      <v-btn @click="sendCompartiment()" color="primary">{{ t('common.send') }}</v-btn>
+      <v-btn @click="router.push({ name: 'compartiments', params: {id: props.idBuilding} })">
+        {{ t('common.cancel') }}
+      </v-btn>
+      <v-btn @click="sendCompartiment()"
+             color="primary"
+             :disabled="compartiment.width <= 0 || compartiment.height <= 0 || compartiment.name.trim().length <= 0">
+        {{ t('common.send') }}
+      </v-btn>
     </v-row>
   </div>
 </template>
@@ -58,15 +80,27 @@ const deleteCompartiment = async () => {
   }
 };
 
+const isStriclyPositive = (value: number) => {
+  return value >= 1 || t('form.compartiment.error.value');
+}
+
+const isNotBlanck = (value: string) => {
+  return value.trim().length >= 1 || t('form.compartiment.error.name');
+}
+
 onBeforeMount(async () => {
   await updateCompartiment();
 });
 </script>
 
-<style scoped>
+<style>
 .custom-input :deep(input) {
   font-size: 1em !important;
   height: auto !important;
   padding: 0.5em !important;
+}
+
+.v-messages__message {
+  font-size: 16px !important;
 }
 </style>
