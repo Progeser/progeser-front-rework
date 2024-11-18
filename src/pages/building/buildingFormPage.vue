@@ -11,7 +11,7 @@
           v-model="building.name"
           variant="outlined"
           class="custom-input align-self-center"
-          hide-details
+          :rules="[isNotBlanck]"
         />
       </v-col>
       <v-col>
@@ -27,7 +27,7 @@
     </v-col>
     <v-row class="d-flex justify-space-between align-center">
       <v-btn @click="router.push({ name: 'buildings' })">{{ t('common.cancel') }}</v-btn>
-      <v-btn @click="sendBuilding()" color="primary">{{ t('common.send') }}</v-btn>
+      <v-btn @click="sendBuilding()" color="primary" :disabled="building.name.trim().length <= 0">{{ t('common.send') }}</v-btn>
     </v-row>
   </div>
 </template>
@@ -68,15 +68,23 @@ const deleteBuilding = async () => {
   }
 };
 
+const isNotBlanck = (value: string) => {
+  return value.trim().length >= 1 || t('form.building.error.name');
+}
+
 onBeforeMount(async () => {
   await updateBuilding();
 });
 </script>
 
-<style scoped>
+<style>
 .custom-input :deep(input) {
   font-size: 1em !important;
   height: auto !important;
   padding: 0.5em !important;
+}
+
+.v-messages__message {
+  font-size: 1em !important;
 }
 </style>

@@ -8,10 +8,11 @@
     </div>
     <v-divider class="my-2"/>
     <v-row class="justify-md">
-      <div v-for="species in speciesList" :key="species.id!" class="ma-5">
-        <card :title="species.name"
+      <div v-for="compartiment in compartimentList" :key="compartiment.id!" class="ma-5">
+        <card :title="compartiment.name"
               img-source="https://media.admagazine.fr/photos/6540db163fc6f8175185f57a/master/w_1600%2Cc_limit/GettyImages-1296861200.jpg"
-              :exec="() => navigateToCompartimentForm(species.id!)"
+              :exec="() => navigateToCompartimentForm(compartiment.id!)"
+              :description="makeDescription(compartiment)"
         />
       </div>
     </v-row>
@@ -32,7 +33,7 @@ import CompartimentRepository from "@/repository/compartimentRepository";
 import {Compartiment} from "@/model/Compartiment";
 
 const compartimentRepository: CompartimentRepository = new CompartimentRepository()
-const speciesList: Ref<Compartiment[]> = ref<Compartiment[]>([]);
+const compartimentList: Ref<Compartiment[]> = ref<Compartiment[]>([]);
 const pageNumber: Ref<number> = ref<number>(1);
 const paginationInformation: Ref<GenericPagination<Compartiment[]> | undefined> = ref<GenericPagination<Compartiment[]> | undefined>();
 const {t} = useI18n()
@@ -42,7 +43,7 @@ const props = defineProps<{ id: number }>();
 
 const updateCompartiments = async (buildingId : number) => {
   paginationInformation.value = await compartimentRepository.getCompartimentsPage(buildingId,pageNumber.value)
-  speciesList.value = paginationInformation.value.content;
+  compartimentList.value = paginationInformation.value.content;
 }
 
 const navigateToCompartimentForm = (id : number) => {
@@ -59,10 +60,13 @@ const navigateToNewCompartimentForm = () => {
   });
 }
 
+const makeDescription = (compartiment : Compartiment) => {
+  return `${t(`form.compartiment.occupation`)}${compartiment.occupancy.toString()} %`
+}
+
 onMounted(async () => {
   await updateCompartiments(props.id);
 })
-
 
 watch(pageNumber, () => {
   updateCompartiments(props.id);

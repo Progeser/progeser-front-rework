@@ -10,7 +10,7 @@
         v-model="species.name"
         variant="outlined"
         class="custom-input align-self-center mb-4"
-        hide-details
+        :rules="[isNotBlanck]"
       />
       <v-row class="mb-4">
         <h2 class="mr-2">{{t('form.species.stageTitle')}}</h2>
@@ -45,6 +45,7 @@
                   :label="t('form.species.drag.name')"
                   density="compact"
                   variant="outlined"
+                  :rules="[isNotBlanck]"
                 />
               </v-col>
               <v-col>
@@ -64,7 +65,9 @@
     </v-col>
     <v-row class="d-flex justify-space-between align-center">
       <v-btn @click="router.push({ name: 'species' })">{{t('common.cancel')}}</v-btn>
-      <v-btn @click="sendSpecies()" color="primary">{{t('common.send')}}</v-btn>
+      <v-btn @click="sendSpecies()" color="primary" :disabled="species.name.trim().length <= 0 || species.plant_stages.filter(stage => stage.name.trim().length <= 0 || stage.duration <= 0).length >= 1">
+        {{t('common.send')}}
+      </v-btn>
     </v-row>
   </div>
 </template>
@@ -123,12 +126,18 @@ const sendSpecies = async () => {
 }
 
 const deleteSpecies = async () => {
-  await speciesRepository.deleteSpecies(species.value.id!)
-  await router.push({name: 'species'})
+  if (confirm(t('form.species.confirmDelete'))) {
+    await speciesRepository.deleteSpecies(species.value.id!)
+    await router.push({name: 'species'})
+  }
 }
 
 const validationTime = (value: number) => {
   return value >= 1 || t('form.species.error.time');
+}
+
+const isNotBlanck = (value: string) => {
+  return value.trim().length >= 1 || t('form.species.error.name');
 }
 
 onBeforeMount(async () => {
@@ -136,7 +145,7 @@ onBeforeMount(async () => {
 });
 </script>
 
-<style scoped>
+<style>
 .drag-item {
   cursor: move;
   width: 100%;
@@ -158,11 +167,7 @@ onBeforeMount(async () => {
   padding: 0.5em !important;
 }
 
-.ma-10 {
-  margin: 10px;
-}
-
-.ma-5 {
-  margin: 5px;
+.v-messages__message {
+  font-size: 1em !important;
 }
 </style>

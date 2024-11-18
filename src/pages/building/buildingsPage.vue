@@ -13,6 +13,7 @@
               @click.capture="navigateToCompartiments(building.id!)"
               img-source="https://img.freepik.com/vecteurs-premium/dessin-batiment-mot-citation-citi-dessine-dessus_951778-115567.jpg"
               :exec="() => navigateToBuildingForm(building.id!)"
+              :description="building.description"
         />
       </div>
     </v-row>
