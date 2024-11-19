@@ -44,14 +44,14 @@ export default {
     compartiment: {
       title: 'Compartiment',
       nameTitle: 'Nom : ',
-      height : 'Hauteur : ',
-      width : 'Longueur : ',
-      occupation : 'Occupation : ',
+      height: 'Hauteur : ',
+      width: 'Longueur : ',
+      occupation: 'Occupation : ',
       error: {
         name: 'Le nom ne doit pas être vide',
-        value: 'La valeur doit être supérieure a zero'
+        value: 'La valeur doit être supérieure à zéro'
       },
-      confirmDelete : 'Voulez-vous vraiment supprimer ce compartiment ?'
+      confirmDelete: 'Voulez-vous vraiment supprimer ce compartiment ?'
     },
     container: {
       title: 'Conteneur',
@@ -61,10 +61,13 @@ export default {
       areaTitle: 'Surface (en cm²) : ',
       dimensions: 'Dimensions : ',
       area: 'Aire',
-      error: {
-        name: 'Le nom ne doit pas être vide',
-        shape: 'La forme ne doit pas être vide',
-        areaOrDimensions: 'Vous devez renseigner soit la surface, soit les dimensions'
+      errors: {
+        nameRequired: 'Le nom ne doit pas être vide',
+        shapeRequired: 'La forme ne doit pas être vide',
+        dimensionsInvalid: 'Les dimensions doivent être valide pour la forme indiquée',
+        dimensionsRequired: 'Les dimensions doivent être renseignées',
+        areaRequired: 'La surface doit être supérieure à zéro',
+        general: 'Les données du formulaire contiennent des erreurs, vérifiez les champs'
       },
       confirmDelete: 'Voulez-vous vraiment supprimer ce conteneur ?'
     }

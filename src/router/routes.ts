@@ -24,6 +24,12 @@ const routes: RouteRecordRaw[] = [
     name: 'compartimentForm',
     props: true,
     component: () => import('@/pages/compartiments/compartimentFormPage.vue'),
+  },
+  {
+    path: '/containers/form/:id',
+    name: 'ContainerForm',
+    props: true,
+    component: () => import('@/pages/containers/containerFormPage.vue'),
   }
 ];
 

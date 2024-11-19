@@ -6,57 +6,85 @@
         {{ t('common.delete') }}
       </v-btn>
     </v-row>
+
     <v-col class="ma-5">
+      <!-- Champ Nom -->
       <v-col>
         <h2 class="mr-2 align-self-center">{{ t('form.container.nameTitle') }}</h2>
         <v-text-field
           v-model="container.name"
+          :error="!!errors.name"
+          :error-messages="errors.name"
           variant="outlined"
           class="custom-input align-self-center"
-          hide-details
+          @input="validateName"
         />
       </v-col>
+
+      <!-- Champ Forme -->
       <v-col>
         <h2 class="mr-2">{{ t('form.container.shape') }}</h2>
         <v-select
           v-model="container.shape.name"
+          :error="!!errors.shape"
+          :error-messages="errors.shape"
           :items="shapes"
           variant="outlined"
           class="custom-input"
-          @change="updateDimensionNames"
+          @change="validateShape; updateDimensionNames"
         />
       </v-col>
+
+      <!-- Champ Aire (pour les formes personnalisées) -->
       <v-col v-if="isOtherShape">
-        <h2 class="mr-2">{{ t('form.container.area') }} (en cm²)</h2>
+        <h2 class="mr-2">{{ t('form.container.area') }}</h2>
         <v-text-field
           v-model="container.area"
+          :error="!!errors.area"
+          :error-messages="errors.area"
           variant="outlined"
           class="custom-input"
           type="number"
-          hide-details
+          @input="validateArea"
         />
       </v-col>
+
+      <!-- Champ Dimensions (si ce n'est pas une forme personnalisée) -->
       <v-col v-else>
         <h2 class="mr-2">
           {{ t('form.container.dimensions') + " (" + dimensionNames + ")" }}
         </h2>
         <v-text-field
           v-model="dimensionsInput"
+          :error="!!errors.dimensions"
+          :error-messages="errors.dimensions"
           variant="outlined"
           class="custom-input"
+          rows="2"
           auto-grow
+          placeholder="e.g. 10, 20"
+          @input="validateDimensions"
         />
       </v-col>
     </v-col>
+
+    <!-- Boutons -->
     <v-row class="d-flex justify-space-between align-center">
       <v-btn @click="router.push({ name: 'containers' })">{{ t('common.cancel') }}</v-btn>
-      <v-btn @click="sendContainer()" color="primary">{{ t('common.send') }}</v-btn>
+      <v-btn
+        @click="submitContainer()"
+        color="primary"
+        :disabled="!isFormValid"
+      >
+        {{ t('common.send') }}
+      </v-btn>
     </v-row>
   </div>
 </template>
 
+
 <script lang="ts" setup>
-import { ref, computed, onBeforeMount } from "vue";
+import {ref, computed, onBeforeMount, watch} from "vue";
 import ContainerRepository from "@/repository/containerRepository";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
@@ -71,12 +99,74 @@ const shapes = Object.values(ContainerShape);
 const props = defineProps<{ id: number }>();
 
 const dimensionsInput = ref<string>("");
+const errors = ref<Record<string, string | null>>({});
 
-const dimensionNames = computed(() =>
-  getDimensionsNamesFromShape(container.value.shape.name)
-);
-
+const dimensionNames = computed(() => getDimensionsNamesFromShape(container.value.shape.name));
 const isOtherShape = computed(() => container.value.shape.name === ContainerShape.OTHER);
+
+watch(isOtherShape, () => {
+  updateDimensionNames();
+});
+
+
+const isFormValid = computed(() => {
+  return !Object.values(errors.value).some(error => error !== null);
+});
+
+const validateName = () => {
+  errors.value.name = container.value.name.trim()
+    ? null
+    : t("form.container.errors.nameRequired");
+};
+
+const validateShape = () => {
+  errors.value.shape = container.value.shape.name.trim()
+    ? null
+    : t("form.container.errors.shapeRequired");
+};
+
+const validateDimensions = () => {
+  if (!isOtherShape.value) {
+    const dimensions = dimensionsInput.value.split(",").map(d => d.trim());
+    switch (container.value.shape.name) {
+      case ContainerShape.CIRCLE:
+      case ContainerShape.SQUARE:
+        errors.value.dimensions =
+          dimensions.length === 1 && parseFloat(dimensions[0]) > 0
+            ? null
+            : t("form.container.errors.dimensionsInvalid");
+        break;
+      case ContainerShape.RECTANGLE:
+      case ContainerShape.TRIANGLE:
+        errors.value.dimensions =
+          dimensions.length === 2 && dimensions.every(dim => parseFloat(dim) > 0)
+            ? null
+            : t("form.container.errors.dimensionsInvalid");
+        break;
+      default:
+        errors.value.dimensions = t("form.container.errors.invalidShape");
+    }
+  }
+};
+
+const validateArea = () => {
+  if (isOtherShape.value) {
+    errors.value.area = container.value.area && container.value.area > 0
+      ? null
+      : t("form.container.errors.areaRequired");
+  }
+};
+
+const updateDimensionNames = () => {
+  if (isOtherShape.value) {
+    dimensionsInput.value = "";
+    container.value.dimensions = null;
+    errors.value.dimensions = null;
+  } else {
+    container.value.area = null;
+    errors.value.area = null;
+  }
+};
 
 const updateContainer = async () => {
   if (props.id.toString() !== "0") {
@@ -85,20 +175,31 @@ const updateContainer = async () => {
   }
 };
 
-const sendContainer = async () => {
-  if (dimensionsInput.value && !isOtherShape.value) {
-    container.value.dimensions = dimensionsInput.value.split(",").map(dim => parseInt(dim.trim(), 10));
+const submitContainer = async () => {
+  validateName();
+  validateShape();
+  validateDimensions();
+  validateArea();
+
+  if (!isFormValid.value) return;
+
+  if (!isOtherShape.value) {
+    container.value.dimensions = dimensionsInput.value.split(",").map(dim => parseFloat(dim.trim()));
     container.value.area = null;
-  }
-  if (isOtherShape.value) {
+  } else {
     container.value.dimensions = null;
   }
-  if (props.id.toString() !== "0") {
-    await containerRepository.putContainer(container.value?.id!, container.value);
-  } else {
-    await containerRepository.postContainer(container.value);
+
+  try {
+    if (props.id.toString() !== "0") {
+      await containerRepository.putContainer(container.value.id!, container.value);
+    } else {
+      await containerRepository.postContainer(container.value);
+    }
+    await router.push({ name: "containers" });
+  } catch (error) {
+    console.error(error);
   }
-  await router.push({ name: "containers" });
 };
 
 const deleteContainer = async () => {
@@ -108,20 +209,9 @@ const deleteContainer = async () => {
   }
 };
 
-const updateDimensionNames = () => {
-  dimensionsInput.value = "";
-  container.value.area = null;
-};
-
 onBeforeMount(async () => {
   await updateContainer();
 });
 </script>
 
-<style scoped>
-.custom-input :deep(input) {
-  font-size: 1em !important;
-  height: auto !important;
-  padding: 0.5em !important;
-}
-</style>
+
