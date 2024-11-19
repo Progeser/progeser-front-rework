@@ -93,14 +93,14 @@ onBeforeMount(async () => {
 });
 </script>
 
-<style>
+<style scoped>
 .custom-input :deep(input) {
   font-size: 1em !important;
   height: auto !important;
   padding: 0.5em !important;
 }
 
-.v-messages__message {
-  font-size: 1em !important;
+::v-deep .v-messages__message {
+  font-size: 1rem !important;
 }
 </style>

@@ -24,6 +24,27 @@
           </router-link>
         </v-list-item-group>
       </v-list>
+      <div class="user-profile pa-4" @click="showLogoutModal = true">
+        <div class="d-flex align-center">
+          <v-avatar size="40" class="mr-3">
+            <v-img src="https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D" alt="Profile"/>
+          </v-avatar>
+          <div>
+            <div class="text-white font-weight-medium">{{`${user?.first_name} ${user?.last_name}`}}</div>
+            <div class="text-white text-caption">{{user?.email}}</div>
+          </div>
+        </div>
+      </div>
+      <v-dialog v-model="showLogoutModal" max-width="400">
+        <v-card>
+          <v-card-title class="text-h5 mb-4">Se déconnecter</v-card-title>
+          <v-card-text>Voulez-vous vous déconnecter ?</v-card-text>
+          <v-card-actions>
+            <v-btn color="primary" @click="showLogoutModal = false">Annuler</v-btn>
+            <v-btn color="error" @click="logout">Se déconnecter</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-navigation-drawer>
     <v-app-bar app color="white">
       <v-row align="center" justify="start">
@@ -42,14 +63,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import {onBeforeMount, ref} from 'vue';
 import menuRoutes, { icons } from "@/router/menuRoutes";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
+import UserRepository from "@/repository/userRepository";
+import {UserModel} from "@/model/UserModel";
+import {useAuthStore} from "@/store/AuthStore";
 
+const userRepository = new UserRepository()
+const AuthStore = useAuthStore()
 const drawer = ref(false);
 const route = useRoute();
 const { t } = useI18n();
+const user = ref<UserModel | null>(null);
+const showLogoutModal = ref(false);
+const router = useRouter();
+
+const logout = () => {
+  showLogoutModal.value = false
+  AuthStore.logout();
+  router.push("/");
+}
+
+onBeforeMount(async () => {
+    user.value = await userRepository.getCurrentUser();
+  }
+)
 </script>
 
 <style scoped>
@@ -70,5 +110,26 @@ const { t } = useI18n();
 
 .active-link .text-white {
   font-weight: 900;
+}
+
+.user-profile {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background-color: #008B8B;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+}
+
+.user-profile:hover{
+  background-color: #00B0B0;
+  transition: background-color 0.3s ease;
+  border-radius: 4px;
+}
+
+.v-navigation-drawer {
+  padding-bottom: 80px;
 }
 </style>

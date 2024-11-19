@@ -3,6 +3,8 @@ import axios from "axios";
 import { AuthModel } from "@/model/AuthModel";
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`;
+const clientId = `${import.meta.env.VITE_CLIENT_ID}`;
+const grantTypes = `${import.meta.env.VITE_GRANT_TYPE}`;
 
 export const useAuthStore = defineStore({
   id: 'auth',
@@ -22,12 +24,15 @@ export const useAuthStore = defineStore({
         params: {
           email,
           password,
-          "grant_type": password,
-          "client_id": "VkU79vCSfXw0rkYEOBbjMWflqsvBbznAr340OZ_3yAU"
+          "grant_type": grantTypes,
+          "client_id": clientId
         }
       }).then(response => {
         this.token = response.data;
       });
     },
+    logout(){
+      this.token = null;
+    }
   }
 });
