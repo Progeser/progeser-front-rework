@@ -145,7 +145,7 @@ onBeforeMount(async () => {
 });
 </script>
 
-<style>
+<style scoped>
 .drag-item {
   cursor: move;
   width: 100%;
@@ -167,7 +167,7 @@ onBeforeMount(async () => {
   padding: 0.5em !important;
 }
 
-.v-messages__message {
-  font-size: 1em !important;
+::v-deep .v-messages__message {
+  font-size: 1rem !important;
 }
 </style>
