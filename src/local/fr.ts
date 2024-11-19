@@ -69,7 +69,14 @@ export default {
         areaRequired: 'La surface doit être supérieure à zéro',
         general: 'Les données du formulaire contiennent des erreurs, vérifiez les champs'
       },
-      confirmDelete: 'Voulez-vous vraiment supprimer ce conteneur ?'
+      confirmDelete: 'Voulez-vous vraiment supprimer ce conteneur ?',
+      shapes: {
+        rectangle: 'Rectangle',
+        circle: 'Cercle',
+        square: 'Carré',
+        triangle: 'Triangle',
+        other: 'Autre'
+      }
     }
   }
 };

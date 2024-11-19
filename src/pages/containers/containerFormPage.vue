@@ -8,7 +8,6 @@
     </v-row>
 
     <v-col class="ma-5">
-      <!-- Champ Nom -->
       <v-col>
         <h2 class="mr-2 align-self-center">{{ t('form.container.nameTitle') }}</h2>
         <v-text-field
@@ -21,21 +20,21 @@
         />
       </v-col>
 
-      <!-- Champ Forme -->
       <v-col>
         <h2 class="mr-2">{{ t('form.container.shape') }}</h2>
         <v-select
           v-model="container.shape.name"
           :error="!!errors.shape"
           :error-messages="errors.shape"
+          :item-title="(item: string) => t('form.container.shapes.' + item)"
+          :item-value="(item: string) => item"
           :items="shapes"
           variant="outlined"
           class="custom-input"
-          @change="validateShape; updateDimensionNames"
+          @change="validateShape"
         />
       </v-col>
 
-      <!-- Champ Aire (pour les formes personnalisées) -->
       <v-col v-if="isOtherShape">
         <h2 class="mr-2">{{ t('form.container.area') }}</h2>
         <v-text-field
@@ -49,7 +48,6 @@
         />
       </v-col>
 
-      <!-- Champ Dimensions (si ce n'est pas une forme personnalisée) -->
       <v-col v-else>
         <h2 class="mr-2">
           {{ t('form.container.dimensions') + " (" + dimensionNames + ")" }}
@@ -68,7 +66,6 @@
       </v-col>
     </v-col>
 
-    <!-- Boutons -->
     <v-row class="d-flex justify-space-between align-center">
       <v-btn @click="router.push({ name: 'containers' })">{{ t('common.cancel') }}</v-btn>
       <v-btn
@@ -107,7 +104,6 @@ const isOtherShape = computed(() => container.value.shape.name === ContainerShap
 watch(isOtherShape, () => {
   updateDimensionNames();
 });
-
 
 const isFormValid = computed(() => {
   return !Object.values(errors.value).some(error => error !== null);
@@ -159,6 +155,7 @@ const validateArea = () => {
 
 const updateDimensionNames = () => {
   if (isOtherShape.value) {
+    console.log("isOtherShape");
     dimensionsInput.value = "";
     container.value.dimensions = null;
     errors.value.dimensions = null;
@@ -212,6 +209,7 @@ const deleteContainer = async () => {
 onBeforeMount(async () => {
   await updateContainer();
 });
+
 </script>
 
 
