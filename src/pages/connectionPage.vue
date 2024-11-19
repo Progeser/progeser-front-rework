@@ -2,7 +2,6 @@
   <v-container class="fill-height d-flex justify-center align-center">
     <v-card elevation="3" width="400">
       <v-card-title class="text-h6 text-center primary--text">Connection</v-card-title>
-
       <v-form @submit.prevent="handleLogin" ref="loginForm" class="pa-4">
         <h4 class="mr-2 align-self-center">Email</h4>
         <v-text-field
