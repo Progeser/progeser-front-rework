@@ -28,12 +28,15 @@ class ContainerRepository {
 
   private makeContainerOutput(data: Container): ContainerOutput {
     const containerOutput: ContainerOutput = new ContainerOutput();
+
     containerOutput.name = data.name;
-    containerOutput.area = data.area;
-    containerOutput.dimensions = data.dimensions;
-    containerOutput.shape_name = data.shape?.name || '';
+    containerOutput.area = data.area ? data.area.toString() : undefined;
+    containerOutput.dimensions = data.dimensions || undefined;
+    containerOutput.shape = data.shape.name;
+
     return containerOutput;
   }
+
 }
 
 export default ContainerRepository;

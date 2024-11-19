@@ -1,8 +1,8 @@
 export default {
   menu: {
     name: {
-      home : 'Accueil',
-      buildings: 'Batiments',
+      home: 'Accueil',
+      buildings: 'Bâtiments',
       species: 'Espèces',
       containers: 'Conteneurs',
       requests: 'Demandes',
@@ -15,7 +15,7 @@ export default {
     cancel: 'Annuler',
     add: 'Ajouter',
     send: 'Envoyer',
-    delete: 'Suprimer'
+    delete: 'Supprimer'
   },
   form: {
     species: {
@@ -33,25 +33,50 @@ export default {
       }
     },
     building: {
-      title: 'Batiment',
+      title: 'Bâtiment',
       nameTitle: 'Nom : ',
       description: 'Description : ',
       error: {
         name: 'Le nom ne doit pas être vide'
       },
-      confirmDelete: 'Voulez-vous vraiment supprimer ce batiment ?'
+      confirmDelete: 'Voulez-vous vraiment supprimer ce bâtiment ?'
     },
     compartiment: {
       title: 'Compartiment',
       nameTitle: 'Nom : ',
-      height : 'Hauteur : ',
-      width : 'Longueur : ',
-      occupation : 'Occupation : ',
+      height: 'Hauteur : ',
+      width: 'Longueur : ',
+      occupation: 'Occupation : ',
       error: {
         name: 'Le nom ne doit pas être vide',
-        value: 'La valeur doit être supérieure a zero'
+        value: 'La valeur doit être supérieure à zéro'
       },
-      confirmDelete : 'Voulez-vous vraiment supprimer ce compartiment ?'
+      confirmDelete: 'Voulez-vous vraiment supprimer ce compartiment ?'
+    },
+    container: {
+      title: 'Conteneur',
+      nameTitle: 'Nom : ',
+      description: 'Description : ',
+      shape: 'Forme : ',
+      areaTitle: 'Surface (en cm²) : ',
+      dimensions: 'Dimensions (en cm) : ',
+      area: 'Aire',
+      errors: {
+        nameRequired: 'Le nom ne doit pas être vide',
+        shapeRequired: 'La forme ne doit pas être vide',
+        dimensionsInvalid: 'Les dimensions doivent être valide pour la forme indiquée',
+        dimensionsRequired: 'Les dimensions doivent être renseignées',
+        areaRequired: 'La surface doit être supérieure à zéro',
+        general: 'Les données du formulaire contiennent des erreurs, vérifiez les champs'
+      },
+      confirmDelete: 'Voulez-vous vraiment supprimer ce conteneur ?',
+      shapes: {
+        rectangle: 'Rectangle',
+        circle: 'Cercle',
+        square: 'Carré',
+        triangle: 'Triangle',
+        other: 'Autre'
+      }
     }
   }
-}
+};
