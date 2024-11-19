@@ -59,7 +59,7 @@ export default {
       description: 'Description : ',
       shape: 'Forme : ',
       areaTitle: 'Surface (en cm²) : ',
-      dimensions: 'Dimensions : ',
+      dimensions: 'Dimensions (en cm) : ',
       area: 'Aire',
       errors: {
         nameRequired: 'Le nom ne doit pas être vide',

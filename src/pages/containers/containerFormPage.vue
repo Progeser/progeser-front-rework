@@ -60,7 +60,7 @@
           class="custom-input"
           rows="2"
           auto-grow
-          placeholder="e.g. 10, 20"
+          placeholder="ex: 10, 20"
           @input="validateDimensions"
         />
       </v-col>
@@ -212,4 +212,9 @@ onBeforeMount(async () => {
 
 </script>
 
+<style scoped>
+  ::v-deep .v-messages__message {
+    font-size: 1rem !important;
+  }
+</style>
 
