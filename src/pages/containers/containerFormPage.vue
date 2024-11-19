@@ -36,7 +36,7 @@
       </v-col>
 
       <v-col v-if="isOtherShape">
-        <h2 class="mr-2">{{ t('form.container.area') }}</h2>
+        <h2 class="mr-2">{{ t('form.container.area') }} en cm²</h2>
         <v-text-field
           v-model="container.area"
           :error="!!errors.area"
