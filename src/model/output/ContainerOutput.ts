@@ -8,4 +8,3 @@ export class ContainerOutput {
     public shape_name: ContainerShape | '' = ''
   ) {}
 }
-
