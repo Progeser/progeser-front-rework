@@ -33,21 +33,21 @@
 <script lang="ts" setup>
 import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue';
 import {useBenchStore} from "@/store/BenchStore";
+import {useRoute} from 'vue-router';
 
 const canvasRef: Ref<HTMLCanvasElement | undefined> = ref();
 const canvasContext: Ref<CanvasRenderingContext2D | undefined> = ref();
 const formData = ref({width: 0, height: 0, name: ''});
 
+const route = useRoute();
 const benchStore = useBenchStore();
+const buildingId = Number(route.params.buildingId);
+const greenhouseId = Number(route.params.greenhouseId);
 
 let clickIsMaintained = false;
 let clickOnX = 0;
 let clickOnY = 0;
 let animationFrameId: number | null = null;
-
-const props = defineProps({
-  idCompartiment: Number,
-})
 
 // Watchers
 watch(
@@ -76,7 +76,7 @@ onMounted(async () => {
   canvasRef.value.addEventListener('mousemove', handleMouseMove);
 
   resizeCanvas();
-  await benchStore.loadBenches(props.idCompartiment!);
+  await benchStore.loadBenches(greenhouseId);
 });
 
 onBeforeUnmount(() => {
@@ -108,7 +108,7 @@ function renderCanvas() {
   canvasContext.value.reset();
   canvasContext.value.clearRect(0, 0, width, height);
 
-  benchStore.benches.forEach((bench : Bench) => {
+  benchStore.benches.forEach((bench: Bench) => {
     if (!canvasContext.value) return;
 
     if (benchStore.selectedBench && bench.id === benchStore.selectedBench.id) {
@@ -214,7 +214,7 @@ async function createNewBench(event: MouseEvent) {
   };
 
   await benchStore
-    .addBench(props.idCompartiment!, bench)
+    .addBench(greenhouseId, bench)
     .then(() => {
       if (benchStore.selectedBench === null) return;
 
@@ -289,7 +289,7 @@ function updateBenchInfo() {
   const {id, positions} = benchStore.selectedBench;
   const {width, height} = formData.value;
 
-  const isOverlapping = benchStore.benches.some((bench : Bench) =>
+  const isOverlapping = benchStore.benches.some((bench: Bench) =>
     bench.id !== id &&
     positions[0] < bench.positions[0] + bench.dimensions[0] &&
     positions[0] + width > bench.positions[0] &&

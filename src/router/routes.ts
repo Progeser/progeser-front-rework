@@ -6,65 +6,71 @@ const routes: RouteRecordRaw[] = [
     name: 'SpeciesForm',
     props: true,
     component: () => import('@/pages/species/specieFormPage.vue'),
-    meta: { role: 'grower' }
+    meta: {role: 'grower'}
   },
   {
     path: '/buildings/form/:id',
     name: 'BuildingForm',
     props: true,
     component: () => import('@/pages/building/buildingFormPage.vue'),
-    meta: { role: 'grower' }
+    meta: {role: 'grower'}
   },
   {
     path: '/buildings/:idBuilding/compartiments',
     name: 'compartiments',
     props: true,
     component: () => import('@/pages/compartiments/compartimentPage.vue'),
-    meta: { role: 'grower' }
+    meta: {role: 'grower'}
   },
   {
     path: '/buildings/:idBuilding/compartiments/form/:idCompartiment',
     name: 'compartimentForm',
     props: true,
     component: () => import('@/pages/compartiments/compartimentFormPage.vue'),
-    meta: { role: 'grower' }
+    meta: {role: 'grower'}
   },
   {
     path: '/containers/form/:id',
     name: 'ContainerForm',
     props: true,
     component: () => import('@/pages/containers/containerFormPage.vue'),
-    meta: { role: 'grower' }
+    meta: {role: 'grower'}
   },
   {
     path: '/buildings/:idBuilding/compartiments/:idCompartiment/view',
     name: 'View',
     props: true,
     component: () => import('@/pages/viewPage.vue'),
-    meta: { role: 'grower' }
+    meta: {role: 'grower'}
   },
   {
     path: '/login',
     name: 'Login',
     component: () => import('@/pages/connexion/loginPage.vue'),
-    meta: { role: 'any' }
+    meta: {role: 'any'}
   },
   {
     path: '/request',
     name: 'Request',
     component: () => import('@/pages/requests/requestFormPage.vue'),
-    meta: { role: 'any' }
+    meta: {role: 'any'}
   },
   {
     path: '/requests/:idRequest/information',
-    name : 'RequestInformation',
+    name: 'RequestInformation',
     component: () => import('@/pages/requests/requestInformationPage.vue'),
-    meta: { role: 'grower' }
+    meta: {role: 'grower'}
   },
   {
     path: '/:catchAll(.*)*',
     component: () => import('@/pages/connexion/loginPage.vue'),
-    meta: { role: 'any' }
+    meta: {role: 'any'}
+  },
+  {
+    path: '/building/:buildingId/greenhouse/:greenhouseId/view',
+    name: 'view',
+    props: true,
+    component: () => import('@/pages/viewPage.vue'),
   }
 ];
 
