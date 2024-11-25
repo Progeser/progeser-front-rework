@@ -77,6 +77,15 @@ export default {
         triangle: 'Triangle',
         other: 'Autre'
       }
+    },
+    login: {
+      title: "Connexion",
+      username: "Identifiant",
+      password: "Mot de passe",
+      emailPlaceholder: "yourname",
+      passwordPlaceholder: "********",
+      error: "Mauvais identifiant ou mot de passe",
+      required: "Ce champ est obligatoire"
     }
   }
 };

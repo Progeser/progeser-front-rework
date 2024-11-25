@@ -1,23 +1,26 @@
 <template>
   <v-container class="fill-height d-flex justify-center align-center">
     <v-card elevation="3" width="400">
-      <v-card-title class="text-h6 text-center primary--text">Connection</v-card-title>
+      <v-card-title class="text-h6 text-center primary--text">
+        {{ t('form.login.title') }}
+      </v-card-title>
       <v-form @submit.prevent="handleLogin" ref="loginForm" class="pa-4">
-        <h4 class="mr-2 align-self-center">Email</h4>
+        <h4 class="mr-2 align-self-center">{{ t('form.login.username') }}</h4>
         <v-text-field
           v-model="email"
-          type="email"
           variant="outlined"
-          placeholder="uniser@uniser.com"
+          :placeholder="t('form.login.emailPlaceholder')"
+          :rules="[isRequired]"
           required
           class="custom-input align-self-center mb-4"
         />
-        <h4 class="mr-2 align-self-center">Mot de passe</h4>
+        <h4 class="mr-2 align-self-center">{{ t('form.login.password') }}</h4>
         <v-text-field
           v-model="password"
           type="password"
           variant="outlined"
-          placeholder="********"
+          :placeholder="t('form.login.passwordPlaceholder')"
+          :rules="[isRequired]"
           required
           class="custom-input align-self-center mb-4"
         />
@@ -27,18 +30,17 @@
           color="primary"
           type="submit"
           :loading="isLoading"
+          :disabled="!isFormValid"
         >
-          Se connecter
+          {{ t('common.send') }}
         </v-btn>
       </v-form>
     </v-card>
   </v-container>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script lang="ts" setup>
 import { useAuthStore } from "@/store/AuthStore";
-import router from "@/router"
 
 export default defineComponent({
   name: "Login",
@@ -48,29 +50,41 @@ export default defineComponent({
     const isLoading = ref(false);
     const authStore = useAuthStore();
 
+
+    // Validation des champs
+    const isRequired = (value: string) => {
+      return value.trim().length > 0 || t('form.login.required');
+    };
+
+    // Vérification globale du formulaire
+    const isFormValid = computed(() => {
+      return email.value.trim().length > 0 && password.value.trim().length > 0;
+    });
+
+    // Gestion de l'authentification
+    const authStore = useAuthStore();
+    const router = useRouter();
+    const {t} = useI18n();
+
     const handleLogin = async () => {
       isLoading.value = true;
       try {
         await authStore.login(email.value, password.value);
-        await router.push("/home");
+        router.push("/home");
       } catch (error) {
-        alert("Erreur de connexion. Vérifiez vos identifiants.");
+        alert(t("form.login.error"));
       } finally {
         isLoading.value = false;
       }
     };
-
-    return { email, password, isLoading, handleLogin };
-  },
+  }
 });
 </script>
 
 <style scoped>
-
 .primary--text {
   font-weight: bold;
-  color:#ffffff;
-  background-color: #008B8B;
+  color: #ffffff;
+  background-color: #008b8b;
 }
-
 </style>
