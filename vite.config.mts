@@ -11,8 +11,11 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  sourceMap: true,
   plugins: [
-    VueRouter(),
+    VueRouter({
+      sourcemap: true
+    }),
     Vue({
       template: { transformAssetUrls },
     }),
@@ -48,7 +51,14 @@ export default defineConfig({
       '.vue',
     ],
   },
+  optimizeDeps: {
+    sourcemap: false
+  },
   server: {
     port: 3000,
+    sourcemap: false
   },
+  build: {
+    sourcemap: true
+  }
 })

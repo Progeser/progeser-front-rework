@@ -29,13 +29,12 @@ import Card from '@/components/Card.vue';
 import { GenericPagination } from '@/model/GenericPagination';
 import ContainerRepository from '@/repository/containerRepository';
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
+import router from "@/router"
 
 const containerRepository: ContainerRepository = new ContainerRepository();
 let containersList: Ref<Container[]> = ref<Container[]>([]);
 let pageNumber: Ref<number> = ref<number>(1);
 let paginationInformation: Ref<GenericPagination<Container[]> | undefined> = ref<GenericPagination<Container[]> | undefined>();
-const router = useRouter();
 const { t } = useI18n();
 
 const updateContainers = async () => {

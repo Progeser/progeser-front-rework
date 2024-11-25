@@ -2,7 +2,7 @@
   <v-container fluid>
     <div>
       <v-btn @click="navigateToNewSpeciesForm()" class="ml-2" variant="outlined" color="primary">
-        {{t('common.add')}}
+        {{ t('common.add') }}
         <v-icon icon="mdi-plus"/>
       </v-btn>
     </div>
@@ -14,7 +14,7 @@
               :exec="() => navigateToSpeciesForm(species.id!)"
         />
       </div>
-      </v-row>
+    </v-row>
   </v-container>
   <v-pagination v-if="paginationInformation"
                 v-model="pageNumber"
@@ -24,42 +24,41 @@
 <script setup lang="ts">
 
 import {onMounted, ref, Ref, watch} from "vue";
-  import {Species} from "@/model/Species";
-  import Card from "@/components/Card.vue";
-  import { GenericPagination } from "@/model/GenericPagination";
-  import {useI18n} from "vue-i18n";
-  import {useRouter} from "vue-router";
+import {Species} from "@/model/Species";
+import Card from "@/components/Card.vue";
+import {GenericPagination} from "@/model/GenericPagination";
+import {useI18n} from "vue-i18n";
+import router from "@/router"
 import SpeciesRepository from "@/repository/speciesRepository";
 
-  const plantRepository: SpeciesRepository = new SpeciesRepository()
-  const speciesList: Ref<Species[]> = ref<Species[]>([]);
-  const pageNumber: Ref<number> = ref<number>(1);
-  const paginationInformation: Ref<GenericPagination<Species[]> | undefined> = ref<GenericPagination<Species[]> | undefined>();
-  const {t} = useI18n()
-  const router = useRouter()
+const plantRepository: SpeciesRepository = new SpeciesRepository()
+const speciesList: Ref<Species[]> = ref<Species[]>([]);
+const pageNumber: Ref<number> = ref<number>(1);
+const paginationInformation: Ref<GenericPagination<Species[]> | undefined> = ref<GenericPagination<Species[]> | undefined>();
+const {t} = useI18n()
 
-  const updatePlants = async () => {
-    paginationInformation.value = await plantRepository.getSpeciesPage(pageNumber.value)
-    speciesList.value = paginationInformation.value.content;
-  }
+const updatePlants = async () => {
+  paginationInformation.value = await plantRepository.getSpeciesPage(pageNumber.value)
+  speciesList.value = paginationInformation.value.content;
+}
 
-  const navigateToSpeciesForm = (id : number) => {
-    router.push({
-      name: 'SpeciesForm',
-      params: { id: id.toString() }
-    });
-  };
+const navigateToSpeciesForm = (id: number) => {
+  router.push({
+    name: 'SpeciesForm',
+    params: {id: id.toString()}
+  });
+};
 
-  const navigateToNewSpeciesForm = () => {
-    router.push({
-      name: 'SpeciesForm',
-      params: { id: 0 }
-    });
-  }
+const navigateToNewSpeciesForm = () => {
+  router.push({
+    name: 'SpeciesForm',
+    params: {id: 0}
+  });
+}
 
-  onMounted(async () => {
-    await updatePlants();
-  })
+onMounted(async () => {
+  await updatePlants();
+})
 
 
 watch(pageNumber, () => {

@@ -33,7 +33,7 @@
 <script lang="ts" setup>
 import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue';
 import {useRoute} from 'vue-router';
-import {useBenchStore} from '@/store/useBenchStore';
+import {useBenchStore} from "@/store/BenchStore";
 
 const canvasRef: Ref<HTMLCanvasElement | undefined> = ref();
 const canvasContext: Ref<CanvasRenderingContext2D | undefined> = ref();
@@ -107,7 +107,7 @@ function renderCanvas() {
   canvasContext.value.reset();
   canvasContext.value.clearRect(0, 0, width, height);
 
-  benchStore.benches.forEach((bench) => {
+  benchStore.benches.forEach((bench : Bench) => {
     if (!canvasContext.value) return;
 
     if (benchStore.selectedBench && bench.id === benchStore.selectedBench.id) {
@@ -288,7 +288,7 @@ function updateBenchInfo() {
   const {id, positions} = benchStore.selectedBench;
   const {width, height} = formData.value;
 
-  const isOverlapping = benchStore.benches.some((bench) =>
+  const isOverlapping = benchStore.benches.some((bench : Bench) =>
     bench.id !== id &&
     positions[0] < bench.positions[0] + bench.dimensions[0] &&
     positions[0] + width > bench.positions[0] &&

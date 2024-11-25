@@ -30,12 +30,12 @@ import Card from '@/components/Card.vue';
 import { GenericPagination } from '@/model/GenericPagination';
 import BuildingRepository from '@/repository/buildingRepository';
 import {useI18n} from "vue-i18n";
-import {useRouter} from "vue-router";
+import router from "@/router"
+
 const buildingRepository: BuildingRepository = new BuildingRepository();
 let buildingsList: Ref<Building[]> = ref<Building[]>([]);
 let pageNumber: Ref<number> = ref<number>(1);
 let paginationInformation: Ref<GenericPagination<Building[]> | undefined> = ref<GenericPagination<Building[]> | undefined>();
-const router = useRouter()
 const {t} = useI18n()
 
 const updateBuildings = async () => {

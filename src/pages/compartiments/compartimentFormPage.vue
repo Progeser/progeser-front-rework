@@ -46,14 +46,13 @@
 
 <script lang="ts" setup>
 import { ref, onBeforeMount } from "vue";
-import { useRouter } from "vue-router";
+import router from "@/router"
 import { useI18n } from "vue-i18n";
 import {Compartiment} from "@/model/Compartiment";
 import CompartimentRepository from "@/repository/compartimentRepository";
 
 const compartimentRepository = new CompartimentRepository()
 const compartiment = ref<Compartiment>(new Compartiment());
-const router = useRouter();
 const { t } = useI18n();
 
 const props = defineProps<{ idBuilding: number, idCompartiment: number }>();
