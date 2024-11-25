@@ -35,7 +35,12 @@ const routes: RouteRecordRaw[] = [
     path: '/greenhouse/:greenhouseId/view',
     name: 'view',
     props: true,
-    component: () => import('@/pages/viewPage.vue'),
+    component: () => import('@/pages/viewPage.vue')
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('@/pages/loginPage.vue')
   }
 ];
 

@@ -1,21 +1,17 @@
-import axios, {AxiosResponse} from 'axios';
-import {useAuthStore} from "@/store/AuthStore";
+import axios, { AxiosResponse } from 'axios';
+import { useAuthStore } from "@/store/AuthStore";
 import { GenericPagination } from '@/model/GenericPagination';
 
 class FetchService {
   private readonly baseUrl: string = `${import.meta.env.VITE_API_URL}`;
-
-  private readonly authStore = useAuthStore()
-
-  private readonly login: string = "dev+grower@progeser.com"
-  private readonly pass: string = "password"
+  private readonly authStore = useAuthStore();
 
   // GET request
   public async get<T>(endpoint: string): Promise<T> {
     try {
-      const bearer: string = await this.authStore.getBearer(this.login,this.pass)
-      const response: AxiosResponse<T> =  await axios.get<T>(`${this.baseUrl}${endpoint}`, {headers:{Authorization: bearer}});
-      return response.data
+      const bearer: string = await this.authStore.getBearer();
+      const response: AxiosResponse<T> = await axios.get<T>(`${this.baseUrl}${endpoint}`, { headers: { Authorization: bearer } });
+      return response.data;
     } catch (error) {
       this.handleError(error);
       throw error;
@@ -25,8 +21,8 @@ class FetchService {
   // GET request with pagination
   public async getWithPagination<T>(endpoint: string): Promise<GenericPagination<T>> {
     try {
-      const bearer: string = await this.authStore.getBearer(this.login, this.pass);
-      const response : AxiosResponse<T> = await axios.get<T>(`${this.baseUrl}${endpoint}`, {
+      const bearer: string = await this.authStore.getBearer();
+      const response: AxiosResponse<T> = await axios.get<T>(`${this.baseUrl}${endpoint}`, {
         headers: { Authorization: bearer }
       });
 
@@ -37,7 +33,7 @@ class FetchService {
         response.headers['pagination-total-count'],
         response.data
       );
-  
+
     } catch (error) {
       this.handleError(error);
       throw error;
@@ -47,9 +43,9 @@ class FetchService {
   // POST request
   public async post<T, U>(endpoint: string, data: U): Promise<T> {
     try {
-      const bearer: string = await this.authStore.getBearer(this.login,this.pass)
-      const response: AxiosResponse<T> = await axios.post<T>(`${this.baseUrl}${endpoint}`, data, {headers:{Authorization: bearer}});
-      return response.data
+      const bearer: string = await this.authStore.getBearer();
+      const response: AxiosResponse<T> = await axios.post<T>(`${this.baseUrl}${endpoint}`, data, { headers: { Authorization: bearer } });
+      return response.data;
     } catch (error) {
       this.handleError(error);
       throw error;
@@ -59,9 +55,9 @@ class FetchService {
   // PUT request
   public async put<T, U>(endpoint: string, data: U): Promise<T> {
     try {
-      const bearer: string = await this.authStore.getBearer(this.login,this.pass)
-      const response: AxiosResponse<T> = await axios.put<T>(`${this.baseUrl}${endpoint}`, data, {headers:{Authorization: bearer}});
-      return response.data
+      const bearer: string = await this.authStore.getBearer();
+      const response: AxiosResponse<T> = await axios.put<T>(`${this.baseUrl}${endpoint}`, data, { headers: { Authorization: bearer } });
+      return response.data;
     } catch (error) {
       this.handleError(error);
       throw error;
@@ -71,9 +67,9 @@ class FetchService {
   // DELETE request
   public async delete<T>(endpoint: string): Promise<T> {
     try {
-      const bearer: string = await this.authStore.getBearer(this.login,this.pass)
-      const response: AxiosResponse<T> = await axios.delete<T>(`${this.baseUrl}${endpoint}`, {headers:{Authorization: bearer}});
-      return response.data
+      const bearer: string = await this.authStore.getBearer();
+      const response: AxiosResponse<T> = await axios.delete<T>(`${this.baseUrl}${endpoint}`, { headers: { Authorization: bearer } });
+      return response.data;
     } catch (error) {
       this.handleError(error);
       throw error;
@@ -82,7 +78,6 @@ class FetchService {
 
   // Handle errors
   private handleError(error: any): void {
-    // Log or handle the error as needed
     if (axios.isAxiosError(error)) {
       console.error('Axios error:', error.response?.data || error.message);
     } else {
