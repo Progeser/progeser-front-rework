@@ -5,7 +5,8 @@
         {{ t('form.login.title') }}
       </v-card-title>
       <v-form @submit.prevent="handleLogin" ref="loginForm" class="pa-4">
-        <h4 class="mr-2 align-self-center">{{ t('form.login.username') }}</h4>
+        <!-- Email -->
+        <h4 class="mr-2 align-self-center">{{ t('form.login.email') }}</h4>
         <v-text-field
           v-model="email"
           variant="outlined"
@@ -14,6 +15,7 @@
           required
           class="custom-input align-self-center mb-4"
         />
+        <!-- Password -->
         <h4 class="mr-2 align-self-center">{{ t('form.login.password') }}</h4>
         <v-text-field
           v-model="password"
@@ -24,6 +26,7 @@
           required
           class="custom-input align-self-center mb-4"
         />
+        <!-- Login Button -->
         <v-btn
           class="mt-4"
           block
@@ -34,6 +37,18 @@
         >
           {{ t('common.send') }}
         </v-btn>
+        <!-- Register Link -->
+        <v-row justify="center" class="mt-4" align="center">
+          <span>{{ t('form.login.noAccount') }}</span>
+          <v-btn
+            variant="text"
+            color="primary"
+            @click="navigateToRegister"
+            class="ml-2"
+          >
+            {{ t('form.login.registerHere') }}
+          </v-btn>
+        </v-row>
       </v-form>
     </v-card>
   </v-container>
@@ -79,6 +94,11 @@ export default defineComponent({
     };
   }
 });
+
+
+const navigateToRegister = () => {
+  router.push("/register");
+};
 </script>
 
 <style scoped>

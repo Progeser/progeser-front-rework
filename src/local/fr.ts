@@ -80,12 +80,39 @@ export default {
     },
     login: {
       title: "Connexion",
-      username: "Identifiant",
+      email: "Email",
       password: "Mot de passe",
-      emailPlaceholder: "yourname",
+      emailPlaceholder: "yourname@domain.com",
       passwordPlaceholder: "********",
       error: "Mauvais identifiant ou mot de passe",
-      required: "Ce champ est obligatoire"
+      required: "Ce champ est obligatoire",
+      noAccount: "Pas encore de compte ?",
+      registerHere: "Inscrivez-vous ici"
+    },
+    "register": {
+      "title": "Demande de compte utilisateur",
+      "firstName": "Nom",
+      "firstNamePlaceholder": "Votre nom",
+      "lastName": "Prénom",
+      "lastNamePlaceholder": "Votre prénom",
+      "email": "Adresse e-mail",
+      "emailPlaceholder": "votreemail@domaine.com",
+      "lab": "Laboratoire (optionnel)",
+      "labPlaceholder": "Nom du laboratoire",
+      "reason": "Motif (optionnel)",
+      "reasonPlaceholder": "Expliquez brièvement votre demande",
+      "password": "Mot de passe",
+      "passwordPlaceholder": "********",
+      "confirmPassword": "Confirmez le mot de passe",
+      "confirmPasswordPlaceholder": "********",
+      "required": "Ce champ est obligatoire.",
+      "invalidEmail": "Veuillez entrer une adresse e-mail valide.",
+      "passwordTooWeak": "Le mot de passe doit comporter au moins 8 caractères.",
+      "passwordMismatch": "Les mots de passe ne correspondent pas.",
+      "success": "Votre demande a été envoyée avec succès !",
+      "error": "Une erreur s'est produite. Veuillez réessayer.",
+      "alreadyAccount": "Déjà un compte ?",
+      "loginHere": "Connectez-vous ici"
     }
   }
 };
