@@ -8,10 +8,10 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/species/specieFormPage.vue'),
   },
   {
-      path: '/buildings/form/:id',
-      name: 'BuildingForm',
-      props: true,
-      component: () => import('@/pages/building/buildingFormPage.vue'),
+    path: '/buildings/form/:id',
+    name: 'BuildingForm',
+    props: true,
+    component: () => import('@/pages/building/buildingFormPage.vue'),
   },
   {
     path: '/buildings/:id/compartiments',
@@ -30,6 +30,12 @@ const routes: RouteRecordRaw[] = [
     name: 'ContainerForm',
     props: true,
     component: () => import('@/pages/containers/containerFormPage.vue'),
+  },
+  {
+    path: '/greenhouse/:greenhouseId/view',
+    name: 'view',
+    props: true,
+    component: () => import('@/pages/viewPage.vue'),
   }
 ];
 
