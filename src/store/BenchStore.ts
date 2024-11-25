@@ -1,4 +1,4 @@
-// src/stores/useBenchStore.ts
+// src/stores/BenchStore.ts
 import {defineStore} from 'pinia';
 import BenchRepository from "@/repository/benchRepository";
 

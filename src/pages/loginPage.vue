@@ -38,7 +38,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useAuthStore } from "@/store/AuthStore";
-import { useRouter } from "vue-router";
+import router from "@/router"
 
 export default defineComponent({
   name: "Login",
@@ -47,7 +47,6 @@ export default defineComponent({
     const password = ref("");
     const isLoading = ref(false);
     const authStore = useAuthStore();
-    const router = useRouter();
 
     const handleLogin = async () => {
       isLoading.value = true;

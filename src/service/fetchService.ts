@@ -9,7 +9,7 @@ class FetchService {
   // GET request
   public async get<T>(endpoint: string): Promise<T> {
     try {
-      const bearer: string = await this.authStore.getBearer();
+      const bearer: string | undefined = await this.authStore.getBearer();
       const response: AxiosResponse<T> = await axios.get<T>(`${this.baseUrl}${endpoint}`, { headers: { Authorization: bearer } });
       return response.data;
     } catch (error) {
@@ -21,7 +21,7 @@ class FetchService {
   // GET request with pagination
   public async getWithPagination<T>(endpoint: string): Promise<GenericPagination<T>> {
     try {
-      const bearer: string = await this.authStore.getBearer();
+      const bearer: string | undefined = await this.authStore.getBearer();
       const response: AxiosResponse<T> = await axios.get<T>(`${this.baseUrl}${endpoint}`, {
         headers: { Authorization: bearer }
       });
@@ -43,7 +43,7 @@ class FetchService {
   // POST request
   public async post<T, U>(endpoint: string, data: U): Promise<T> {
     try {
-      const bearer: string = await this.authStore.getBearer();
+      const bearer: string | undefined = await this.authStore.getBearer();
       const response: AxiosResponse<T> = await axios.post<T>(`${this.baseUrl}${endpoint}`, data, { headers: { Authorization: bearer } });
       return response.data;
     } catch (error) {
@@ -55,7 +55,7 @@ class FetchService {
   // PUT request
   public async put<T, U>(endpoint: string, data: U): Promise<T> {
     try {
-      const bearer: string = await this.authStore.getBearer();
+      const bearer: string | undefined = await this.authStore.getBearer();
       const response: AxiosResponse<T> = await axios.put<T>(`${this.baseUrl}${endpoint}`, data, { headers: { Authorization: bearer } });
       return response.data;
     } catch (error) {
@@ -67,7 +67,7 @@ class FetchService {
   // DELETE request
   public async delete<T>(endpoint: string): Promise<T> {
     try {
-      const bearer: string = await this.authStore.getBearer();
+      const bearer: string | undefined = await this.authStore.getBearer();
       const response: AxiosResponse<T> = await axios.delete<T>(`${this.baseUrl}${endpoint}`, { headers: { Authorization: bearer } });
       return response.data;
     } catch (error) {

@@ -8,8 +8,11 @@ import VueAxios from 'vue-axios'
 import type { App } from 'vue'
 import {createPinia} from "pinia";
 import i18n from "@/plugins/i18n";
+import piniaPluginPersistedState from "pinia-plugin-persistedstate";
 
 const pinia = createPinia()
+pinia.use(piniaPluginPersistedState);
+
 
 export function registerPlugins (app: App) {
   app
@@ -17,5 +20,5 @@ export function registerPlugins (app: App) {
     .use(router)
     .use(i18n)
     .use(pinia)
-    .use(VueAxios, axios)
+    .use(VueAxios as any, axios)
 }

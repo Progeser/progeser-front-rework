@@ -7,31 +7,31 @@
       style="background-color: #008B8B; height: 100vh;"
     >
       <v-list>
-        <v-list-item-group>
-          <router-link
-            :to="item.path"
-            v-for="(item, i) in menuRoutes"
-            :key="i"
-            :class="['router-link-hover', { 'active-link': route.path.includes(item.path) }]"
-            style="text-decoration: none;"
-          >
-            <v-list-item>
-              <v-list-item-content class="d-flex align-center">
-                <v-icon class="mr-3 text-white">{{ icons[item.name as string] }}</v-icon>
-                <v-list-item-title class="text-white">{{ t(`menu.name.${String(item.name)}`) }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </router-link>
-        </v-list-item-group>
+        <router-link
+          :to="item.path"
+          v-for="(item, i) in menuRoutes"
+          :key="i"
+          :class="['router-link-hover', { 'active-link': route.path.includes(item.path) }]"
+          style="text-decoration: none;"
+        >
+          <v-list-item>
+            <div class="d-flex align-center">
+              <v-icon class="mr-3 text-white">{{ icons[item.name as string] }}</v-icon>
+              <v-list-item-title class="text-white">{{ t(`menu.name.${String(item.name)}`) }}</v-list-item-title>
+            </div>
+          </v-list-item>
+        </router-link>
       </v-list>
       <div class="user-profile pa-4" @click="showLogoutModal = true">
         <div class="d-flex align-center">
           <v-avatar size="40" class="mr-3">
-            <v-img src="https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D" alt="Profile"/>
+            <v-img
+              src="https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D"
+              alt="Profile"/>
           </v-avatar>
           <div>
-            <div class="text-white font-weight-medium">{{`${user?.first_name} ${user?.last_name}`}}</div>
-            <div class="text-white text-caption">{{user?.email}}</div>
+            <div class="text-white font-weight-medium">{{ `${user?.first_name} ${user?.last_name}` }}</div>
+            <div class="text-white text-caption">{{ user?.email }}</div>
           </div>
         </div>
       </div>
@@ -49,7 +49,7 @@
     <v-app-bar app color="white">
       <v-row align="center" justify="start">
         <v-col class="d-flex" cols="auto">
-          <v-app-bar-nav-icon @click="drawer = !drawer" />
+          <v-app-bar-nav-icon @click="drawer = !drawer"/>
         </v-col>
         <v-col class="d-flex" cols="auto">
           <img src="@/assets/logo.webp" alt="Logo" height="40">
@@ -64,30 +64,30 @@
 
 <script setup lang="ts">
 import {onBeforeMount, ref} from 'vue';
-import menuRoutes, { icons } from "@/router/menuRoutes";
-import { useRoute, useRouter } from "vue-router";
-import { useI18n } from "vue-i18n";
-import UserRepository from "@/repository/userRepository";
+import menuRoutes, {icons} from "@/router/menuRoutes";
+import {useRoute} from "vue-router";
+import router from "@/router"
+import {useI18n} from "vue-i18n";
 import {UserModel} from "@/model/UserModel";
 import {useAuthStore} from "@/store/AuthStore";
+import {useUserStore} from "@/store/UserStore";
 
-const userRepository = new UserRepository()
 const AuthStore = useAuthStore()
 const drawer = ref(false);
 const route = useRoute();
-const { t } = useI18n();
+const {t} = useI18n();
+const userStore = useUserStore();
 const user = ref<UserModel | null>(null);
 const showLogoutModal = ref(false);
-const router = useRouter();
 
 const logout = () => {
   showLogoutModal.value = false
   AuthStore.logout();
-  router.push("/");
+  router.push({name: "login"});
 }
 
 onBeforeMount(async () => {
-    user.value = await userRepository.getCurrentUser();
+    user.value = await userStore.getCurrentUser()
   }
 )
 </script>
@@ -123,7 +123,7 @@ onBeforeMount(async () => {
   cursor: pointer;
 }
 
-.user-profile:hover{
+.user-profile:hover {
   background-color: #00B0B0;
   transition: background-color 0.3s ease;
   border-radius: 4px;

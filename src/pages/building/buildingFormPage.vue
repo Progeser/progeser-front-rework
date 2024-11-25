@@ -35,13 +35,12 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount } from "vue";
 import BuildingRepository from "@/repository/buildingRepository";
-import { useRouter } from "vue-router";
+import router from "@/router"
 import { useI18n } from "vue-i18n";
 import {Building} from "@/model/Building";
 
 const buildingRepository = new BuildingRepository();
 const building = ref<Building>(new Building());
-const router = useRouter();
 const { t } = useI18n();
 
 const props = defineProps<{ id: number }>();

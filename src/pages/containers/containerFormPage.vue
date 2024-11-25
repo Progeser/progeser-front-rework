@@ -83,13 +83,12 @@
 <script lang="ts" setup>
 import {ref, computed, onBeforeMount, watch} from "vue";
 import ContainerRepository from "@/repository/containerRepository";
-import { useRouter } from "vue-router";
+import router from "@/router"
 import { useI18n } from "vue-i18n";
 import { Container, ContainerShape, getDimensionsNamesFromShape } from "@/model/Container";
 
 const containerRepository = new ContainerRepository();
 const container = ref<Container>(new Container());
-const router = useRouter();
 const { t } = useI18n();
 const shapes = Object.values(ContainerShape);
 

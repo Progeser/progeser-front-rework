@@ -78,14 +78,13 @@ import {Species} from "@/model/Species";
 import SpeciesRepository from "@/repository/speciesRepository";
 import {SpeciesStage} from "@/model/SpeciesStage";
 import draggable from 'vuedraggable';
-import {useRouter} from "vue-router";
+import router from "@/router"
 import {useI18n} from "vue-i18n";
 
 const speciesRepository = new SpeciesRepository();
 const species: Ref<Species> = ref<Species>(new Species());
 const stages: Ref<SpeciesStage[]> = ref([]);
 const drag = ref(false);
-const router = useRouter()
 const { t } = useI18n()
 
 const props = defineProps<{ id: number }>();

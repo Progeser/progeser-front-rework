@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import axios from "axios";
 import { AuthModel } from "@/model/AuthModel";
+import router from "@/router";
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`;
 const clientId = `${import.meta.env.VITE_CLIENT_ID}`;
@@ -17,7 +18,7 @@ export const useAuthStore = defineStore({
       await this.fetchAuth(email, password);
     },
 
-    async getBearer(): Promise<string> {
+    async getBearer() :  Promise<string | undefined> {
       if (this.token && Date.now() < this.tokenExpirationTime) {
         return `${this.token.token_type} ${this.token.access_token}`;
       }
@@ -29,11 +30,11 @@ export const useAuthStore = defineStore({
             return `${this.token.token_type} ${this.token.access_token}`;
           }
         } catch (error) {
-          console.error("Échec du rafraîchissement du token :", error);
+          await router.push({name: 'Login'});
         }
       }
       this.logout();
-      throw new Error("Session expirée. Veuillez vous reconnecter.");
+      await router.push({name: 'Login'});
     },
 
     async fetchAuth(email: string, password: string) {
