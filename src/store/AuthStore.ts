@@ -75,5 +75,9 @@ export const useAuthStore = defineStore({
       this.token = null;
       this.tokenExpirationTime = 0;
     }
+  },
+  persist: {
+    key: 'auth',
+    storage: localStorage,
   }
 });
