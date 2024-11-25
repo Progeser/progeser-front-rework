@@ -67,7 +67,7 @@ const routes: RouteRecordRaw[] = [
     meta: {role: 'any'}
   },
   {
-    path: '/building/:buildingId/greenhouse/:greenhouseId/view',
+    path: '/greenhouse/:greenhouseId/view',
     name: 'view',
     props: true,
     component: () => import('@/pages/viewPage.vue'),

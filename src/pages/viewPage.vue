@@ -41,7 +41,6 @@ const formData = ref({width: 0, height: 0, name: ''});
 
 const route = useRoute();
 const benchStore = useBenchStore();
-const buildingId = Number(route.params.buildingId);
 const greenhouseId = Number(route.params.greenhouseId);
 
 let clickIsMaintained = false;
