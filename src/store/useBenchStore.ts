@@ -18,8 +18,8 @@ export const useBenchStore = defineStore('bench', {
   },
 
   actions: {
-    async loadBenches(buildingId: number, greenhouseId: number) {
-      this.benches = await BenchRepository.getBenches(buildingId, greenhouseId);
+    async loadBenches(greenhouseId: number) {
+      this.benches = await BenchRepository.getBenches(greenhouseId);
     },
 
     selectBench(bench: Bench | null) {
@@ -50,15 +50,15 @@ export const useBenchStore = defineStore('bench', {
       this._selectedBench = {...this._selectedBench, positions: positions};
     },
 
-    async addBench(buildingId: number, greenhouseId: number, bench: Partial<Bench>) {
-      const newBench = await BenchRepository.addBench(buildingId, greenhouseId, bench);
+    async addBench(greenhouseId: number, bench: Partial<Bench>) {
+      const newBench = await BenchRepository.addBench(greenhouseId, bench);
       this.benches.push(newBench);
       this._selectedBench = newBench;
     },
 
-    async updateBench(buildingId: number, greenhouseId: number, bench: Bench) {
+    async updateBench(bench: Bench) {
       try {
-        const updateBench = await BenchRepository.updateBench(buildingId, greenhouseId, bench);
+        const updateBench = await BenchRepository.updateBench(bench);
         this.benches = this.benches.map(b => b.id === updateBench.id ? updateBench : b);
         this._selectedBench = updateBench;
       } catch (error) {
@@ -66,8 +66,8 @@ export const useBenchStore = defineStore('bench', {
       }
     },
 
-    async deleteBench(buildingId: number, greenhouseId: number, benchId: number) {
-      await BenchRepository.deleteBench(buildingId, greenhouseId, benchId);
+    async deleteBench(benchId: number) {
+      await BenchRepository.deleteBench(benchId);
       this.benches = this.benches.filter(bench => bench.id !== benchId);
       this._selectedBench = null;
     },

@@ -41,7 +41,6 @@ const formData = ref({width: 0, height: 0, name: ''});
 
 const route = useRoute();
 const benchStore = useBenchStore();
-const buildingId = Number(route.params.buildingId);
 const greenhouseId = Number(route.params.greenhouseId);
 
 let clickIsMaintained = false;
@@ -76,7 +75,7 @@ onMounted(async () => {
   canvasRef.value.addEventListener('mousemove', handleMouseMove);
 
   resizeCanvas();
-  await benchStore.loadBenches(buildingId, greenhouseId);
+  await benchStore.loadBenches(greenhouseId);
 });
 
 onBeforeUnmount(() => {
@@ -214,7 +213,7 @@ async function createNewBench(event: MouseEvent) {
   };
 
   await benchStore
-    .addBench(buildingId, greenhouseId, bench)
+    .addBench(greenhouseId, bench)
     .then(() => {
       if (benchStore.selectedBench === null) return;
 
@@ -231,7 +230,7 @@ function handleMouseUp(event: MouseEvent) {
   clickIsMaintained = false;
 
   if (benchStore.selectedBench) {
-    benchStore.updateBench(buildingId, greenhouseId, benchStore.selectedBench);
+    benchStore.updateBench(benchStore.selectedBench);
   } else {
     createNewBench(event);
   }
@@ -308,13 +307,13 @@ function updateBenchInfo() {
     formData.value.height
   ]);
 
-  benchStore.updateBench(buildingId, greenhouseId, benchStore.selectedBench);
+  benchStore.updateBench(benchStore.selectedBench);
 }
 
 function removeBench() {
   if (!benchStore.selectedBench) return
 
-  benchStore.deleteBench(buildingId, greenhouseId, benchStore.selectedBench.id);
+  benchStore.deleteBench(benchStore.selectedBench.id);
 }
 </script>
 
