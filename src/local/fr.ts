@@ -17,7 +17,9 @@ export default {
     cancel: 'Annuler',
     add: 'Ajouter',
     send: 'Envoyer',
-    delete: 'Supprimer'
+    delete: 'Supprimer',
+    accept: 'Accepter',
+    reject: 'Refuser',
   },
   form: {
     species: {
@@ -91,27 +93,37 @@ export default {
       noAccount: "Pas encore de compte ?",
       registerHere: "Inscrivez-vous ici"
     },
-    "register": {
-      "title": "Demande de compte utilisateur",
-      "firstName": "Nom",
-      "firstNamePlaceholder": "Votre nom",
-      "lastName": "Prénom",
-      "lastNamePlaceholder": "Votre prénom",
-      "email": "Adresse e-mail",
-      "lab": "Laboratoire (optionnel)",
-      "labPlaceholder": "Nom du laboratoire",
-      "reason": "Motif (optionnel)",
-      "reasonPlaceholder": "Expliquez brièvement votre demande",
-      "password": "Mot de passe",
-      "confirmPassword": "Confirmez le mot de passe",
-      "required": "Ce champ est obligatoire.",
-      "invalidEmail": "Veuillez entrer une adresse e-mail valide.",
-      "passwordTooWeak": "Le mot de passe doit comporter au moins 8 caractères.",
-      "passwordMismatch": "Les mots de passe ne correspondent pas.",
-      "success": "Votre demande a été envoyée avec succès !",
-      "error": "Une erreur s'est produite. Veuillez réessayer.",
-      "alreadyAccount": "Déjà un compte ?",
-      "loginHere": "Connectez-vous ici"
+    register: {
+      title: "Demande de compte utilisateur",
+      firstName: "Nom",
+      firstNamePlaceholder: "Votre nom",
+      lastName: "Prénom",
+      lastNamePlaceholder: "Votre prénom",
+      email: "Adresse e-mail",
+      lab: "Laboratoire (optionnel)",
+      labPlaceholder: "Nom du laboratoire",
+      reason: "Motif (optionnel)",
+      reasonPlaceholder: "Expliquez brièvement votre demande",
+      password: "Mot de passe",
+      confirmPassword: "Confirmez le mot de passe",
+      required: "Ce champ est obligatoire.",
+      invalidEmail: "Veuillez entrer une adresse e-mail valide.",
+      passwordTooWeak: "Le mot de passe doit comporter au moins 8 caractères.",
+      passwordMismatch: "Les mots de passe ne correspondent pas.",
+      success: "Votre demande a été envoyée avec succès !",
+      error: "Une erreur s'est produite. Veuillez réessayer.",
+      alreadyAccount: "Déjà un compte ?",
+      loginHere: "Connectez-vous ici"
     }
+  },
+  accountRequest: {
+    title : "Demande d'inscription",
+    table: {
+      firstname: "Prénom",
+      lastname: "Nom",
+      email: "Email",
+      actions: "Actions"
+    },
+    error: "une érreur est survenue !"
   }
 };

@@ -22,7 +22,7 @@
           </v-list-item>
         </router-link>
       </v-list>
-      <div class="user-profile pa-4" @click="showLogoutModal = true">
+      <button class="user-profile pa-4" @click="showLogoutModal = true">
         <div class="d-flex align-center">
           <v-avatar size="40" class="mr-3">
             <v-img
@@ -34,7 +34,7 @@
             <div class="text-white text-caption">{{ user?.email }}</div>
           </div>
         </div>
-      </div>
+      </button>
       <v-dialog v-model="showLogoutModal" max-width="400">
         <v-card>
           <v-card-title class="text-h5 mb-4">Se déconnecter</v-card-title>
