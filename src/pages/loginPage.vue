@@ -5,28 +5,25 @@
         {{ t('form.login.title') }}
       </v-card-title>
       <v-form @submit.prevent="handleLogin" ref="loginForm" class="pa-4">
-        <!-- Email -->
         <h4 class="mr-2 align-self-center">{{ t('form.login.email') }}</h4>
         <v-text-field
           v-model="email"
           variant="outlined"
-          :placeholder="t('form.login.emailPlaceholder')"
+          placeholder="login@domain.com"
           :rules="[isRequired]"
           required
           class="custom-input align-self-center mb-4"
         />
-        <!-- Password -->
         <h4 class="mr-2 align-self-center">{{ t('form.login.password') }}</h4>
         <v-text-field
           v-model="password"
           type="password"
           variant="outlined"
-          :placeholder="t('form.login.passwordPlaceholder')"
+          placeholder="********"
           :rules="[isRequired]"
           required
           class="custom-input align-self-center mb-4"
         />
-        <!-- Login Button -->
         <v-btn
           class="mt-4"
           block
@@ -56,48 +53,43 @@
 
 <script lang="ts" setup>
 import { useAuthStore } from "@/store/AuthStore";
+import {useRouter} from "vue-router";
+import {useI18n} from "vue-i18n";
 
-export default defineComponent({
-  name: "Login",
-  setup() {
-    const email = ref("");
-    const password = ref("");
-    const isLoading = ref(false);
-    const authStore = useAuthStore();
+const email = ref("");
+const password = ref("");
+const isLoading = ref(false);
+const authStore = useAuthStore();
 
 
-    // Validation des champs
-    const isRequired = (value: string) => {
-      return value.trim().length > 0 || t('form.login.required');
-    };
+// Validation des champs
+const isRequired = (value: string) => {
+  return value.trim().length > 0 || t('form.login.required');
+};
 
-    // Vérification globale du formulaire
-    const isFormValid = computed(() => {
-      return email.value.trim().length > 0 && password.value.trim().length > 0;
-    });
-
-    // Gestion de l'authentification
-    const authStore = useAuthStore();
-    const router = useRouter();
-    const {t} = useI18n();
-
-    const handleLogin = async () => {
-      isLoading.value = true;
-      try {
-        await authStore.login(email.value, password.value);
-        router.push("/home");
-      } catch (error) {
-        alert(t("form.login.error"));
-      } finally {
-        isLoading.value = false;
-      }
-    };
-  }
+// Vérification globale du formulaire
+const isFormValid = computed(() => {
+  return email.value.trim().length > 0 && password.value.trim().length > 0;
 });
 
+// Gestion de l'authentification
+const router = useRouter();
+const {t} = useI18n();
 
 const navigateToRegister = () => {
   router.push("/register");
+};
+
+const handleLogin = async () => {
+  isLoading.value = true;
+  try {
+    await authStore.login(email.value, password.value);
+    router.push("/home");
+  } catch (error) {
+    alert(t("form.login.error"));
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>
 

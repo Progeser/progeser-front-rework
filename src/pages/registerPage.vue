@@ -39,7 +39,7 @@
               v-model="email"
               variant="outlined"
               type="email"
-              :placeholder="t('form.register.emailPlaceholder')"
+              placeholder="register@domain.com"
               :rules="[isRequired, isEmail]"
               required
               class="custom-input align-self-center mb-4"
@@ -64,7 +64,7 @@
               v-model="password"
               type="password"
               variant="outlined"
-              :placeholder="t('form.register.passwordPlaceholder')"
+              placeholder="********"
               :rules="[isRequired, isPasswordStrong]"
               required
               class="custom-input align-self-center mb-4"
@@ -76,7 +76,7 @@
               v-model="confirmPassword"
               type="password"
               variant="outlined"
-              :placeholder="t('form.register.confirmPasswordPlaceholder')"
+              placeholder="********"
               :rules="[isRequired, isPasswordMatch]"
               required
               class="custom-input align-self-center mb-4"

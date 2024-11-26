@@ -50,14 +50,14 @@ const routes: RouteRecordRaw[] = [
     meta: { role: 'any' }
   },
   {
-    path: '/:catchAll(.*)*',
-    component: () => import('@/pages/loginPage.vue'),
+    path: '/register',
+    name: 'Register',
+    component: () => import('@/pages/registerPage.vue'),
     meta: { role: 'any' }
   },
   {
-    path: '/register',
-    name: 'Register',
-    component: () => import('@/pages/accountRequestPage.vue')
+    path: '/:catchAll(.*)*',
+    component: () => import('@/pages/loginPage.vue'),
     meta: { role: 'any' }
   }
 ];

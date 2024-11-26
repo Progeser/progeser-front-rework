@@ -52,6 +52,16 @@ class FetchService {
     }
   }
 
+  public async postWithoutBearer<T, U>(endpoint: string, data: U): Promise<T> {
+    try {
+      const response: AxiosResponse<T> = await axios.post<T>(`${this.baseUrl}${endpoint}`, data);
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+      throw error;
+    }
+  }
+
   // PUT request
   public async put<T, U>(endpoint: string, data: U): Promise<T> {
     try {

@@ -6,9 +6,8 @@ class AccountRequestRepository {
   private readonly fetchService: FetchService = new FetchService();
 
   public async postAccountRequest(data: AccountRequestOutput): Promise<AccountRequest> {
-    return await this.fetchService.post(`account_requests`, data);
+    return await this.fetchService.postWithoutBearer(`account_requests`, data);
   }
-
 }
 
 export default AccountRequestRepository;
