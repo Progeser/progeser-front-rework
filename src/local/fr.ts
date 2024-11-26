@@ -94,8 +94,8 @@ export default {
       noAccount: "Pas encore de compte ?",
       registerHere: "Inscrivez-vous ici"
     },
-    request: {
-      title: "Demande de culture",
+    register: {
+      title: "Demande de compte utilisateur",
       firstName: "Nom",
       firstNamePlaceholder: "Votre nom",
       lastName: "Prénom",
