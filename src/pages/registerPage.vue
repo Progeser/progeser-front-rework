@@ -128,6 +128,9 @@ import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 
+import {AccountRequestOutput} from "@/model/output/AccountRequestOutput";
+import AccountRequestRepository from "@/repository/accountsRequestRepository";
+
 // Champs
 const firstName = ref("");
 const lastName = ref("");
@@ -153,7 +156,6 @@ const isPasswordMatch = (value: string) => {
   return value === password.value || t("form.register.passwordMismatch");
 };
 
-// Vérification globale du formulaire
 const isFormValid = computed(() => {
   return (
     firstName.value.trim().length > 0 &&
@@ -164,16 +166,26 @@ const isFormValid = computed(() => {
   );
 });
 
-// Gestion de la soumission
 const router = useRouter();
 const { t } = useI18n();
+const accountRequestRepository = new AccountRequestRepository();
 
 const handleSubmit = async () => {
   isLoading.value = true;
   try {
+    const accountRequestOutput: AccountRequestOutput = new AccountRequestOutput(
+      email.value,
+      firstName.value,
+      lastName.value,
+      lab.value,
+      reason.value,
+      password.value
+    );
+    await accountRequestRepository.postAccountRequest(accountRequestOutput);
     alert(t("form.register.success"));
-    await router.push("/home");
+    await router.push("/login");
   } catch (error) {
+    console.error(error);
     alert(t("form.register.error"));
   } finally {
     isLoading.value = false;
