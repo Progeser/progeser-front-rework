@@ -85,7 +85,7 @@ const showLogoutModal = ref(false);
 const logout = () => {
   showLogoutModal.value = false
   AuthStore.logout();
-  router.push({name: "login"});
+  router.push({name: "Login"});
 }
 
 onBeforeMount(async () => {
