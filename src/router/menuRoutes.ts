@@ -34,7 +34,7 @@ const menuRoutes: RouteRecordRaw[] = [
   {
     path: '/users',
     name: 'users',
-    component: () => import('@/pages/userPage.vue'),
+    component: () => import('@/pages/user/userPage.vue'),
     meta: { role: 'grower' }
   },
 ];

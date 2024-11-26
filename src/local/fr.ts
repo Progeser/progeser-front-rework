@@ -18,7 +18,9 @@ export default {
     cancel: 'Annuler',
     add: 'Ajouter',
     send: 'Envoyer',
-    delete: 'Supprimer'
+    delete: 'Supprimer',
+    accept: 'Accepter',
+    reject: 'Refuser',
   },
   form: {
     species: {
@@ -118,7 +120,26 @@ export default {
         greaterThanZero:"Doit être supérieur a zero",
         notNull: "Doit être Selectionné",
         invalidEmail:'Email invalide'
-      }
+      },
+      password: "Mot de passe",
+      confirmPassword: "Confirmez le mot de passe",
+      required: "Ce champ est obligatoire.",
+      invalidEmail: "Veuillez entrer une adresse e-mail valide.",
+      passwordTooWeak: "Le mot de passe doit comporter au moins 8 caractères.",
+      passwordMismatch: "Les mots de passe ne correspondent pas.",
+      success: "Votre demande a été envoyée avec succès !",
+      alreadyAccount: "Déjà un compte ?",
+      loginHere: "Connectez-vous ici"
     }
+  },
+  accountRequest: {
+    title : "Demande d'inscription",
+    table: {
+      firstname: "Prénom",
+      lastname: "Nom",
+      email: "Email",
+      actions: "Actions"
+    },
+    error: "une érreur est survenue !"
   }
 };
