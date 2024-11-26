@@ -53,6 +53,7 @@
 
 <script lang="ts" setup>
 import { useAuthStore } from "@/store/AuthStore";
+import {computed, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useI18n} from "vue-i18n";
 
