@@ -75,6 +75,10 @@ export const useAuthStore = defineStore({
     logout() {
       this.token = null;
       this.tokenExpirationTime = 0;
+    },
+
+    isAuthenticated(): boolean {
+      return this.token !== null && Date.now() < this.tokenExpirationTime;
     }
   },
   persist: {

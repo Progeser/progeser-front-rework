@@ -54,13 +54,14 @@
 <script lang="ts" setup>
 import { useAuthStore } from "@/store/AuthStore";
 import {computed, ref} from "vue";
-import {useRouter} from "vue-router";
+import router from "@/router"
 import {useI18n} from "vue-i18n";
 
 const email = ref("");
 const password = ref("");
 const isLoading = ref(false);
 const authStore = useAuthStore();
+const {t} = useI18n();
 
 
 // Validation des champs
@@ -74,8 +75,7 @@ const isFormValid = computed(() => {
 });
 
 // Gestion de l'authentification
-const router = useRouter();
-const {t} = useI18n();
+
 
 const navigateToRegister = () => {
   router.push("/register");

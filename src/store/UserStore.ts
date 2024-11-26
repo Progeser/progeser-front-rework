@@ -26,6 +26,9 @@ export const useUserStore = defineStore({
         await router.push({name: 'Login'});
       }
     }
+  },
+  persist: {
+    key: 'user',
+    storage: localStorage,
   }
-
 });

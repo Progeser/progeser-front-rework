@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <router-view v-if="router.currentRoute.value.name === 'Login' || router.currentRoute.value.name === 'Register'"/>
+      <router-view v-if="isLoginRoute"/>
       <MenuSideBar v-else>
         <v-card class="ma-10 " style="width: calc(100% - 80px); height: calc(100% - 80px);">
           <router-view/>
@@ -15,5 +15,11 @@
 //
 import MenuSideBar from "@/components/MenuSideBarComponent.vue";
 import router from "@/router"
+import {computed} from "vue";
+
+const isLoginRoute = computed(() => {
+  const currentRouteName = router.currentRoute.value.name;
+  return currentRouteName === 'Login' || currentRouteName === 'Register' || currentRouteName === 'CatchAll';
+});
 
 </script>
