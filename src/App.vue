@@ -19,7 +19,7 @@ import {computed} from "vue";
 
 const isLoginRoute = computed(() => {
   const currentRouteName = router.currentRoute.value.name;
-  return currentRouteName === 'Login' || currentRouteName === 'CatchAll';
+  return currentRouteName === 'Login' || currentRouteName === 'Register' || currentRouteName === 'CatchAll';
 });
 
 </script>

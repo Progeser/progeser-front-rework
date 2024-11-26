@@ -79,6 +79,39 @@ export default {
         triangle: 'Triangle',
         other: 'Autre'
       }
+    },
+    login: {
+      title: "Connexion",
+      email: "Email",
+      password: "Mot de passe",
+      emailPlaceholder: "yourname@domain.com",
+      passwordPlaceholder: "********",
+      error: "Mauvais identifiant ou mot de passe",
+      required: "Ce champ est obligatoire",
+      noAccount: "Pas encore de compte ?",
+      registerHere: "Inscrivez-vous ici"
+    },
+    "register": {
+      "title": "Demande de compte utilisateur",
+      "firstName": "Nom",
+      "firstNamePlaceholder": "Votre nom",
+      "lastName": "Prénom",
+      "lastNamePlaceholder": "Votre prénom",
+      "email": "Adresse e-mail",
+      "lab": "Laboratoire (optionnel)",
+      "labPlaceholder": "Nom du laboratoire",
+      "reason": "Motif (optionnel)",
+      "reasonPlaceholder": "Expliquez brièvement votre demande",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmez le mot de passe",
+      "required": "Ce champ est obligatoire.",
+      "invalidEmail": "Veuillez entrer une adresse e-mail valide.",
+      "passwordTooWeak": "Le mot de passe doit comporter au moins 8 caractères.",
+      "passwordMismatch": "Les mots de passe ne correspondent pas.",
+      "success": "Votre demande a été envoyée avec succès !",
+      "error": "Une erreur s'est produite. Veuillez réessayer.",
+      "alreadyAccount": "Déjà un compte ?",
+      "loginHere": "Connectez-vous ici"
     }
   }
 };
