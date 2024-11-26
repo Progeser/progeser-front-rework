@@ -54,6 +54,7 @@
         <v-col class="d-flex" cols="auto">
           <img src="@/assets/logo.webp" alt="Logo" height="40">
         </v-col>
+        <NavigationStepper class="ml-2"/>
       </v-row>
     </v-app-bar>
     <v-main class="bg-grey-lighten-2">
@@ -71,6 +72,7 @@ import {useI18n} from "vue-i18n";
 import {UserModel} from "@/model/UserModel";
 import {useAuthStore} from "@/store/AuthStore";
 import {useUserStore} from "@/store/UserStore";
+import NavigationStepper from "@/components/NavigationStepper.vue";
 
 const AuthStore = useAuthStore()
 const drawer = ref(false);

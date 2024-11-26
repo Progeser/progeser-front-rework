@@ -51,6 +51,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/:catchAll(.*)*',
+    name: 'CatchAll',
     component: () => import('@/pages/loginPage.vue'),
     meta: { role: 'any' }
   }

@@ -6,8 +6,10 @@ export default {
       species: 'Espèces',
       containers: 'Conteneurs',
       requests: 'Demandes',
-      users: 'Utilisateurs'
-    }
+      users: 'Utilisateurs',
+      compartiments: 'Compartiments',
+      form: 'Formulaire',
+    },
   },
   common: {
     edit: 'Modifier',

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router/auto'
 import menuRoutes from './menuRoutes'
 import routes from "@/router/routes";
 import {useUserStore} from "@/store/UserStore";
+import {useAuthStore} from "@/store/AuthStore";
 
 const allRoutes = [...menuRoutes, ...routes]
 
@@ -11,16 +12,24 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.path !== '/login') {
-    if (to.meta.role === 'any' || to.meta.role === useUserStore().currentUser?.role) {
-      next()
-    }else{
-      next({name: 'Login'})
+  const authStore = useAuthStore();
+  const userStore = useUserStore();
+
+  const isAuthenticated = authStore.isAuthenticated()
+  const user = userStore.currentUser
+
+  if (isAuthenticated) {
+    if (to.meta.role === 'any' || to.meta.role === user!.role) {
+      next();
+    } else {
+      next({name: 'Login'});
     }
-  }else{
-    next()
+  } else if (to.name === 'Login') {
+    next();
+  } else {
+    next({name: 'Login'});
   }
-})
+});
 
 router.onError((err, to) => {
   if (err?.message?.includes?.('Failed to fetch dynamically imported module')) {
