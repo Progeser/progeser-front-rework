@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-main>
-      <router-view v-if="router.currentRoute.value.name === 'Login'"/>
+      <router-view v-if="router.currentRoute.value.name === 'Login' || router.currentRoute.value.name === 'Register'"/>
       <MenuSideBar v-else>
         <v-card class="ma-10 " style="width: calc(100% - 80px); height: calc(100% - 80px);">
           <router-view/>
