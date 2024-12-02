@@ -16,7 +16,7 @@ const routes: RouteRecordRaw[] = [
     meta: { role: 'grower' }
   },
   {
-    path: '/buildings/:id/compartiments',
+    path: '/buildings/:idBuilding/compartiments',
     name: 'compartiments',
     props: true,
     component: () => import('@/pages/compartiments/compartimentPage.vue'),
@@ -37,8 +37,8 @@ const routes: RouteRecordRaw[] = [
     meta: { role: 'grower' }
   },
   {
-    path: '/greenhouse/:greenhouseId/view',
-    name: 'view',
+    path: '/buildings/:idBuilding/compartiments/:idCompartiment/view',
+    name: 'View',
     props: true,
     component: () => import('@/pages/viewPage.vue'),
     meta: { role: 'grower' }
