@@ -9,6 +9,7 @@ export default {
       users: 'Utilisateurs',
       compartiments: 'Compartiments',
       form: 'Formulaire',
+      view: 'Modélisation'
     },
   },
   common: {

@@ -32,21 +32,22 @@
 
 <script lang="ts" setup>
 import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue';
-import {useRoute} from 'vue-router';
 import {useBenchStore} from "@/store/BenchStore";
 
 const canvasRef: Ref<HTMLCanvasElement | undefined> = ref();
 const canvasContext: Ref<CanvasRenderingContext2D | undefined> = ref();
 const formData = ref({width: 0, height: 0, name: ''});
 
-const route = useRoute();
 const benchStore = useBenchStore();
-const greenhouseId = Number(route.params.greenhouseId);
 
 let clickIsMaintained = false;
 let clickOnX = 0;
 let clickOnY = 0;
 let animationFrameId: number | null = null;
+
+const props = defineProps({
+  idCompartiment: Number,
+})
 
 // Watchers
 watch(
@@ -75,7 +76,7 @@ onMounted(async () => {
   canvasRef.value.addEventListener('mousemove', handleMouseMove);
 
   resizeCanvas();
-  await benchStore.loadBenches(greenhouseId);
+  await benchStore.loadBenches(props.idCompartiment!);
 });
 
 onBeforeUnmount(() => {
@@ -213,7 +214,7 @@ async function createNewBench(event: MouseEvent) {
   };
 
   await benchStore
-    .addBench(greenhouseId, bench)
+    .addBench(props.idCompartiment!, bench)
     .then(() => {
       if (benchStore.selectedBench === null) return;
 

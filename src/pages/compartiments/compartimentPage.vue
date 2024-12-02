@@ -10,6 +10,7 @@
     <v-row class="justify-md">
       <div v-for="compartiment in compartimentList" :key="compartiment.id!" class="ma-5">
         <card :title="compartiment.name"
+              @click.capture="navigateToView(idBuilding,compartiment.id!)"
               img-source="https://serres.univ-lille.fr/fileadmin/_processed_/4/f/csm_33656_IMG_1477_cellule_e31e62c32f.jpg"
               :exec="() => navigateToCompartimentForm(compartiment.id!)"
               :description="makeDescription(compartiment)"
@@ -38,7 +39,7 @@ const pageNumber: Ref<number> = ref<number>(1);
 const paginationInformation: Ref<GenericPagination<Compartiment[]> | undefined> = ref<GenericPagination<Compartiment[]> | undefined>();
 const {t} = useI18n()
 
-const props = defineProps<{ id: number }>();
+const props = defineProps<{ idBuilding: number }>();
 
 const updateCompartiments = async (buildingId : number) => {
   paginationInformation.value = await compartimentRepository.getCompartimentsPage(buildingId,pageNumber.value)
@@ -48,14 +49,14 @@ const updateCompartiments = async (buildingId : number) => {
 const navigateToCompartimentForm = (id : number) => {
   router.push({
     name: 'compartimentForm',
-    params: { idBuilding: props.id ,idCompartiment: id.toString() }
+    params: { idBuilding: props.idBuilding ,idCompartiment: id.toString() }
   });
 };
 
 const navigateToNewCompartimentForm = () => {
   router.push({
     name: 'compartimentForm',
-    params: { idBuilding: props.id ,idCompartiment: 0 }
+    params: { idBuilding: props.idBuilding ,idCompartiment: 0 }
   });
 }
 
@@ -63,12 +64,19 @@ const makeDescription = (compartiment : Compartiment) => {
   return `${t(`form.compartiment.occupation`)}${compartiment.occupancy.toString()} %`
 }
 
+const navigateToView = (buildingId : number,compartimentId : number) => {
+  router.push({
+    name: 'View',
+    params: { idBuilding: buildingId.toString(), idCompartiment: compartimentId },
+  });
+}
+
 onMounted(async () => {
-  await updateCompartiments(props.id);
+  await updateCompartiments(props.idBuilding);
 })
 
 watch(pageNumber, () => {
-  updateCompartiments(props.id);
+  updateCompartiments(props.idBuilding);
 })
 </script>
 

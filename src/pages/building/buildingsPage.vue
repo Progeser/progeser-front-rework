@@ -46,7 +46,7 @@ const updateBuildings = async () => {
 const navigateToCompartiments = (id : number) => {
   router.push({
     name: 'compartiments',
-    params: { id: id.toString() }
+    params: { idBuilding: id.toString() }
   });
 }
 
