@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import axios from "axios";
 import { AuthModel } from "@/model/AuthModel";
 import router from "@/router";
+import {useUserStore} from "@/store/UserStore";
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`;
 const clientId = `${import.meta.env.VITE_CLIENT_ID}`;
@@ -16,6 +17,7 @@ export const useAuthStore = defineStore({
   actions: {
     async login(email: string, password: string) {
       await this.fetchAuth(email, password);
+      await useUserStore().setCurrentUser()
     },
 
     async getBearer() :  Promise<string | undefined> {
@@ -75,6 +77,7 @@ export const useAuthStore = defineStore({
     logout() {
       this.token = null;
       this.tokenExpirationTime = 0;
+      localStorage.clear()
     },
 
     isAuthenticated(): boolean {
