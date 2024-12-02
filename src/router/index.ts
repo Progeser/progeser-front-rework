@@ -24,7 +24,7 @@ router.beforeEach((to, from, next) => {
     } else {
       next({name: 'Login'});
     }
-  } else if (to.name === 'Login') {
+  } else if (to.name === 'Login' || to.name === 'Register') {
     next();
   } else {
     next({name: 'Login'});
