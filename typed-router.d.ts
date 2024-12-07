@@ -20,6 +20,8 @@ declare module 'vue-router/auto-routes' {
   export interface RouteNamedMap {
     '/building/buildingFormPage': RouteRecordInfo<'/building/buildingFormPage', '/building/buildingFormPage', Record<never, never>, Record<never, never>>,
     '/building/buildingsPage': RouteRecordInfo<'/building/buildingsPage', '/building/buildingsPage', Record<never, never>, Record<never, never>>,
+    '/canvas/modelingPage': RouteRecordInfo<'/canvas/modelingPage', '/canvas/modelingPage', Record<never, never>, Record<never, never>>,
+    '/canvas/plantingPage': RouteRecordInfo<'/canvas/plantingPage', '/canvas/plantingPage', Record<never, never>, Record<never, never>>,
     '/compartiments/compartimentFormPage': RouteRecordInfo<'/compartiments/compartimentFormPage', '/compartiments/compartimentFormPage', Record<never, never>, Record<never, never>>,
     '/compartiments/compartimentPage': RouteRecordInfo<'/compartiments/compartimentPage', '/compartiments/compartimentPage', Record<never, never>, Record<never, never>>,
     '/containers/containerFormPage': RouteRecordInfo<'/containers/containerFormPage', '/containers/containerFormPage', Record<never, never>, Record<never, never>>,
@@ -29,6 +31,5 @@ declare module 'vue-router/auto-routes' {
     '/species/specieFormPage': RouteRecordInfo<'/species/specieFormPage', '/species/specieFormPage', Record<never, never>, Record<never, never>>,
     '/species/speciesPage': RouteRecordInfo<'/species/speciesPage', '/species/speciesPage', Record<never, never>, Record<never, never>>,
     '/userPage': RouteRecordInfo<'/userPage', '/userPage', Record<never, never>, Record<never, never>>,
-    '/viewPage': RouteRecordInfo<'/viewPage', '/viewPage', Record<never, never>, Record<never, never>>,
   }
 }
