@@ -71,5 +71,9 @@ export const useBenchStore = defineStore('bench', {
       this.benches = this.benches.filter(bench => bench.id !== benchId);
       this._selectedBench = null;
     },
+
+    getBenchById(benchId: number): (Bench | undefined) {
+      return this.benches.find(bench => bench.id === benchId);
+    }
   }
 });

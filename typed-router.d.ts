@@ -35,6 +35,5 @@ declare module 'vue-router/auto-routes' {
     '/species/specieFormPage': RouteRecordInfo<'/species/specieFormPage', '/species/specieFormPage', Record<never, never>, Record<never, never>>,
     '/species/speciesPage': RouteRecordInfo<'/species/speciesPage', '/species/speciesPage', Record<never, never>, Record<never, never>>,
     '/userPage': RouteRecordInfo<'/userPage', '/userPage', Record<never, never>, Record<never, never>>,
-    '/viewPage': RouteRecordInfo<'/viewPage', '/viewPage', Record<never, never>, Record<never, never>>,
   }
 }

@@ -18,5 +18,6 @@ export class Request {
     public status: string,
     public temperature: number | null,
     public updated_at: string
-  ) {}
+  ) {
+  }
 }

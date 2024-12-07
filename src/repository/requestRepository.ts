@@ -7,7 +7,7 @@ import {RequestOutput} from "@/model/output/RequestOutput";
 export class RequestRepository {
   private readonly fetchService: FetchService = new FetchService();
 
-  public async getRequests(pageNumber : number, pageSize : number = 10): Promise<GenericPagination<Request[]>> {
+  public async getRequests(pageNumber: number, pageSize: number = 10): Promise<GenericPagination<Request[]>> {
     return await this.fetchService.getWithPagination(`requests?page[number]=${pageNumber}&page[size]=${pageSize}`)
   }
 
@@ -22,5 +22,4 @@ export class RequestRepository {
   public async postRequest(data: RequestOutput): Promise<any> { //todo remove any
     return await this.fetchService.postWithoutBearer(`requests`, data);
   }
-
 }
