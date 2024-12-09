@@ -12,6 +12,10 @@ class SpeciesRepository {
     return await this.fetchService.getWithPagination<Species[]>(`plants?page[number]=${pageNumber}&page[size]=${pageSize}`)
   }
 
+  public async getAllSpecies() : Promise<GenericPagination<Species[]>>{
+    return await this.fetchService.getWithPagination<Species[]>(`plants`)
+  }
+
   public async getSpecies(id: number) : Promise<Species> {
     return await this.fetchService.get<Species>(`plants/${id}`)
   }

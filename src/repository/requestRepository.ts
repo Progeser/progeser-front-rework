@@ -1,12 +1,12 @@
 import { AccountRequest } from "@/model/AccountRequest";
 import FetchService from "@/service/fetchService";
-import {AccountRequestOutput} from "@/model/output/AccountRequestOutput";
+import {RequestOutput} from "@/model/output/RequestOutput";
 
 class AccountRequestRepository {
   private readonly fetchService: FetchService = new FetchService();
 
-  public async postAccountRequest(data: AccountRequestOutput): Promise<AccountRequest> {
-    return await this.fetchService.postWithoutBearer(`account_requests`, data);
+  public async postAccountRequest(data: RequestOutput): Promise<AccountRequest> {
+    return await this.fetchService.postWithoutBearer(`requests`, data);
   }
 }
 

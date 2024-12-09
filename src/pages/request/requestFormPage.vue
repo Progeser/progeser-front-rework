@@ -1,0 +1,199 @@
+<template>
+  <v-container class="fill-height d-flex justify-center align-center">
+    <v-card elevation="3" width="600">
+      <v-card-title class="text-h6 text-center primary--text">
+        {{ t('form.request.title') }}
+      </v-card-title>
+      <v-form @submit.prevent="handleSubmit" ref="registerForm" class="pa-4">
+        <!-- Nom et Prénom -->
+        <v-row>
+          <v-col>
+            <h4 class="mr-2 align-self-center">{{ t('form.request.firstName') }}</h4>
+            <v-text-field
+              v-model="firstName"
+              variant="outlined"
+              :placeholder="t('form.request.firstNamePlaceholder')"
+              :rules="[isRequired]"
+              required
+              class="custom-input align-self-center mb-4"
+            />
+          </v-col>
+          <v-col>
+            <h4 class="mr-2 align-self-center">{{ t('form.request.lastName') }}</h4>
+            <v-text-field
+              v-model="lastName"
+              variant="outlined"
+              :placeholder="t('form.request.lastNamePlaceholder')"
+              :rules="[isRequired]"
+              required
+              class="custom-input align-self-center mb-4"
+            />
+          </v-col>
+        </v-row>
+
+        <!-- Adresse e-mail et Laboratoire -->
+        <v-row>
+          <v-col>
+            <h4 class="mr-2 align-self-center">{{ t('form.request.email') }}</h4>
+            <v-text-field
+              v-model="email"
+              variant="outlined"
+              type="email"
+              placeholder="request@domain.com"
+              :rules="[isRequired, isEmail]"
+              required
+              class="custom-input align-self-center mb-4"
+            />
+          </v-col>
+          <v-col>
+            <h4 class="mr-2 align-self-center">{{ t('form.request.lab') }}</h4>
+            <v-text-field
+              v-model="lab"
+              variant="outlined"
+              :placeholder="t('form.request.labPlaceholder')"
+              class="custom-input align-self-center mb-4"
+            />
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col>
+            <h4 class="mr-2 align-self-center">{{ t('form.request.species') }}</h4>
+            <v-select ref="speciesSelect"
+                      :items="species"
+                      item-title="name"
+                      v-model="selectedSpecies"
+                      variant="outlined"
+                      return-object
+                      :loading="isLoading"
+            />
+          </v-col>
+          <v-col>
+            <h4 class="mr-2 align-self-center">{{ t('form.request.stage') }}</h4>
+            <v-select :disabled="selectedSpecies === null" :items="selectedSpecies?.plant_stages"
+                      item-title="name"
+                      v-model="selectedSpeciesStageId"
+                      variant="outlined"/>
+          </v-col>
+        </v-row>
+
+        <!-- Motif -->
+        <h4 class="mr-2 align-self-center">{{ t('form.request.reason') }}</h4>
+        <v-textarea
+          v-model="reason"
+          variant="outlined"
+          :placeholder="t('form.request.reasonPlaceholder')"
+          rows="4"
+          class="custom-input align-self-center mb-4"
+        />
+
+        <!-- Bouton soumettre -->
+        <v-btn
+          class="mt-4"
+          block
+          color="primary"
+          type="submit"
+          :loading="isLoading"
+          :disabled="!isFormValid"
+        >
+          {{ t('common.send') }}
+        </v-btn>
+
+        <!-- Lien vers la connexion -->
+        <v-row justify="center" class="mt-4" align="center">
+          <span>{{ t('form.request.alreadyAccount') }}</span>
+          <v-btn
+            variant="text"
+            color="primary"
+            @click="() => null"
+            class="ml-2"
+          >
+            {{ t('form.request.loginHere') }}
+          </v-btn>
+        </v-row>
+      </v-form>
+    </v-card>
+  </v-container>
+</template>
+
+<script lang="ts" setup>
+import { ref, computed, Ref, onBeforeMount } from "vue";
+import { useI18n } from "vue-i18n";
+import { Species } from "@/model/Species";
+import SpeciesRepository from "@/repository/speciesRepository";
+import {RequestOutput} from "@/model/output/RequestOutput";
+
+const speciesRepository = new SpeciesRepository();
+const { t } = useI18n();
+const firstName = ref("");
+const lastName = ref("");
+const email = ref("");
+const lab = ref("");
+const reason = ref("");
+const species: Ref<Species[]> = ref([]);
+const selectedSpecies: Ref<Species | null> = ref(null);
+const selectedSpeciesStageId: Ref<number | null> = ref(null);
+const isLoading = ref(false);
+
+const isRequired = (value: string) =>
+  value.trim().length > 0 || t("form.request.required");
+const isEmail = (value: string) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || t("form.request.invalidEmail");
+
+const isFormValid = computed(() => {
+  return (
+    firstName.value.trim().length > 0 &&
+    lastName.value.trim().length > 0 &&
+    email.value.trim().length > 0
+  );
+});
+
+const fetchSpecies = async () => {
+  isLoading.value = true;
+  try {
+    const fetchedSpecies = await speciesRepository.getAllSpecies();
+    species.value = fetchedSpecies.content;
+
+  } catch (error) {
+    console.error("Erreur lors de la récupération des espèces :", error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const handleSubmit = async () => {
+  isLoading.value = true;
+  try {
+    const requestOutput : RequestOutput = new RequestOutput(
+      email.value,
+      firstName.value,
+      lastName.value,
+      lab.value,
+      requestname.value,
+      reason.value.value,
+      planteStageId.value,
+      quantity.value,
+      temperature.value,
+      photoperiod.value
+    );
+  }catch (){
+
+  }finally {
+
+  }
+  isLoading.value = false;
+};
+
+onBeforeMount(async () => {
+  await fetchSpecies();
+});
+</script>
+
+
+<style scoped>
+.primary--text {
+  font-weight: bold;
+  color: #ffffff;
+  background-color: #008b8b;
+}
+</style>
