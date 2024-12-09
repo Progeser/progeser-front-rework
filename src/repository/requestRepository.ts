@@ -2,7 +2,7 @@ import { AccountRequest } from "@/model/AccountRequest";
 import FetchService from "@/service/fetchService";
 import {RequestOutput} from "@/model/output/RequestOutput";
 
-class AccountRequestRepository {
+class RequestRepository {
   private readonly fetchService: FetchService = new FetchService();
 
   public async postAccountRequest(data: RequestOutput): Promise<AccountRequest> {
@@ -10,4 +10,4 @@ class AccountRequestRepository {
   }
 }
 
-export default AccountRequestRepository;
+export default RequestRepository;

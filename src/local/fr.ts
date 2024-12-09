@@ -105,6 +105,14 @@ export default {
       reasonPlaceholder: "Expliquez brièvement votre demande",
       species: "Espèce",
       stage: "Stage",
+      subject: "Sujet de la demande",
+      quantity: "quantité",
+      temperature: "Temperature",
+      photoperiod: "photoperiode",
+      error: {
+        fetchSpecies: "Une erreur est survenue dans la recupération des espèces",
+        sending: "Une erreur est survenue lors de l'envoie"
+      }
     }
   }
 };

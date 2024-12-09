@@ -5,7 +5,6 @@
         {{ t('form.request.title') }}
       </v-card-title>
       <v-form @submit.prevent="handleSubmit" ref="registerForm" class="pa-4">
-        <!-- Nom et Prénom -->
         <v-row>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.firstName') }}</h4>
@@ -31,7 +30,6 @@
           </v-col>
         </v-row>
 
-        <!-- Adresse e-mail et Laboratoire -->
         <v-row>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.email') }}</h4>
@@ -72,22 +70,73 @@
             <h4 class="mr-2 align-self-center">{{ t('form.request.stage') }}</h4>
             <v-select :disabled="selectedSpecies === null" :items="selectedSpecies?.plant_stages"
                       item-title="name"
+                      item-value="id"
                       v-model="selectedSpeciesStageId"
                       variant="outlined"/>
           </v-col>
         </v-row>
 
-        <!-- Motif -->
-        <h4 class="mr-2 align-self-center">{{ t('form.request.reason') }}</h4>
-        <v-textarea
-          v-model="reason"
-          variant="outlined"
-          :placeholder="t('form.request.reasonPlaceholder')"
-          rows="4"
-          class="custom-input align-self-center mb-4"
-        />
+        <v-row>
+          <v-col>
+            <h4 class="mr-2 align-self-center">{{ t('form.request.subject') }}</h4>
+            <v-text-field
+              v-model="lab"
+              variant="outlined"
+              :placeholder="t('form.request.labPlaceholder')"
+              class="custom-input align-self-center mb-4"
+            />
+          </v-col>
+          <v-col>
+            <h4 class="mr-2 align-self-center">{{ t('form.request.lab') }}</h4>
+            <v-text-field
+              v-model="lab"
+              variant="outlined"
+              :placeholder="t('form.request.labPlaceholder')"
+              class="custom-input align-self-center mb-4"
+            />
+          </v-col>
+        </v-row>
 
-        <!-- Bouton soumettre -->
+        <v-row>
+          <v-col>
+            <h4 class="mr-2 align-self-center">{{ t('form.request.quantity') }}</h4>
+            <v-input type="number" v-model="quantity"/>
+          </v-col>
+          <v-col>
+            <h4 class="mr-2 align-self-center">{{ t('form.request.temperature') }}</h4>
+            <v-input type="number" v-model="temperature"/>
+          </v-col>
+          <v-col>
+            <h4 class="mr-2 align-self-center">{{ t('form.request.photoperiod') }}</h4>
+            <v-input type="number" v-model="photoperiod"/>
+          </v-col>
+        </v-row>
+
+        <v-col>
+          <v-row>
+            <h4 class="mr-2 align-self-center">{{ t('form.request.subject') }}</h4>
+            <v-textarea
+              v-model="subject"
+              variant="outlined"
+              :placeholder="t('form.request.reasonPlaceholder')"
+              rows="4"
+              class="custom-input align-self-center mb-4"
+            />
+          </v-row>
+
+          <v-row>
+            <h4 class="mr-2 align-self-center">{{ t('form.request.reason') }}</h4>
+            <v-textarea
+              v-model="reason"
+              variant="outlined"
+              :placeholder="t('form.request.reasonPlaceholder')"
+              rows="4"
+              class="custom-input align-self-center mb-4"
+            />
+          </v-row>
+        </v-col>
+
+
         <v-btn
           class="mt-4"
           block
@@ -99,7 +148,6 @@
           {{ t('common.send') }}
         </v-btn>
 
-        <!-- Lien vers la connexion -->
         <v-row justify="center" class="mt-4" align="center">
           <span>{{ t('form.request.alreadyAccount') }}</span>
           <v-btn
@@ -122,8 +170,10 @@ import { useI18n } from "vue-i18n";
 import { Species } from "@/model/Species";
 import SpeciesRepository from "@/repository/speciesRepository";
 import {RequestOutput} from "@/model/output/RequestOutput";
+import RequestRepository from "@/repository/requestRepository";
 
 const speciesRepository = new SpeciesRepository();
+const resquestRepository = new RequestRepository()
 const { t } = useI18n();
 const firstName = ref("");
 const lastName = ref("");
@@ -134,6 +184,10 @@ const species: Ref<Species[]> = ref([]);
 const selectedSpecies: Ref<Species | null> = ref(null);
 const selectedSpeciesStageId: Ref<number | null> = ref(null);
 const isLoading = ref(false);
+const subject = ref("");
+const quantity = ref(null);
+const temperature = ref(null);
+const photoperiod = ref(null);
 
 const isRequired = (value: string) =>
   value.trim().length > 0 || t("form.request.required");
@@ -155,7 +209,7 @@ const fetchSpecies = async () => {
     species.value = fetchedSpecies.content;
 
   } catch (error) {
-    console.error("Erreur lors de la récupération des espèces :", error);
+    alert(t('form.request.error.fetchSpecies'))
   } finally {
     isLoading.value = false;
   }
@@ -169,20 +223,34 @@ const handleSubmit = async () => {
       firstName.value,
       lastName.value,
       lab.value,
-      requestname.value,
-      reason.value.value,
-      planteStageId.value,
+      subject.value,
+      reason.value,
+      selectedSpeciesStageId.value,
       quantity.value,
       temperature.value,
       photoperiod.value
     );
-  }catch (){
-
+    await resquestRepository.postAccountRequest(requestOutput);
+    resetForm()
+  }catch (error) {
+    alert(t('form.request.error.sending'))
   }finally {
-
+    isLoading.value = false;
   }
-  isLoading.value = false;
 };
+
+const resetForm = () => {
+  email.value = ''
+  firstName.value = ''
+  lastName.value = ''
+  lab.value = ''
+  subject.value = ''
+  reason.value = ''
+  selectedSpeciesStageId.value = null
+  quantity.value = null
+  temperature.value = null
+  photoperiod.value = null
+}
 
 onBeforeMount(async () => {
   await fetchSpecies();
