@@ -109,9 +109,14 @@ export default {
       quantity: "Quantité",
       temperature: "Temperature",
       photoperiod: "Photoperiode",
+      due_date: "Date souhaiter",
       error: {
         fetchSpecies: "Une erreur est survenue dans la recupération des espèces",
-        sending: "Une erreur est survenue lors de l'envoie"
+        sending: "Une erreur est survenue lors de l'envoie",
+        required: "Ne doit pas étre vide",
+        greaterThanZero:"Doit étre supérieur a zero",
+        notNull: "Doit étre Selectionner",
+        invalidEmail:'Email invalide'
       }
     }
   }

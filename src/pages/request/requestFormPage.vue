@@ -48,6 +48,7 @@
             <v-text-field
               v-model="lab"
               variant="outlined"
+              :rules="[isRequired]"
               :placeholder="t('form.request.labPlaceholder')"
               class="custom-input align-self-center mb-4"
             />
@@ -63,6 +64,7 @@
                       v-model="selectedSpecies"
                       variant="outlined"
                       return-object
+                      :rules="[isNotNull]"
                       :loading="isLoading"
             />
           </v-col>
@@ -71,6 +73,7 @@
             <v-select :disabled="selectedSpecies === null" :items="selectedSpecies?.plant_stages"
                       item-title="name"
                       item-value="id"
+                      :rules="[isNotNull]"
                       v-model="selectedSpeciesStageId"
                       variant="outlined"/>
           </v-col>
@@ -78,48 +81,40 @@
 
         <v-row>
           <v-col>
-            <h4 class="mr-2 align-self-center">{{ t('form.request.subject') }}</h4>
-            <v-text-field
-              v-model="lab"
-              variant="outlined"
-              :placeholder="t('form.request.labPlaceholder')"
-              class="custom-input align-self-center mb-4"
-            />
-          </v-col>
-          <v-col>
-            <h4 class="mr-2 align-self-center">{{ t('form.request.lab') }}</h4>
-            <v-text-field
-              v-model="lab"
-              variant="outlined"
-              :placeholder="t('form.request.labPlaceholder')"
-              class="custom-input align-self-center mb-4"
-            />
-          </v-col>
-        </v-row>
-
-        <v-row>
-          <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.quantity') }}</h4>
-            <v-text-field type="number" v-model="quantity"/>
+            <v-text-field type="number" v-model="quantity" :rules="[isGreaterThanZero]"/>
           </v-col>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.temperature') }}</h4>
-            <v-text-field type="number" v-model="temperature"/>
+            <v-text-field type="number" v-model="temperature" :rules="[isGreaterThanZero]"/>
           </v-col>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.photoperiod') }}</h4>
-            <v-text-field type="number" v-model="photoperiod"/>
+            <v-text-field type="number" v-model="photoperiod" :rules="[isGreaterThanZero]"/>
+          </v-col>
+        </v-row>
+        <v-row class="justify-center align-center">
+          <v-col cols="auto" class="text-center">
+            <p>{{t('form.request.due_date')}} : </p>
+            <p v-if="formattedDate" class="mt-2 text-h6">
+              {{ formattedDate }}
+            </p>
+            <v-date-picker
+              hide-header
+              v-model="date"
+              :title="t('form.request.date')"
+              locale="fr"
+            />
           </v-col>
         </v-row>
 
         <v-col>
-
           <h4 class="mr-2 align-self-center">{{ t('form.request.subject') }}</h4>
           <v-textarea
             v-model="subject"
             variant="outlined"
             :placeholder="t('form.request.reasonPlaceholder')"
-            rows="4"
+            rows="2"
             class="custom-input align-self-center mb-4"
           />
 
@@ -145,18 +140,6 @@
         >
           {{ t('common.send') }}
         </v-btn>
-
-        <v-row justify="center" class="mt-4" align="center">
-          <span>{{ t('form.request.alreadyAccount') }}</span>
-          <v-btn
-            variant="text"
-            color="primary"
-            @click="() => null"
-            class="ml-2"
-          >
-            {{ t('form.request.loginHere') }}
-          </v-btn>
-        </v-row>
       </v-form>
     </v-card>
   </v-container>
@@ -183,28 +166,48 @@ const selectedSpecies: Ref<Species | null> = ref(null);
 const selectedSpeciesStageId: Ref<number | null> = ref(null);
 const isLoading = ref(false);
 const subject = ref("");
-const quantity = ref(null);
-const temperature = ref(null);
-const photoperiod = ref(null);
+const quantity = ref(0);
+const temperature = ref(0);
+const photoperiod = ref(0);
+const date = ref<Date | null>(null);
+
+const formattedDate = computed(() => {
+  if (!date.value) return " ";
+  return new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(new Date(date.value));
+});
 
 const isRequired = (value: string) =>
-  value.trim().length > 0 || t("form.request.required");
+  value.trim().length > 0 || t("form.request.error.required");
+const isGreaterThanZero = (value: number) => {
+  return value > 0 || t("form.request.error.greaterThanZero");
+}
+const isNotNull = (value: Object) => {
+  return (value === null || value === undefined) || t("form.request.error.notNull");
+}
 const isEmail = (value: string) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || t("form.request.invalidEmail");
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || t("form.request.error.invalidEmail");
 
 const isFormValid = computed(() => {
   return (
     firstName.value.trim().length > 0 &&
     lastName.value.trim().length > 0 &&
-    email.value.trim().length > 0
+    email.value.trim().length > 0 &&
+    lab.value.trim().length > 0 &&
+      subject.value.trim().length > 0 &&
+      selectedSpeciesStageId.value !== null &&
+      date.value !== null &&
+      quantity.value > 0 &&
+      temperature.value > 0 &&
+      photoperiod.value > 0
   );
 });
+
 
 const fetchSpecies = async () => {
   isLoading.value = true;
   try {
     const fetchedSpecies = await speciesRepository.getAllSpecies();
-    species.value = fetchedSpecies.content;
+    species.value = fetchedSpecies;
 
   } catch (error) {
     alert(t('form.request.error.fetchSpecies'))
@@ -224,11 +227,12 @@ const handleSubmit = async () => {
       subject.value,
       reason.value,
       selectedSpeciesStageId.value,
+      date.value,
       quantity.value,
       temperature.value,
       photoperiod.value
     );
-    await resquestRepository.postAccountRequest(requestOutput);
+    await resquestRepository.postRequest(requestOutput);
     resetForm()
   }catch (error) {
     console.log(error);
@@ -245,10 +249,12 @@ const resetForm = () => {
   lab.value = ''
   subject.value = ''
   reason.value = ''
+  selectedSpecies.value = null
   selectedSpeciesStageId.value = null
-  quantity.value = null
-  temperature.value = null
-  photoperiod.value = null
+  date.value = null
+  quantity.value = 0
+  temperature.value = 0
+  photoperiod.value = 0
 }
 
 onBeforeMount(async () => {
