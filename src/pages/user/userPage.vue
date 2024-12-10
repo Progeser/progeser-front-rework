@@ -33,7 +33,7 @@ import CustomTable from '@/components/CustomTable.vue';
 
 const { t } = useI18n();
 const accountRequestRepository = new AccountRequestRepository();
-const data = ref([]);
+const data = ref([] as AccountRequest[]);
 const loading = ref(false);
 let page = ref(1);
 let itemsPerPage = ref(10);
@@ -63,6 +63,9 @@ const fetchData = async () => {
 };
 
 const onPageChange = (newPage: number) => {
+  console.log(
+    'Page changed to :', newPage
+  )
   page.value = newPage;
 };
 

@@ -1,53 +1,116 @@
 <template>
   <v-container fluid>
     <div>
-      <v-btn @click="navigateToNewRequestForm()" class="ml-2" variant="outlined" color="primary">
+      <v-btn @click="navigateToNewRequestForm" class="ml-2" variant="outlined" color="primary">
         {{ t('common.add') }}
         <v-icon icon="mdi-plus" />
       </v-btn>
     </div>
     <v-divider class="my-2" />
-    <v-row class="justify-md">
-      <div v-for="container in requestsList" :key="container.id!" class="ma-5">
-
-      </div>
+    <v-row>
+      <CustomTable
+        title="Demandes de cultures"
+        :total-pages="paginationInformation?.totalPages ?? 1"
+        :total-items="paginationInformation?.totalCount ?? 0"
+        :data="requestsList"
+        :headers="headers"
+        :loading="loading"
+        :exec-on-update="updateRequests"
+        @update:page="onPageChange"
+        @update:items-per-page="onItemsPerPageChange"
+      >
+        <template v-slot:actions="{ item }">
+          <v-btn @click="acceptRequest(item)" class="ml-2" variant="outlined" color="success">
+            {{ t('common.accept') }}
+            <v-icon icon="mdi-check" />
+          </v-btn>
+          <v-btn @click="rejectRequest(item)" class="ml-2" variant="outlined" color="error">
+            {{ t('common.reject') }}
+            <v-icon icon="mdi-close" />
+          </v-btn>
+        </template>
+      </CustomTable>
     </v-row>
   </v-container>
-  <v-pagination v-if="paginationInformation"
-                v-model="pageNumber"
-                :length="paginationInformation!.totalPages" />
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref, Ref, watch } from 'vue';
+import {ref, onBeforeMount, watch} from 'vue';
 import { GenericPagination } from '@/model/GenericPagination';
-import ContainerRepository from '@/repository/containerRepository';
+import { Request } from '@/model/Request';
 import { useI18n } from "vue-i18n";
-import router from "@/router"
+import router from "@/router";
+import { RequestRepository } from "@/repository/requestRepository";
+import CustomTable from '@/components/CustomTable.vue';
 
-const containerRepository: ContainerRepository = new ContainerRepository();
-let requestsList: Ref<Container[]> = ref<Container[]>([]);
-let pageNumber: Ref<number> = ref<number>(1);
-let paginationInformation: Ref<GenericPagination<Container[]> | undefined> = ref<GenericPagination<Container[]> | undefined>();
+const requestRepository: RequestRepository = new RequestRepository();
 const { t } = useI18n();
 
+const requestsList = ref<Request[]>([]);
+const paginationInformation = ref<GenericPagination<Request[]> | undefined>(undefined);
+const loading = ref(false);
+const pageNumber = ref(1);
+const itemsPerPage = ref(10);
+
+const headers = ref([
+  { title: t('request.table.requesterName'), value: 'requester_name', align: 'center', sortable: true },
+  { title: t('request.table.email'), value: 'requester_email', align: 'center', sortable: true },
+  { title: t('request.table.plant'), value: 'plant_name', align: 'center', sortable: true },
+  { title: t('request.table.quantity'), value: 'quantity', align: 'center', sortable: true },
+  { title: t('request.table.dueDate'), value: 'due_date', align: 'center', sortable: true },
+]);
+
 const updateRequests = async () => {
-  paginationInformation.value = await containerRepository.getContainersPage(pageNumber.value);
-  requestsList.value = paginationInformation.value.content;
+  loading.value = true;
+  try {
+    paginationInformation.value = await requestRepository.getRequests(pageNumber.value, itemsPerPage.value);
+    requestsList.value = paginationInformation.value.content.map(request => ({
+      ...request,
+      requester_name: `${request.requester_first_name} ${request.requester_last_name}`,
+    }));
+  } catch (error) {
+    alert(t('request.error'));
+  } finally {
+    loading.value = false;
+  }
 };
 
-onBeforeMount(async () => {
-  await updateRequests();
-});
+const onPageChange = (newPage: number) => {
+  pageNumber.value = newPage;
+};
 
-watch(pageNumber, () => {
-  updateRequests();
-});
+const onItemsPerPageChange = (newItemsPerPage: number) => {
+  itemsPerPage.value = newItemsPerPage;
+};
 
 const navigateToNewRequestForm = () => {
-  router.push({
-    name: 'ContainerForm',
-    params: { id: 0 }
-  });
+  router.push({ name: 'RequestForm' });
 };
+
+const acceptRequest = async (item: any) => {
+  if (confirm(t('request.confirmAccept'))) {
+    try {
+      await requestRepository.acceptRequest(item.id!);
+      updateRequests();
+    } catch (error) {
+      alert(t('request.acceptError'));
+    }
+  }
+};
+
+const rejectRequest = async (item: any) => {
+  if (confirm(t('request.confirmReject'))) {
+    try {
+      await requestRepository.rejectRequest(item.id!);
+      updateRequests();
+    } catch (error) {
+      alert(t('request.rejectError'));
+    }
+  }
+};
+
+onBeforeMount(updateRequests);
+
+watch(pageNumber, updateRequests);
 </script>
+
