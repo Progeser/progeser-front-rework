@@ -1,6 +1,6 @@
 <template>
   <v-data-table
-    :headers="headers"
+    :headers="headers as any"
     :items="data"
     :loading="loading"
     :page="currentPage"
