@@ -14,6 +14,5 @@ declare module 'vue' {
     NavigationStepper: typeof import('./src/components/NavigationStepper.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    Table: typeof import('./src/components/Table.vue')['default']
   }
 }
