@@ -8,7 +8,6 @@
     :total-items="totalItems"
     :page-count="totalPages"
     :items-per-page-options="[
-      { value: 1, title: '1' },
       { value: 10, title: '10' },
       { value: 20, title: '20' },
       { value: 50, title: '50' }
