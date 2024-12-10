@@ -23,16 +23,13 @@ declare module 'vue-router/auto-routes' {
     '/compartiments/compartimentFormPage': RouteRecordInfo<'/compartiments/compartimentFormPage', '/compartiments/compartimentFormPage', Record<never, never>, Record<never, never>>,
     '/compartiments/compartimentPage': RouteRecordInfo<'/compartiments/compartimentPage', '/compartiments/compartimentPage', Record<never, never>, Record<never, never>>,
     '/connexion/loginPage': RouteRecordInfo<'/connexion/loginPage', '/connexion/loginPage', Record<never, never>, Record<never, never>>,
-    '/connexion/registerPage': RouteRecordInfo<'/connexion/registerPage', '/connexion/registerPage', Record<never, never>, Record<never, never>>,
     '/containers/containerFormPage': RouteRecordInfo<'/containers/containerFormPage', '/containers/containerFormPage', Record<never, never>, Record<never, never>>,
     '/containers/containersPage': RouteRecordInfo<'/containers/containersPage', '/containers/containersPage', Record<never, never>, Record<never, never>>,
     '/homePage': RouteRecordInfo<'/homePage', '/homePage', Record<never, never>, Record<never, never>>,
-    '/loginPage': RouteRecordInfo<'/loginPage', '/loginPage', Record<never, never>, Record<never, never>>,
-    '/request/requestFormPage': RouteRecordInfo<'/request/requestFormPage', '/request/requestFormPage', Record<never, never>, Record<never, never>>,
-    '/request/requestPage': RouteRecordInfo<'/request/requestPage', '/request/requestPage', Record<never, never>, Record<never, never>>,
+    '/requests/requestFormPage': RouteRecordInfo<'/requests/requestFormPage', '/requests/requestFormPage', Record<never, never>, Record<never, never>>,
+    '/requests/requestsPage': RouteRecordInfo<'/requests/requestsPage', '/requests/requestsPage', Record<never, never>, Record<never, never>>,
     '/species/specieFormPage': RouteRecordInfo<'/species/specieFormPage', '/species/specieFormPage', Record<never, never>, Record<never, never>>,
     '/species/speciesPage': RouteRecordInfo<'/species/speciesPage', '/species/speciesPage', Record<never, never>, Record<never, never>>,
-    '/user/userPage': RouteRecordInfo<'/user/userPage', '/user/userPage', Record<never, never>, Record<never, never>>,
     '/viewPage': RouteRecordInfo<'/viewPage', '/viewPage', Record<never, never>, Record<never, never>>,
   }
 }

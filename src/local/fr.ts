@@ -94,8 +94,21 @@ export default {
       noAccount: "Pas encore de compte ?",
       registerHere: "Inscrivez-vous ici"
     },
-    register: {
-      title: "Demande de compte utilisateur",
+    request: {
+      title: "Demandes de cultures",
+      table: {
+        requesterName: "Nom du demandeur",
+        email: "Email",
+        plant: "Plante",
+        quantity: "Quantité",
+        dueDate: "Date souhaitée",
+        actions: "Actions"
+      },
+      confirmAccept: "Êtes-vous sûr de vouloir accepter cette demande ?",
+      confirmReject: "Êtes-vous sûr de vouloir rejeter cette demande ?",
+      acceptError: "Erreur lors de l'acceptation de la demande.",
+      rejectError: "Erreur lors du rejet de la demande.",
+      noRequests: "Aucune demande disponible.",
       firstName: "Nom",
       firstNamePlaceholder: "Votre nom",
       lastName: "Prénom",
@@ -129,34 +142,7 @@ export default {
       passwordMismatch: "Les mots de passe ne correspondent pas.",
       success: "Votre demande a été envoyée avec succès !",
       alreadyAccount: "Déjà un compte ?",
-      loginHere: "Connectez-vous ici"
+      loginHere: "Connectez-vous ici",
     }
-  },
-  accountRequest: {
-    title: "Demande d'inscription",
-    table: {
-      firstname: "Prénom",
-      lastname: "Nom",
-      email: "Email",
-      actions: "Actions"
-    },
-    error: "Une erreur est survenue !"
-  },
-  request: {
-    title: "Demandes de cultures",
-    table: {
-      requesterName: "Nom du demandeur",
-      email: "Email",
-      plant: "Plante",
-      quantity: "Quantité",
-      dueDate: "Date souhaitée",
-      actions: "Actions"
-    },
-    error: "Une erreur est survenue lors de la récupération des demandes.",
-    confirmAccept: "Êtes-vous sûr de vouloir accepter cette demande ?",
-    confirmReject: "Êtes-vous sûr de vouloir rejeter cette demande ?",
-    acceptError: "Erreur lors de l'acceptation de la demande.",
-    rejectError: "Erreur lors du rejet de la demande.",
-    noRequests: "Aucune demande disponible."
   }
 };

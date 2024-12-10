@@ -1,11 +1,5 @@
 <template>
   <v-container fluid>
-    <div>
-      <v-btn @click="navigateToNewRequestForm" class="ml-2" variant="outlined" color="primary">
-        {{ t('common.add') }}
-        <v-icon icon="mdi-plus" />
-      </v-btn>
-    </div>
     <v-divider class="my-2" />
     <v-row>
       <CustomTable
@@ -53,11 +47,11 @@ const pageNumber = ref(1);
 const itemsPerPage = ref(10);
 
 const headers = ref([
-  { title: t('request.table.requesterName'), value: 'requester_name', align: 'center', sortable: true },
-  { title: t('request.table.email'), value: 'requester_email', align: 'center', sortable: true },
-  { title: t('request.table.plant'), value: 'plant_name', align: 'center', sortable: true },
-  { title: t('request.table.quantity'), value: 'quantity', align: 'center', sortable: true },
-  { title: t('request.table.dueDate'), value: 'due_date', align: 'center', sortable: true },
+  { title: t('form.request.table.requesterName'), value: 'requester_name', align: 'center', sortable: true },
+  { title: t('form.request.table.email'), value: 'requester_email', align: 'center', sortable: true },
+  { title: t('form.request.table.plant'), value: 'plant_name', align: 'center', sortable: true },
+  { title: t('form.request.table.quantity'), value: 'quantity', align: 'center', sortable: true },
+  { title: t('form.request.table.dueDate'), value: 'due_date', align: 'center', sortable: true },
 ]);
 
 const updateRequests = async () => {
@@ -81,10 +75,6 @@ const onPageChange = (newPage: number) => {
 
 const onItemsPerPageChange = (newItemsPerPage: number) => {
   itemsPerPage.value = newItemsPerPage;
-};
-
-const navigateToNewRequestForm = () => {
-  router.push({ name: 'RequestForm' });
 };
 
 const acceptRequest = async (item: any) => {
