@@ -92,27 +92,33 @@ export default {
       noAccount: "Pas encore de compte ?",
       registerHere: "Inscrivez-vous ici"
     },
-    "register": {
-      "title": "Demande de compte utilisateur",
-      "firstName": "Nom",
-      "firstNamePlaceholder": "Votre nom",
-      "lastName": "Prénom",
-      "lastNamePlaceholder": "Votre prénom",
-      "email": "Adresse e-mail",
-      "lab": "Laboratoire (optionnel)",
-      "labPlaceholder": "Nom du laboratoire",
-      "reason": "Motif (optionnel)",
-      "reasonPlaceholder": "Expliquez brièvement votre demande",
-      "password": "Mot de passe",
-      "confirmPassword": "Confirmez le mot de passe",
-      "required": "Ce champ est obligatoire.",
-      "invalidEmail": "Veuillez entrer une adresse e-mail valide.",
-      "passwordTooWeak": "Le mot de passe doit comporter au moins 8 caractères.",
-      "passwordMismatch": "Les mots de passe ne correspondent pas.",
-      "success": "Votre demande a été envoyée avec succès !",
-      "error": "Une erreur s'est produite. Veuillez réessayer.",
-      "alreadyAccount": "Déjà un compte ?",
-      "loginHere": "Connectez-vous ici"
+    request: {
+      title: "Demande de culture",
+      firstName: "Nom",
+      firstNamePlaceholder: "Votre nom",
+      lastName: "Prénom",
+      lastNamePlaceholder: "Votre prénom",
+      email: "Adresse e-mail",
+      lab: "Laboratoire (optionnel)",
+      labPlaceholder: "Nom du laboratoire",
+      reason: "Description (optionnel)",
+      reasonPlaceholder: "Expliquez brièvement votre demande",
+      species: "Espèce",
+      stage: "Stade",
+      subject: "Objet de la demande",
+      subjectPlaceholder: "Donner l'objet de la demande",
+      quantity: "Quantité",
+      temperature: "Température",
+      photoperiod: "Photopériode",
+      due_date: "Date souhaitée",
+      error: {
+        fetchSpecies: "Une erreur est survenue dans la recupération des espèces",
+        sending: "Une erreur est survenue lors de l'envoi",
+        required: "Ne doit pas être vide",
+        greaterThanZero:"Doit être supérieur a zero",
+        notNull: "Doit être Selectionné",
+        invalidEmail:'Email invalide'
+      }
     }
   }
 };

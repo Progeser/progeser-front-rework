@@ -8,6 +8,7 @@
     "lint": "eslint . --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@date-io/dayjs": "^3.0.0",
     "@mdi/font": "7.4.47",
     "axios": "^1.7.7",
     "core-js": "^3.37.1",

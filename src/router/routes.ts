@@ -50,9 +50,9 @@ const routes: RouteRecordRaw[] = [
     meta: { role: 'any' }
   },
   {
-    path: '/register',
-    name: 'Register',
-    component: () => import('@/pages/registerPage.vue'),
+    path: '/request',
+    name: 'Request',
+    component: () => import('@/pages/request/requestFormPage.vue'),
     meta: { role: 'any' }
   },
   {
