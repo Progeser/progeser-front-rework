@@ -33,7 +33,6 @@ import {ref, onBeforeMount, watch} from 'vue';
 import { GenericPagination } from '@/model/GenericPagination';
 import { Request } from '@/model/Request';
 import { useI18n } from "vue-i18n";
-import router from "@/router";
 import { RequestRepository } from "@/repository/requestRepository";
 import CustomTable from '@/components/CustomTable.vue';
 
