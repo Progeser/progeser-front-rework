@@ -82,28 +82,26 @@
         <v-row>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.quantity') }}</h4>
-            <v-text-field type="number" v-model="quantity" :rules="[isGreaterThanZero]"/>
+            <v-text-field type="number" v-model="quantity" :rules="[isGreaterThanZero]" variant="outlined"/>
           </v-col>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.temperature') }}</h4>
-            <v-text-field type="number" v-model="temperature" :rules="[isGreaterThanZero]"/>
+            <v-text-field type="number" v-model="temperature" :rules="[isGreaterThanZero]" variant="outlined"/>
           </v-col>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.photoperiod') }}</h4>
-            <v-text-field type="number" v-model="photoperiod" :rules="[isGreaterThanZero]"/>
+            <v-text-field type="number" v-model="photoperiod" :rules="[isGreaterThanZero]" variant="outlined"/>
           </v-col>
         </v-row>
         <v-row class="justify-center align-center">
           <v-col cols="auto" class="text-center">
-            <p>{{t('form.request.due_date')}} : </p>
-            <p v-if="formattedDate" class="mt-2 text-h6">
-              {{ formattedDate }}
-            </p>
-            <v-date-picker
-              hide-header
+            <h4 class="mr-2 align-self-center">{{ t('form.request.due_date') }} : </h4>
+            <v-date-input
               v-model="date"
-              :title="t('form.request.date')"
-              locale="fr"
+              min-width="200"
+              :rules="[isNotNull]"
+              variant="outlined"
+              placeholder="DD/MM/YYYY"
             />
           </v-col>
         </v-row>
@@ -171,18 +169,13 @@ const temperature = ref(0);
 const photoperiod = ref(0);
 const date = ref<Date | null>(null);
 
-const formattedDate = computed(() => {
-  if (!date.value) return " ";
-  return new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(new Date(date.value));
-});
-
 const isRequired = (value: string) =>
   value.trim().length > 0 || t("form.request.error.required");
 const isGreaterThanZero = (value: number) => {
   return value > 0 || t("form.request.error.greaterThanZero");
 }
 const isNotNull = (value: Object) => {
-  return (value === null || value === undefined) || t("form.request.error.notNull");
+  return (value !== null || value !== undefined) || t("form.request.error.notNull");
 }
 const isEmail = (value: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || t("form.request.error.invalidEmail");
