@@ -106,9 +106,9 @@ export default {
       species: "Espèce",
       stage: "Stage",
       subject: "Sujet de la demande",
-      quantity: "quantité",
+      quantity: "Quantité",
       temperature: "Temperature",
-      photoperiod: "photoperiode",
+      photoperiod: "Photoperiode",
       error: {
         fetchSpecies: "Une erreur est survenue dans la recupération des espèces",
         sending: "Une erreur est survenue lors de l'envoie"

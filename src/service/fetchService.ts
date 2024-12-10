@@ -18,6 +18,16 @@ class FetchService {
     }
   }
 
+  public async getWithoutBearer<T>(endpoint: string): Promise<T> {
+    try {
+      const response: AxiosResponse<T> = await axios.get<T>(`${this.baseUrl}${endpoint}`);
+      return response.data;
+    } catch (error) {
+      this.handleError(error);
+      throw error;
+    }
+  }
+
   // GET request with pagination
   public async getWithPagination<T>(endpoint: string): Promise<GenericPagination<T>> {
     try {

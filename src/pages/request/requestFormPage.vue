@@ -100,40 +100,38 @@
         <v-row>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.quantity') }}</h4>
-            <v-input type="number" v-model="quantity"/>
+            <v-text-field type="number" v-model="quantity"/>
           </v-col>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.temperature') }}</h4>
-            <v-input type="number" v-model="temperature"/>
+            <v-text-field type="number" v-model="temperature"/>
           </v-col>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.photoperiod') }}</h4>
-            <v-input type="number" v-model="photoperiod"/>
+            <v-text-field type="number" v-model="photoperiod"/>
           </v-col>
         </v-row>
 
         <v-col>
-          <v-row>
-            <h4 class="mr-2 align-self-center">{{ t('form.request.subject') }}</h4>
-            <v-textarea
-              v-model="subject"
-              variant="outlined"
-              :placeholder="t('form.request.reasonPlaceholder')"
-              rows="4"
-              class="custom-input align-self-center mb-4"
-            />
-          </v-row>
 
-          <v-row>
-            <h4 class="mr-2 align-self-center">{{ t('form.request.reason') }}</h4>
-            <v-textarea
-              v-model="reason"
-              variant="outlined"
-              :placeholder="t('form.request.reasonPlaceholder')"
-              rows="4"
-              class="custom-input align-self-center mb-4"
-            />
-          </v-row>
+          <h4 class="mr-2 align-self-center">{{ t('form.request.subject') }}</h4>
+          <v-textarea
+            v-model="subject"
+            variant="outlined"
+            :placeholder="t('form.request.reasonPlaceholder')"
+            rows="4"
+            class="custom-input align-self-center mb-4"
+          />
+
+          <h4 class="mr-2 align-self-center">{{ t('form.request.reason') }}</h4>
+          <v-textarea
+            v-model="reason"
+            variant="outlined"
+            :placeholder="t('form.request.reasonPlaceholder')"
+            rows="4"
+            class="custom-input align-self-center mb-4"
+          />
+
         </v-col>
 
 
@@ -233,6 +231,7 @@ const handleSubmit = async () => {
     await resquestRepository.postAccountRequest(requestOutput);
     resetForm()
   }catch (error) {
+    console.log(error);
     alert(t('form.request.error.sending'))
   }finally {
     isLoading.value = false;
