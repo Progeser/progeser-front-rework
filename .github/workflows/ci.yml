@@ -1,5 +1,5 @@
 # .github/workflows/ci.yml
-name: CI Build and Sonar
+name: Build
 
 on:
   push:

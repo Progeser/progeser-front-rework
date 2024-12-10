@@ -18,7 +18,9 @@ export default {
     cancel: 'Annuler',
     add: 'Ajouter',
     send: 'Envoyer',
-    delete: 'Supprimer'
+    delete: 'Supprimer',
+    accept: 'Accepter',
+    reject: 'Refuser',
   },
   form: {
     species: {
@@ -93,7 +95,20 @@ export default {
       registerHere: "Inscrivez-vous ici"
     },
     request: {
-      title: "Demande de culture",
+      title: "Demandes de cultures",
+      table: {
+        requesterName: "Nom du demandeur",
+        email: "Email",
+        plant: "Plante",
+        quantity: "Quantité",
+        dueDate: "Date souhaitée",
+        actions: "Actions"
+      },
+      confirmAccept: "Êtes-vous sûr de vouloir accepter cette demande ?",
+      confirmReject: "Êtes-vous sûr de vouloir rejeter cette demande ?",
+      acceptError: "Erreur lors de l'acceptation de la demande.",
+      rejectError: "Erreur lors du rejet de la demande.",
+      noRequests: "Aucune demande disponible.",
       firstName: "Nom",
       firstNamePlaceholder: "Votre nom",
       lastName: "Prénom",
@@ -118,7 +133,16 @@ export default {
         greaterThanZero:"Doit être supérieur a zero",
         notNull: "Doit être Selectionné",
         invalidEmail:'Email invalide'
-      }
+      },
+      password: "Mot de passe",
+      confirmPassword: "Confirmez le mot de passe",
+      required: "Ce champ est obligatoire.",
+      invalidEmail: "Veuillez entrer une adresse e-mail valide.",
+      passwordTooWeak: "Le mot de passe doit comporter au moins 8 caractères.",
+      passwordMismatch: "Les mots de passe ne correspondent pas.",
+      success: "Votre demande a été envoyée avec succès !",
+      alreadyAccount: "Déjà un compte ?",
+      loginHere: "Connectez-vous ici",
     }
   }
 };

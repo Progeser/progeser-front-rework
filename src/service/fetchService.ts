@@ -51,7 +51,7 @@ class FetchService {
   }
 
   // POST request
-  public async post<T, U>(endpoint: string, data: U): Promise<T> {
+  public async post<T, U>(endpoint: string, data?: U): Promise<T> {
     try {
       const bearer: string | undefined = await this.authStore.getBearer();
       const response: AxiosResponse<T> = await axios.post<T>(`${this.baseUrl}${endpoint}`, data, { headers: { Authorization: bearer } });

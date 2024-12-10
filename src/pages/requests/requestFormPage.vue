@@ -144,7 +144,7 @@ import { useI18n } from "vue-i18n";
 import { Species } from "@/model/Species";
 import SpeciesRepository from "@/repository/speciesRepository";
 import {RequestOutput} from "@/model/output/RequestOutput";
-import RequestRepository from "@/repository/requestRepository";
+import {RequestRepository} from "@/repository/requestRepository";
 
 const speciesRepository = new SpeciesRepository();
 const resquestRepository = new RequestRepository()
@@ -220,6 +220,7 @@ const handleSubmit = async () => {
       photoperiod.value
     );
     await resquestRepository.postRequest(requestOutput);
+    alert(t('form.request.success'))
     resetForm()
   }catch (error) {
     console.log(error);
