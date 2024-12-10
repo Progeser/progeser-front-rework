@@ -48,7 +48,6 @@
             <v-text-field
               v-model="lab"
               variant="outlined"
-              :rules="[isRequired]"
               :placeholder="t('form.request.labPlaceholder')"
               class="custom-input align-self-center mb-4"
             />
@@ -93,26 +92,22 @@
             <v-text-field type="number" v-model="photoperiod" :rules="[isGreaterThanZero]" variant="outlined"/>
           </v-col>
         </v-row>
-        <v-row class="justify-center align-center">
-          <v-col cols="auto" class="text-center">
-            <h4 class="mr-2 align-self-center">{{ t('form.request.due_date') }} : </h4>
-            <v-date-input
-              v-model="date"
-              min-width="200"
-              :rules="[isNotNull]"
-              variant="outlined"
-              placeholder="DD/MM/YYYY"
-            />
-          </v-col>
-        </v-row>
-
+        <v-col>
+          <h4 class="mr-2 align-self-center">{{ t('form.request.due_date') }} : </h4>
+          <v-date-input
+            v-model="date"
+            min-width="200"
+            :rules="[isNotNull]"
+            variant="outlined"
+            placeholder="DD/MM/YYYY"
+          />
+        </v-col>
         <v-col>
           <h4 class="mr-2 align-self-center">{{ t('form.request.subject') }}</h4>
-          <v-textarea
+          <v-text-field
             v-model="subject"
             variant="outlined"
-            :placeholder="t('form.request.reasonPlaceholder')"
-            rows="2"
+            :placeholder="t('form.request.subjectPlaceholder')"
             class="custom-input align-self-center mb-4"
           />
 
@@ -185,13 +180,12 @@ const isFormValid = computed(() => {
     firstName.value.trim().length > 0 &&
     lastName.value.trim().length > 0 &&
     email.value.trim().length > 0 &&
-    lab.value.trim().length > 0 &&
-      subject.value.trim().length > 0 &&
-      selectedSpeciesStageId.value !== null &&
-      date.value !== null &&
-      quantity.value > 0 &&
-      temperature.value > 0 &&
-      photoperiod.value > 0
+    subject.value.trim().length > 0 &&
+    selectedSpeciesStageId.value !== null &&
+    date.value !== null &&
+    quantity.value > 0 &&
+    temperature.value > 0 &&
+    photoperiod.value > 0
   );
 });
 

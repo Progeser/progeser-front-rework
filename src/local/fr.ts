@@ -93,7 +93,7 @@ export default {
       registerHere: "Inscrivez-vous ici"
     },
     request: {
-      title: "Demande de compte utilisateur",
+      title: "Demande de culture",
       firstName: "Nom",
       firstNamePlaceholder: "Votre nom",
       lastName: "Prénom",
@@ -101,21 +101,22 @@ export default {
       email: "Adresse e-mail",
       lab: "Laboratoire (optionnel)",
       labPlaceholder: "Nom du laboratoire",
-      reason: "Motif (optionnel)",
+      reason: "Description (optionnel)",
       reasonPlaceholder: "Expliquez brièvement votre demande",
       species: "Espèce",
-      stage: "Stage",
-      subject: "Sujet de la demande",
+      stage: "Stade",
+      subject: "Objet de la demande",
+      subjectPlaceholder: "Donner l'objet de la demande",
       quantity: "Quantité",
-      temperature: "Temperature",
-      photoperiod: "Photoperiode",
-      due_date: "Date souhaiter",
+      temperature: "Température",
+      photoperiod: "Photopériode",
+      due_date: "Date souhaitée",
       error: {
         fetchSpecies: "Une erreur est survenue dans la recupération des espèces",
-        sending: "Une erreur est survenue lors de l'envoie",
-        required: "Ne doit pas étre vide",
-        greaterThanZero:"Doit étre supérieur a zero",
-        notNull: "Doit étre Selectionner",
+        sending: "Une erreur est survenue lors de l'envoi",
+        required: "Ne doit pas être vide",
+        greaterThanZero:"Doit être supérieur a zero",
+        notNull: "Doit être Selectionné",
         invalidEmail:'Email invalide'
       }
     }
