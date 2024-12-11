@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeMount } from 'vue';
+import {ref, onBeforeMount, Ref} from 'vue';
 import { Request } from '@/model/Request';
 import { useI18n } from "vue-i18n";
 import { RequestRepository } from "@/repository/requestRepository";
@@ -62,15 +62,13 @@ const pageNumber = ref(1);
 const itemsPerPage = ref(10);
 const totalCount = ref(0);
 
-const headers = ref([
+const headers: Ref<any> = ref<any>([
   { title: t('form.request.table.requesterName'), key: 'requester_name', align: 'center', sortable: true },
   { title: t('form.request.table.email'), key: 'requester_email', align: 'center', sortable: true },
   { title: t('form.request.table.plant'), key: 'plant_name', align: 'center', sortable: true },
   { title: t('form.request.table.quantity'), key: 'quantity', align: 'center', sortable: true },
-  {title: t('form.request.table.dueDate'), key: 'due_date', align: 'center', sortable: true,
-    value: (item: Request) => {
-      if (!item.due_date) return '';
-      return d(new Date(item.due_date), 'short')}},
+  { title: t('form.request.table.dueDate'), key: 'due_date', align: 'center', sortable: true,
+    value: (item: Request) => !item.due_date ? '': d(new Date(item.due_date), 'short')},
   { title: t('common.actions'), key: 'actions', align: 'center', sortable: false },
 ]);
 
