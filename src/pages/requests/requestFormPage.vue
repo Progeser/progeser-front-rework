@@ -223,7 +223,6 @@ const handleSubmit = async () => {
     alert(t('form.request.success'))
     resetForm()
   }catch (error) {
-    console.log(error);
     alert(t('form.request.error.sending'))
   }finally {
     isLoading.value = false;

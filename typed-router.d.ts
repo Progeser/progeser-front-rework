@@ -27,6 +27,7 @@ declare module 'vue-router/auto-routes' {
     '/containers/containersPage': RouteRecordInfo<'/containers/containersPage', '/containers/containersPage', Record<never, never>, Record<never, never>>,
     '/homePage': RouteRecordInfo<'/homePage', '/homePage', Record<never, never>, Record<never, never>>,
     '/requests/requestFormPage': RouteRecordInfo<'/requests/requestFormPage', '/requests/requestFormPage', Record<never, never>, Record<never, never>>,
+    '/requests/requestInformationPage': RouteRecordInfo<'/requests/requestInformationPage', '/requests/requestInformationPage', Record<never, never>, Record<never, never>>,
     '/requests/requestsPage': RouteRecordInfo<'/requests/requestsPage', '/requests/requestsPage', Record<never, never>, Record<never, never>>,
     '/species/specieFormPage': RouteRecordInfo<'/species/specieFormPage', '/species/specieFormPage', Record<never, never>, Record<never, never>>,
     '/species/speciesPage': RouteRecordInfo<'/species/speciesPage', '/species/speciesPage', Record<never, never>, Record<never, never>>,

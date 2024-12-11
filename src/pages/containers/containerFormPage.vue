@@ -154,7 +154,6 @@ const validateArea = () => {
 
 const updateDimensionNames = () => {
   if (isOtherShape.value) {
-    console.log("isOtherShape");
     dimensionsInput.value = "";
     container.value.dimensions = null;
     errors.value.dimensions = null;

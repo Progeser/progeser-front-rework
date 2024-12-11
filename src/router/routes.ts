@@ -56,6 +56,12 @@ const routes: RouteRecordRaw[] = [
     meta: { role: 'any' }
   },
   {
+    path: '/requests/:idRequest/information',
+    name : 'RequestInformation',
+    component: () => import('@/pages/requests/requestInformationPage.vue'),
+    meta: { role: 'grower' }
+  },
+  {
     path: '/:catchAll(.*)*',
     component: () => import('@/pages/connexion/loginPage.vue'),
     meta: { role: 'any' }

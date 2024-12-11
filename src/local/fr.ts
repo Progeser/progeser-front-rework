@@ -9,7 +9,8 @@ export default {
       users: 'Utilisateurs',
       compartiments: 'Compartiments',
       form: 'Formulaire',
-      view: 'Modélisation'
+      view: 'Modélisation',
+      information: 'Information'
     },
   },
   common: {
@@ -21,6 +22,9 @@ export default {
     delete: 'Supprimer',
     accept: 'Accepter',
     reject: 'Refuser',
+    actions: 'Actions',
+    item_per_page: 'Résultat par page : ',
+    information: 'Information'
   },
   form: {
     species: {

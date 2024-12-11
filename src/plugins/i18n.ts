@@ -7,5 +7,19 @@ export default createI18n({
   locale: 'fr',
   messages: {
     fr
+  },
+  datetimeFormats: {
+    'fr': {
+      short: {
+        day: 'numeric',
+        month: 'numeric',
+        year: 'numeric'
+      },
+      long: {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      }
+    }
   }
 })
