@@ -73,7 +73,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/canvas/modelingPage.vue'),
   },
   {
-    path: '/building/:buildingId/greenhouse/:greenhouseId/request/:requestDistributionId/view',
+    path: '/building/:buildingId/greenhouse/:greenhouseId/request/:requestId/view',
     name: 'plantingPage',
     props: true,
     component: () => import('@/pages/canvas/plantingPage.vue'),

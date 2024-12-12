@@ -24,9 +24,11 @@
         ></v-text-field>
       </div>
 
-      <div v-if="requestDistribution && request" class="request-distribution-container">
-        <p>{{ requestDistribution ? request.plant_name : "" }}</p>
-        <p>{{ request.quantity - requestDistribution.seeds_left_to_plant }} / {{ request.quantity }}</p>
+      <div v-if="requestStore.request" class="request-distribution-container">
+        <p>{{ requestStore.request.plant_name }}</p>
+        <p>{{ requestStore.seeds_left_to_plant }} / {{
+            requestStore.request.quantity
+          }}</p>
       </div>
       <div v-else class="request-distribution-container">
         <p>Logging...</p>
@@ -55,24 +57,20 @@ import {useRequestDistribution} from "@/store/useRequestDistribution";
 import {useRequest} from "@/store/useRequest";
 import {useRoute} from "vue-router";
 import {useBenchStore} from "@/store/useBenchStore";
-import {useDistribution} from "@/store/useDistribution";
 import {usePot} from "@/store/usePot";
 import {useGreenhouse} from "@/store/useGreenhouse";
 
 const canvasRef: Ref<HTMLCanvasElement | undefined> = ref();
 const canvasContext: Ref<CanvasRenderingContext2D | undefined> = ref();
-const requestDistribution: Ref<RequestDistribution | null> = ref(null)
-const request: Ref<Request | null> = ref(null)
 
 const requestDistributionStore = useRequestDistribution();
 const requestStore = useRequest();
 const benchStore = useBenchStore();
-const distributionStore = useDistribution();
 const potStore = usePot()
 const greenhouseStore = useGreenhouse();
 
 const route = useRoute();
-const requestDistributionId = Number(route.params.requestDistributionId);
+const requestId = Number(route.params.requestId);
 const buildingId = Number(route.params.buildingId);
 const greenhouseId = Number(route.params.greenhouseId);
 
@@ -93,13 +91,13 @@ watch(
 );
 
 watch(
-  () => distributionStore.distributions,
+  () => requestDistributionStore.requestDistributions,
   renderCanvas,
   {immediate: true}
 );
 
 watch(
-  () => distributionStore.selectedDistribution,
+  () => requestDistributionStore.selectedDistribution,
   renderCanvas,
   {immediate: true}
 );
@@ -118,18 +116,20 @@ onMounted(async () => {
 
   resizeCanvas();
   await Promise.all([
-    requestDistributionStore.loadRequestDistributions(),
-    requestStore.loadRequests(),
+    requestStore.loadRequest(requestId),
+    requestDistributionStore.loadDistributions(),
     benchStore.loadBenches(greenhouseId),
-    distributionStore.loadDistributions(greenhouseId),
     potStore.loadPots(),
     greenhouseStore.loadGreenhouse(buildingId)
   ]);
 
-  requestDistribution.value = requestDistributionStore.getRequestDistributionById(requestDistributionId);
-  request.value = requestStore.getRequestById(requestDistribution.value!.request_id);
-
   updateFormDistributions();
+
+  requestDistributionStore.requestDistributions.forEach((distribution) => {
+    if (distribution.request_id != requestId) return;
+
+    requestStore.decreasesNumberOfSeedsLeftToPlant(distribution.pot_quantity)
+  })
 });
 
 onBeforeUnmount(() => {
@@ -171,24 +171,27 @@ function renderCanvas() {
       bench.dimensions[1]
     );
 
-    distributionStore.getDistributionByBenchId(bench.id)?.forEach((distribution) => {
+    const distributions = requestDistributionStore.getDistributionByBenchId(bench.id)
+    if (!distributions) return;
+
+    distributions.forEach((distribution) => {
       if (!canvasContext.value) return;
 
-      if (distributionStore.selectedDistribution && distribution.id === distributionStore.selectedDistribution.id) {
-        distribution = distributionStore.selectedDistribution;
+      if (requestDistributionStore.selectedDistribution && distribution.id === requestDistributionStore.selectedDistribution.id) {
+        distribution = requestDistributionStore.selectedDistribution;
       }
 
       canvasContext.value.save()
       canvasContext.value.lineWidth = 2;
 
-      if (distribution.request_distribution_id != requestDistributionId) {
+      if (distribution.request_id != requestId) {
         canvasContext.value.fillStyle = 'rgba(244,67,54,0.50)'
-        canvasContext.value.strokeStyle = distributionStore.selectedDistribution && distribution.id === distributionStore.selectedDistribution.id
+        canvasContext.value.strokeStyle = requestDistributionStore.selectedDistribution && distribution.id === requestDistributionStore.selectedDistribution.id
           ? 'rgb(253,216,53)'
           : 'rgb(211,47,47)';
       } else {
         canvasContext.value.fillStyle = 'rgba(67,160,71,0.50)'
-        canvasContext.value.strokeStyle = distributionStore.selectedDistribution && distribution.id === distributionStore.selectedDistribution.id
+        canvasContext.value.strokeStyle = requestDistributionStore.selectedDistribution && distribution.id === requestDistributionStore.selectedDistribution.id
           ? 'rgb(253,216,53)'
           : 'rgb(46,125,50)';
       }
@@ -199,7 +202,7 @@ function renderCanvas() {
       canvasContext.value.font = 'bold 14px Arial';
       canvasContext.value.textAlign = 'center';
       canvasContext.value.textBaseline = 'middle';
-      canvasContext.value.fillText(String(distribution.seed_quantity), centerX, centerY + 2);
+      canvasContext.value.fillText(String(distribution.pot_quantity), centerX, centerY + 2);
 
       canvasContext.value.fillRect(
         distribution.positions_on_bench[0] + bench.positions[0],
@@ -228,7 +231,7 @@ function handleMouseOverDistributions(event: MouseEvent) {
   const mouseY = event.clientY - rect.top;
   let cursor = 'default';
 
-  for (const distribution of distributionStore.distributions) {
+  for (const distribution of requestDistributionStore.requestDistributions) {
     const bench = benchStore.getBenchById(distribution.bench_id);
 
     if (bench === undefined) continue;
@@ -263,7 +266,7 @@ function handleMouseDown(event: MouseEvent) {
       mouseY >= bench.positions[1] &&
       mouseY <= bench.positions[1] + bench.dimensions[1]
     ) {
-      const distributions = distributionStore.getDistributionByBenchId(bench.id)
+      const distributions = requestDistributionStore.getDistributionByBenchId(bench.id)
 
       if (!distributions) continue;
 
@@ -274,7 +277,7 @@ function handleMouseDown(event: MouseEvent) {
           mouseY >= distribution.positions_on_bench[1] + bench.positions[1] &&
           mouseY <= distribution.positions_on_bench[1] + bench.positions[1] + distribution.dimensions[1]
         ) {
-          distributionStore.selectDistribution(distribution);
+          requestDistributionStore.selectDistribution(distribution);
 
           clickOnX = mouseX - distribution.positions_on_bench[0];
           clickOnY = mouseY - distribution.positions_on_bench[1];
@@ -298,7 +301,7 @@ function handleMouseDown(event: MouseEvent) {
     clickOnX = mouseX;
     clickOnY = mouseY;
 
-    distributionStore.selectDistribution(null);
+    requestDistributionStore.selectDistribution(null);
   }
 
   if (isOverBench || isOverDistribution) {
@@ -309,8 +312,8 @@ function handleMouseDown(event: MouseEvent) {
 function handleMouseUp(event: MouseEvent) {
   clickIsMaintained = false;
 
-  if (distributionStore.selectedDistribution) {
-    distributionStore.updateDistribution(distributionStore.selectedDistribution)
+  if (requestDistributionStore.selectedDistribution) {
+    requestDistributionStore.updateDistribution(requestDistributionStore.selectedDistribution)
   } else {
     createNewDistribution(event);
   }
@@ -319,7 +322,7 @@ function handleMouseUp(event: MouseEvent) {
 function handleMouseMove(event: MouseEvent) {
   if (!clickIsMaintained) return;
 
-  if (distributionStore.selectedDistribution) {
+  if (requestDistributionStore.selectedDistribution) {
     dragDistribution(event);
   } else {
     drawNewDistributionSelectionArea(event);
@@ -327,14 +330,14 @@ function handleMouseMove(event: MouseEvent) {
 }
 
 function dragDistribution(event: MouseEvent) {
-  if (!distributionStore.selectedDistribution || !canvasRef.value) return;
+  if (!requestDistributionStore.selectedDistribution || !canvasRef.value) return;
 
   if (animationFrameId) {
     cancelAnimationFrame(animationFrameId);
   }
 
   animationFrameId = requestAnimationFrame(() => {
-    if (!canvasRef.value || !distributionStore.selectedDistribution) return;
+    if (!canvasRef.value || !requestDistributionStore.selectedDistribution) return;
 
     const rect = canvasRef.value.getBoundingClientRect();
     const mouseX = event.clientX - rect.left;
@@ -342,7 +345,7 @@ function dragDistribution(event: MouseEvent) {
     const newPosX = mouseX - clickOnX;
     const newPosY = mouseY - clickOnY;
 
-    distributionStore.updateDistributionPositions([newPosX, newPosY]);
+    requestDistributionStore.updateDistributionPositions([newPosX, newPosY]);
     animationFrameId = null;
   });
 }
@@ -354,16 +357,16 @@ function updateSelectedPot(value: number) {
 function updateFormDistributions() {
   formDistributions.value = [];
 
-  const distributions = distributionStore.getDistributionByRequestDistributionId(requestDistributionId)
+  const distributions = requestDistributionStore.getDistributionByRequestId(requestId)
   if (!distributions) return
 
   distributions.forEach((distribution) => {
-    const seed_quantity = distribution.seed_quantity
-    const benchName = benchStore.getBenchById(distribution.bench_id)?.name
-    const greenhouseName = greenhouseStore.getGreenhouseById(buildingId)?.name
+    const seed_quantity = distribution.pot_quantity
+    const bench = benchStore.getBenchById(distribution.bench_id)
+    const greenhouseName = bench ? greenhouseStore.getGreenhouseById(bench.greenhouse_id)?.name : undefined
 
     formDistributions.value.push({
-      bench_name: benchName || "",
+      bench_name: bench ? bench.name : "",
       greenhouse_name: greenhouseName || "",
       quantity: seed_quantity
     })
@@ -387,6 +390,20 @@ function drawNewDistributionSelectionArea(event: MouseEvent) {
 
   canvasContext.value.setLineDash([4, 2]);
   canvasContext.value.strokeRect(clickOnX, clickOnY, newWidth, newHeight);
+
+  const centerX = clickOnX + newWidth / 2;
+  const centerY = clickOnY + newHeight / 2;
+
+  const pot = potStore.selectedPot
+  if (!pot) return;
+
+  const zoneArea = newWidth * newHeight;
+  const seed_quantity = calculateNumberOfPotsWithSpacing(zoneArea, pot.area, formSpace.value)
+
+  canvasContext.value.font = 'bold 14px Arial';
+  canvasContext.value.textAlign = 'center';
+  canvasContext.value.textBaseline = 'middle';
+  canvasContext.value.fillText(String(seed_quantity), centerX, centerY + 2);
 }
 
 async function createNewDistribution(event: MouseEvent) {
@@ -398,30 +415,36 @@ async function createNewDistribution(event: MouseEvent) {
   const newWidth = Math.abs(mouseX - clickOnX);
   const newHeight = Math.abs(mouseY - clickOnY);
 
-  if (newWidth < 10 || newHeight < 10) return;
+  if (newWidth < 10 || newHeight < 10) {
+    renderCanvas();
+    return
+  }
 
   const pot = potStore.selectedPot
   if (!pot) {
     alert('Please select a pot');
+    renderCanvas();
     return;
   }
 
   const zoneArea = newWidth * newHeight;
   const seed_quantity = calculateNumberOfPotsWithSpacing(zoneArea, pot.area, formSpace.value)
   const distribution = {
-    request_distribution_id: requestDistributionId,
+    request_id: requestId,
     bench_id: clickIsOnBench.id,
     positions_on_bench: [((mouseX > clickOnX) ? clickOnX : mouseX) - clickIsOnBench.positions[0], ((mouseY > clickOnY) ? clickOnY : mouseY) - clickIsOnBench.positions[1]],
     dimensions: [newWidth, newHeight],
-    seed_quantity: seed_quantity,
+    pot_id: pot.id,
+    pot_quantity: seed_quantity,
+    plant_stage_id: requestStore.plantStageId,
   };
 
-  await distributionStore
-    .addDistribution(distribution)
+  await requestDistributionStore
+    .addDistribution(requestId, distribution)
     .then(() => {
-      if (distributionStore.selectedDistribution === null) return;
+      if (requestDistributionStore.selectedDistribution === null) return;
 
-      requestDistributionStore.decreasesNumberOfSeedsLeftToPlant(requestDistributionId, seed_quantity)
+      requestStore.decreasesNumberOfSeedsLeftToPlant(seed_quantity)
       updateFormDistributions();
     })
     .catch(renderCanvas);
@@ -477,6 +500,9 @@ function calculateNumberOfPotsWithSpacing(areaZone: number, potArea: number, spa
 
   padding: 16px;
   background: #f9f9f9;
+
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .v-list-item {

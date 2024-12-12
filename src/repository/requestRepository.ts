@@ -22,4 +22,8 @@ export class RequestRepository {
   public async postRequest(data: RequestOutput): Promise<any> { //todo remove any
     return await this.fetchService.postWithoutBearer(`requests`, data);
   }
+
+  public async getRequest(requestId: number): Promise<Request> {
+    return await this.fetchService.get<Request>(`requests/${requestId}/`)
+  }
 }
