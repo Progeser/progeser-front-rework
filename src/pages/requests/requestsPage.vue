@@ -15,7 +15,8 @@
       <template v-slot:item.actions="{ item }">
         <div class="d-flex justify-center">
           <v-btn
-            @click="acceptRequest(item)"
+            v-if="isNewPage"
+            @click="acceptRequest()"
             class="ml-2"
             variant="outlined"
             color="success"
@@ -24,6 +25,7 @@
             <v-icon icon="mdi-check" />
           </v-btn>
           <v-btn
+            v-if="isNewPage"
             @click="rejectRequest(item)"
             class="ml-2"
             variant="outlined"
@@ -31,6 +33,15 @@
           >
             {{ t('common.reject') }}
             <v-icon icon="mdi-close" />
+          </v-btn>
+          <v-btn
+            v-if="isAcceptedPage"
+            @click="finishRequest(item)"
+            class="ml-2"
+            variant="outlined"
+            color="secondary"
+          >
+            {{t("common.finish")}}
           </v-btn>
           <v-btn
             @click="navigateToInformationPage(item.id)"
@@ -66,7 +77,7 @@
 
 <script setup lang="ts">
 import { RequestModel } from '@/model/RequestModel';
-import {ref, onBeforeMount, Ref, watch} from 'vue';
+import {ref, onBeforeMount, Ref, watch, computed} from 'vue';
 import { useI18n } from "vue-i18n";
 import { RequestRepository } from "@/repository/requestRepository";
 import router from "@/router"
@@ -107,7 +118,7 @@ const updateRequests = async (page: number, itemsPerPage: number) => {
   loading.value = true;
   try {
     buildingList.value = await buildingRepository.getAllBuildings()
-    const response = await requestRepository.getRequests(page, itemsPerPage);
+    const response = await requestRepository.getRequests(page, itemsPerPage,getFetchStatus());
     totalCount.value = response.totalCount || 0;
     requestsList.value = response.content.map((request) => ({
       ...request,
@@ -137,9 +148,19 @@ const rejectRequest = async (item: RequestModel) => {
   }
 }
 
-const acceptRequest = (item: RequestModel) => {
+const finishRequest = async (item: RequestModel) => {
+  if (confirm(t('request.confirmReject'))) {
+    try {
+      await requestRepository.finishRequest(item.id.toString());
+      updateRequests(pageNumber.value, itemsPerPage.value);
+    } catch (error) {
+      alert(t('request.error.fetch'));
+    }
+  }
+}
+
+const acceptRequest = () => {
   showDialog.value = true;
-  selectedCompartement.value = item.id
 }
 
 const getBuildingCompartiment = async () => {
@@ -155,11 +176,12 @@ const sendDistribution = async () => {
 }
 
 const cancelDistribution = () => {
+  showDialog.value = false;
   reset()
 }
 
 const navigateToInformationPage = async (id: number) => {
-  await router.push({ name: 'RequestShow' , params: { idRequest: id } });
+  await router.push({ name: 'RequestShow' , params: { idRequest: id, status: 'new'} });
 }
 
 const reset = () => {
@@ -168,10 +190,35 @@ const reset = () => {
   selectedCompartement.value = null
 }
 
+const isNewPage = computed(() => {
+  return router.currentRoute.value.name === 'requestsNew';
+})
+
+const isAcceptedPage = computed(() => {
+  return router.currentRoute.value.name === "requestsAccepted";
+})
+
+const getFetchStatus = () => {
+  if (isNewPage.value) {
+    return "pending"
+  }else if (isAcceptedPage.value) {
+    return "accepted"
+  }else{
+    return ""
+  }
+}
+
 watch(selectedBuilding, async () => {
   selectedCompartement.value = null;
   await getBuildingCompartiment();
 })
 
-onBeforeMount(() => updateRequests(pageNumber.value, itemsPerPage.value));
+watch(router.currentRoute,() => {
+  requestsList.value = []
+  updateRequests(1, itemsPerPage.value)
+})
+
+onBeforeMount(() => {
+  updateRequests(pageNumber.value, itemsPerPage.value)
+});
 </script>

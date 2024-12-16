@@ -7,8 +7,8 @@ import {RequestOutput} from "@/model/output/RequestOutput";
 export class RequestRepository {
   private readonly fetchService: FetchService = new FetchService();
 
-  public async getRequests(pageNumber : number, pageSize : number = 10): Promise<GenericPagination<RequestModel[]>> {
-    return await this.fetchService.getWithPagination(`requests?page[number]=${pageNumber}&page[size]=${pageSize}`)
+  public async getRequests(pageNumber : number, pageSize : number = 10, status : string): Promise<GenericPagination<RequestModel[]>> {
+    return await this.fetchService.getWithPagination(`requests?page[number]=${pageNumber}&page[size]=${pageSize}&filter[status]=${status}`);
   }
 
   public async getRequest(id: number): Promise<RequestModel> {
@@ -23,8 +23,12 @@ export class RequestRepository {
     return await this.fetchService.post(`requests/${id}/refuse`)
   }
 
-  public async postRequest(data: RequestOutput): Promise<any> {
+  public async postRequest(data: RequestOutput): Promise<RequestModel> {
     return await this.fetchService.postWithoutBearer(`requests`, data);
+  }
+
+  public async finishRequest(id: string): Promise<RequestModel> {
+    return await this.fetchService.post(`requests/${id}/complete`)
   }
 
 }

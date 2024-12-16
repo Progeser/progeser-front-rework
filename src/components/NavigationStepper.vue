@@ -15,7 +15,7 @@ import {computed} from "vue";
 import {useI18n} from "vue-i18n";
 
 const { t } = useI18n();
-const specialCase = ["buildings","compartiments","requests"]
+const specialCase = ["buildings","compartiments","new","accepted","archived"]
 
 const routeList = computed(() => router.currentRoute.value.fullPath.split("/").slice(1));
 

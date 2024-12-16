@@ -56,7 +56,7 @@ const routes: RouteRecordRaw[] = [
     meta: { role: 'any' }
   },
   {
-    path: '/requests/:idRequest/show',
+    path: '/requests/:status/:idRequest/show',
     name : 'RequestShow',
     props: true,
     component: () => import('@/pages/requests/requestInformationPage.vue'),

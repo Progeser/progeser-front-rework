@@ -26,8 +26,20 @@ const menuRoutes: RouteRecordRaw[] = [
     meta: { role: 'grower' }
   },
   {
-    path: '/requests',
-    name: 'requests',
+    path: '/requests/new',
+    name: 'requestsNew',
+    component: () => import('@/pages/requests/requestsPage.vue'),
+    meta: { role: 'grower' }
+  },
+  {
+    path: '/requests/accepted',
+    name: 'requestsAccepted',
+    component: () => import('@/pages/requests/requestsPage.vue'),
+    meta: { role: 'grower' }
+  },
+  {
+    path: '/requests/archived',
+    name: 'requestsArchived',
     component: () => import('@/pages/requests/requestsPage.vue'),
     meta: { role: 'grower' }
   },
@@ -44,7 +56,9 @@ export const icons: Record<string, string> = {
   buildings: 'mdi-city',
   species: 'mdi-flower',
   containers: 'mdi-pot',
-  requests: 'mdi-bell',
+  requestsNew: 'mdi-bell',
+  requestsAccepted: 'mdi-calendar-clock',
+  requestsArchived: 'mdi-calendar-remove',
   users: 'mdi-account',
 };
 

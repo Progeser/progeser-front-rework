@@ -6,11 +6,17 @@ export default {
       species: 'Espèces',
       containers: 'Conteneurs',
       requests: 'Demandes',
+      requestsNew: 'Nouvelles demandes',
+      requestsAccepted: 'Demandes en cours',
+      requestsArchived: 'Demandes archivées',
       users: 'Utilisateurs',
       compartiments: 'Compartiments',
       form: 'Formulaire',
       view: 'Modélisation',
-      show: 'Voir'
+      show: 'Voir',
+      new: 'Nouvelles',
+      accepted: 'En Cours',
+      archived: 'Archivées'
     },
   },
   common: {
@@ -24,7 +30,8 @@ export default {
     reject: 'Refuser',
     actions: 'Actions',
     item_per_page: 'Résultat par page : ',
-    show: 'Voir'
+    show: 'Voir',
+    finish: 'Terminer',
   },
   form: {
     species: {
