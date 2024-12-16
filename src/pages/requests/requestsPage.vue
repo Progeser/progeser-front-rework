@@ -99,7 +99,7 @@ onBeforeMount(() => updateRequests(pageNumber.value, itemsPerPage.value));
 const acceptRequest = async (item: Request) => {
   if (confirm(t('request.confirmAccept'))) {
     try {
-      await requestRepository.acceptRequest(item.id!);
+      await requestRepository.acceptRequest(item.id!.toString());
       updateRequests(pageNumber.value, itemsPerPage.value);
     } catch (error) {
       alert(t('request.acceptError'));
@@ -111,7 +111,7 @@ const acceptRequest = async (item: Request) => {
 const rejectRequest = async (item: Request) => {
   if (confirm(t('request.confirmReject'))) {
     try {
-      await requestRepository.rejectRequest(item.id!);
+      await requestRepository.rejectRequest(item.id!.toString());
       updateRequests(pageNumber.value, itemsPerPage.value);
     } catch (error) {
       alert(t('request.rejectError'));

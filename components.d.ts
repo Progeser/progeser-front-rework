@@ -8,7 +8,6 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     Card: typeof import('./src/components/Card.vue')['default']
-    CustomTable: typeof import('./src/components/CustomTable.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     MenuSideBarComponent: typeof import('./src/components/MenuSideBarComponent.vue')['default']
     NavigationStepper: typeof import('./src/components/NavigationStepper.vue')['default']
