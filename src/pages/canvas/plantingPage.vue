@@ -56,7 +56,7 @@ import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue';
 import {useRequestDistribution} from "@/store/useRequestDistribution";
 import {useRequest} from "@/store/useRequest";
 import {useRoute} from "vue-router";
-import {useBenchStore} from "@/store/useBenchStore";
+import {useBenchStore} from "@/store/BenchStore";
 import {usePot} from "@/store/usePot";
 import {useGreenhouse} from "@/store/useGreenhouse";
 
