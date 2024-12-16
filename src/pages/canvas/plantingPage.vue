@@ -105,16 +105,9 @@ watch(
 
 // Lifecycle hooks
 onMounted(async () => {
-  window.addEventListener('resize', resizeCanvas);
-
-  if (!canvasRef.value) return
-  canvasContext.value = canvasRef.value.getContext('2d') || undefined;
-  canvasRef.value.addEventListener('mousemove', handleMouseOverDistributions);
-  canvasRef.value.addEventListener('mousedown', handleMouseDown);
-  canvasRef.value.addEventListener('mouseup', handleMouseUp);
-  canvasRef.value.addEventListener('mousemove', handleMouseMove);
-
+  addEventListeners();
   resizeCanvas();
+
   await Promise.all([
     requestStore.loadRequest(requestId),
     requestDistributionStore.loadDistributions(),
@@ -125,21 +118,11 @@ onMounted(async () => {
 
   updateFormDistributions();
 
-  requestDistributionStore.requestDistributions.forEach((distribution) => {
-    if (distribution.request_id != requestId) return;
-
-    requestStore.decreasesNumberOfSeedsLeftToPlant(distribution.pot_quantity)
-  })
+  computeSeedLeftToPlant();
 });
 
 onBeforeUnmount(() => {
-  window.removeEventListener('resize', resizeCanvas);
-
-  if (!canvasRef.value) return
-  canvasRef.value.removeEventListener('mousemove', handleMouseOverDistributions);
-  canvasRef.value.removeEventListener('mousedown', handleMouseDown);
-  canvasRef.value.removeEventListener('mouseup', handleMouseUp);
-  canvasRef.value.removeEventListener('mousemove', handleMouseMove);
+  removeEventListeners();
 });
 
 // Functions
@@ -152,6 +135,36 @@ function resizeCanvas() {
     }
     renderCanvas();
   }
+}
+
+function computeSeedLeftToPlant() {
+  requestDistributionStore.requestDistributions.forEach((distribution) => {
+    if (distribution.request_id != requestId) return;
+
+    requestStore.decreasesNumberOfSeedsLeftToPlant(distribution.pot_quantity)
+  })
+}
+
+function addEventListeners() {
+  window.addEventListener('resize', resizeCanvas);
+
+  if (!canvasRef.value) return
+  canvasContext.value = canvasRef.value.getContext('2d') || undefined;
+  canvasRef.value.addEventListener('mousemove', handleMouseOverDistributions);
+  canvasRef.value.addEventListener('mousedown', handleMouseDown);
+  canvasRef.value.addEventListener('mouseup', handleMouseUp);
+  canvasRef.value.addEventListener('mousemove', handleMouseMove);
+
+}
+
+function removeEventListeners() {
+  window.removeEventListener('resize', resizeCanvas);
+
+  if (!canvasRef.value) return
+  canvasRef.value.removeEventListener('mousemove', handleMouseOverDistributions);
+  canvasRef.value.removeEventListener('mousedown', handleMouseDown);
+  canvasRef.value.removeEventListener('mouseup', handleMouseUp);
+  canvasRef.value.removeEventListener('mousemove', handleMouseMove);
 }
 
 function renderCanvas() {
@@ -236,12 +249,7 @@ function handleMouseOverDistributions(event: MouseEvent) {
 
     if (bench === undefined) continue;
 
-    if (
-      mouseX >= distribution.positions_on_bench[0] + bench.positions[0] &&
-      mouseX <= distribution.positions_on_bench[0] + bench.positions[0] + distribution.dimensions[0] &&
-      mouseY >= distribution.positions_on_bench[1] + bench.positions[1] &&
-      mouseY <= distribution.positions_on_bench[1] + bench.positions[1] + distribution.dimensions[1]
-    ) {
+    if (mouseIsOverDistribution(distribution, bench, mouseX, mouseY)) {
       cursor = 'pointer';
       break;
     }
@@ -260,23 +268,13 @@ function handleMouseDown(event: MouseEvent) {
   let isOverDistribution = false;
 
   for (const bench of benchStore.benches) {
-    if (
-      mouseX >= bench.positions[0] &&
-      mouseX <= bench.positions[0] + bench.dimensions[0] &&
-      mouseY >= bench.positions[1] &&
-      mouseY <= bench.positions[1] + bench.dimensions[1]
-    ) {
+    if (mouseIsOverBench(bench, mouseX, mouseY)) {
       const distributions = requestDistributionStore.getDistributionByBenchId(bench.id)
 
       if (!distributions) continue;
 
       for (const distribution of distributions) {
-        if (
-          mouseX >= distribution.positions_on_bench[0] + bench.positions[0] &&
-          mouseX <= distribution.positions_on_bench[0] + bench.positions[0] + distribution.dimensions[0] &&
-          mouseY >= distribution.positions_on_bench[1] + bench.positions[1] &&
-          mouseY <= distribution.positions_on_bench[1] + bench.positions[1] + distribution.dimensions[1]
-        ) {
+        if (mouseIsOverDistribution(distribution, bench, mouseX, mouseY)) {
           requestDistributionStore.selectDistribution(distribution);
 
           clickOnX = mouseX - distribution.positions_on_bench[0];
@@ -432,7 +430,7 @@ async function createNewDistribution(event: MouseEvent) {
   const distribution = {
     request_id: requestId,
     bench_id: clickIsOnBench.id,
-    positions_on_bench: [((mouseX > clickOnX) ? clickOnX : mouseX) - clickIsOnBench.positions[0], ((mouseY > clickOnY) ? clickOnY : mouseY) - clickIsOnBench.positions[1]],
+    positions_on_bench: normalizingPosition(mouseX, mouseY, clickIsOnBench),
     dimensions: [newWidth, newHeight],
     pot_id: pot.id,
     pot_quantity: seed_quantity,
@@ -450,12 +448,33 @@ async function createNewDistribution(event: MouseEvent) {
     .catch(renderCanvas);
 }
 
+function normalizingPosition(mouseX: number, mouseY: number, clickIsOnBench: Bench) {
+  const x = ((mouseX > clickOnX) ? clickOnX : mouseX) - clickIsOnBench.positions[0]
+  const y = ((mouseY > clickOnY) ? clickOnY : mouseY) - clickIsOnBench.positions[1]
+
+  return [x, y]
+}
+
 function calculateNumberOfPotsWithSpacing(areaZone: number, potArea: number, spacing: number) {
   const potSide = Math.sqrt(potArea);
   const effectiveSide = potSide + 2 * spacing;
   const potAreaWithSpacing = Math.pow(effectiveSide, 2);
 
   return Math.floor(areaZone / potAreaWithSpacing);
+}
+
+function mouseIsOverBench(bench: Bench, mouseX: number, mouseY: number) {
+  return mouseX >= bench.positions[0] &&
+    mouseX <= bench.positions[0] + bench.dimensions[0] &&
+    mouseY >= bench.positions[1] &&
+    mouseY <= bench.positions[1] + bench.dimensions[1]
+}
+
+function mouseIsOverDistribution(distribution: RequestDistribution, bench: Bench, mouseX: number, mouseY: number) {
+  return mouseX >= distribution.positions_on_bench[0] + bench.positions[0] &&
+    mouseX <= distribution.positions_on_bench[0] + bench.positions[0] + distribution.dimensions[0] &&
+    mouseY >= distribution.positions_on_bench[1] + bench.positions[1] &&
+    mouseY <= distribution.positions_on_bench[1] + bench.positions[1] + distribution.dimensions[1]
 }
 </script>
 

@@ -63,7 +63,16 @@ watch(
 
 // Lifecycle hooks
 onMounted(async () => {
+  addEventListeners();
+  resizeCanvas();
+  await benchStore.loadBenches(greenhouseId);
+});
 
+onBeforeUnmount(() => {
+  removeEventListeners();
+});
+
+function addEventListeners() {
   window.addEventListener('resize', resizeCanvas);
 
   if (!canvasRef.value) return
@@ -73,12 +82,9 @@ onMounted(async () => {
   canvasRef.value.addEventListener('mousedown', handleMouseDown);
   canvasRef.value.addEventListener('mouseup', handleMouseUp);
   canvasRef.value.addEventListener('mousemove', handleMouseMove);
+}
 
-  resizeCanvas();
-  await benchStore.loadBenches(greenhouseId);
-});
-
-onBeforeUnmount(() => {
+function removeEventListeners() {
   window.removeEventListener('resize', resizeCanvas);
 
   if (!canvasRef.value) return
@@ -86,7 +92,7 @@ onBeforeUnmount(() => {
   canvasRef.value.removeEventListener('mousedown', handleMouseDown);
   canvasRef.value.removeEventListener('mouseup', handleMouseUp);
   canvasRef.value.removeEventListener('mousemove', handleMouseMove);
-});
+}
 
 // Functions
 function resizeCanvas() {
@@ -143,12 +149,7 @@ function handleMouseOverBench(event: MouseEvent) {
   let cursor = 'default';
 
   for (const bench of benchStore.benches) {
-    if (
-      mouseX >= bench.positions[0] &&
-      mouseX <= bench.positions[0] + bench.dimensions[0] &&
-      mouseY >= bench.positions[1] &&
-      mouseY <= bench.positions[1] + bench.dimensions[1]
-    ) {
+    if (mouseIsOverBench(bench, mouseX, mouseY)) {
       cursor = 'pointer';
       break;
     }
@@ -166,12 +167,7 @@ function handleMouseDown(event: MouseEvent) {
   let isOverBench = false;
 
   for (const bench of benchStore.benches) {
-    if (
-      mouseX >= bench.positions[0] &&
-      mouseX <= bench.positions[0] + bench.dimensions[0] &&
-      mouseY >= bench.positions[1] &&
-      mouseY <= bench.positions[1] + bench.dimensions[1]
-    ) {
+    if (mouseIsOverBench(bench, mouseX, mouseY)) {
       benchStore.selectBench(bench);
       formData.value = {
         name: bench.name,
@@ -314,6 +310,13 @@ function removeBench() {
   if (!benchStore.selectedBench) return
 
   benchStore.deleteBench(benchStore.selectedBench.id);
+}
+
+function mouseIsOverBench(bench: Bench, mouseX: number, mouseY: number) {
+  return mouseX >= bench.positions[0] &&
+    mouseX <= bench.positions[0] + bench.dimensions[0] &&
+    mouseY >= bench.positions[1] &&
+    mouseY <= bench.positions[1] + bench.dimensions[1]
 }
 </script>
 
