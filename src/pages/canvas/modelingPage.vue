@@ -41,7 +41,7 @@ const formData = ref({width: 0, height: 0, name: ''});
 
 const route = useRoute();
 const benchStore = useBenchStore();
-const greenhouseId = Number(route.params.greenhouseId);
+const greenhouseId = Number(route.params.idCompartiment);
 
 let clickIsMaintained = false;
 let clickOnX = 0;

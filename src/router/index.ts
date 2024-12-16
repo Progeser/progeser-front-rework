@@ -1,7 +1,6 @@
-import { createRouter, createWebHistory } from 'vue-router/auto'
+import {createRouter, createWebHistory} from 'vue-router/auto'
 import menuRoutes from './menuRoutes'
 import routes from "@/router/routes";
-import {useUserStore} from "@/store/UserStore";
 import {useAuthStore} from "@/store/AuthStore";
 
 const allRoutes = [...menuRoutes, ...routes]
@@ -13,17 +12,11 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
-  const userStore = useUserStore();
 
   const isAuthenticated = authStore.isAuthenticated()
-  const user = userStore.currentUser
 
   if (isAuthenticated) {
-    if (to.meta.role === 'any' || to.meta.role === user!.role) {
-      next();
-    } else {
-      next({name: 'Login'});
-    }
+    next();
   } else if (to.name === 'Login' || to.name === 'Request') {
     next();
   } else {
