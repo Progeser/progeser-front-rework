@@ -47,6 +47,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/requests/requestInformationPage.vue'),
   },
   {
+    path: '/users/creation',
+    name: 'UserCreation',
+    component: () => import('@/pages/user/userCreationPage.vue'),
+  },
+  {
     path: '/:catchAll(.*)*',
     component: () => import('@/pages/connexion/loginPage.vue'),
   },
