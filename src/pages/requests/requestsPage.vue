@@ -65,10 +65,8 @@
 </template>
 
 <script setup lang="ts">
-import {ref, onBeforeMount, Ref, watch} from 'vue';
 import { RequestModel } from '@/model/RequestModel';
-import {ref, onBeforeMount, Ref} from 'vue';
-import { Request } from '@/model/Request';
+import {ref, onBeforeMount, Ref, watch} from 'vue';
 import { useI18n } from "vue-i18n";
 import { RequestRepository } from "@/repository/requestRepository";
 import router from "@/router"
@@ -134,7 +132,7 @@ const rejectRequest = async (item: RequestModel) => {
       await requestRepository.rejectRequest(item.id.toString());
       updateRequests(pageNumber.value, itemsPerPage.value);
     } catch (error) {
-      alert(t('request.rejectError'));
+      alert(t('request.error.fetch'));
     }
   }
 }

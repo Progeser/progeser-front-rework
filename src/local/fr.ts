@@ -150,6 +150,9 @@ export default {
     }
   },
   request: {
+    error: {
+      fetch: "Une erreur est survenue dans la recupération des requettes"
+    },
     dialog:{
       title: 'Choisissez votre distribution',
     },
