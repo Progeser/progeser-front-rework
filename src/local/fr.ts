@@ -158,8 +158,12 @@ export default {
   },
   request: {
     error: {
-      fetch: "Une erreur est survenue dans la recupération des requettes"
+      fetch: "Une erreur est survenue dans la recupération des requettes.",
+      finish: "Une erreur est survenue lors de la finalisation de cette request.",
+      reject: "Une erreur est survenue lors du rejet de cette demande."
     },
+    confirmReject: "Voulez-vous refuser cette demande ?",
+    confirmFinish: "Voulez-vous terminer cette demande ?",
     dialog:{
       title: 'Choisissez votre distribution',
     },

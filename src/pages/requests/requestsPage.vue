@@ -60,6 +60,7 @@
         <h1>{{t('request.dialog.title')}}</h1>
       </v-card-title>
       <v-card-text>
+        <h4></h4>
         <v-select :items="buildingList" v-model="selectedBuilding" item-title="name" item-value="id" variant="outlined"/>
         <v-select :items="compartimentList" :disabled="selectedBuilding === null" v-model="selectedCompartement" item-title="name" item-value="id" variant="outlined"/>
       </v-card-text>
@@ -125,7 +126,7 @@ const updateRequests = async (page: number, itemsPerPage: number) => {
       requester_name: `${request.requester_first_name} ${request.requester_last_name}`,
     }));
   } catch (error) {
-    alert(t('request.error'));
+    alert(t('request.error.fetch'));
   } finally {
     loading.value = false;
   }
@@ -143,18 +144,18 @@ const rejectRequest = async (item: RequestModel) => {
       await requestRepository.rejectRequest(item.id.toString());
       updateRequests(pageNumber.value, itemsPerPage.value);
     } catch (error) {
-      alert(t('request.error.fetch'));
+      alert(t('request.error.reject'));
     }
   }
 }
 
 const finishRequest = async (item: RequestModel) => {
-  if (confirm(t('request.confirmReject'))) {
+  if (confirm(t('request.confirmFinish'))) {
     try {
       await requestRepository.finishRequest(item.id.toString());
       updateRequests(pageNumber.value, itemsPerPage.value);
     } catch (error) {
-      alert(t('request.error.fetch'));
+      alert(t('request.error.finish'));
     }
   }
 }
