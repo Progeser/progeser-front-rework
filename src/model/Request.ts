@@ -9,7 +9,7 @@ export class Request {
     public photoperiod: number | null,
     public plant_id: number | null,
     public plant_name: string | null,
-    public plant_stage_id: number | null,
+    public plant_stage_id: number,
     public plant_stage_name: string | null,
     public quantity: number,
     public requester_email: string,
@@ -18,5 +18,6 @@ export class Request {
     public status: string,
     public temperature: number | null,
     public updated_at: string
-  ) {}
+  ) {
+  }
 }
