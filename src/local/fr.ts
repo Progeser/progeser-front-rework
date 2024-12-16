@@ -10,7 +10,7 @@ export default {
       compartiments: 'Compartiments',
       form: 'Formulaire',
       view: 'Modélisation',
-      information: 'Information'
+      show: 'Voir'
     },
   },
   common: {
@@ -24,7 +24,7 @@ export default {
     reject: 'Refuser',
     actions: 'Actions',
     item_per_page: 'Résultat par page : ',
-    information: 'Information'
+    show: 'Voir'
   },
   form: {
     species: {
@@ -148,5 +148,10 @@ export default {
       alreadyAccount: "Déjà un compte ?",
       loginHere: "Connectez-vous ici",
     }
+  },
+  request: {
+    dialog:{
+      title: 'Choisissez votre distribution',
+    },
   }
 };

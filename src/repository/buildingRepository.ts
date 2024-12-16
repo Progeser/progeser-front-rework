@@ -10,6 +10,10 @@ class BuildingRepository {
     return await this.fetchService.getWithPagination<Building[]>(`buildings?page[number]=${pageNumber}&page[size]=${pageSize}`);
   }
 
+  public async getAllBuildings(): Promise<Building[]> {
+    return await this.fetchService.get<Building[]>(`buildings`);
+  }
+
   public async getBuilding(id: number): Promise<Building> {
     return await this.fetchService.get<Building>(`buildings/${id}`);
   }

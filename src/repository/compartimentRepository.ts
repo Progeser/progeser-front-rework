@@ -10,6 +10,10 @@ class CompartimentRepository {
     return await this.fetchService.getWithPagination<Compartiment[]>(`buildings/${buildingid}/greenhouses?page[number]=${pageNumber}&page[size]=${pageSize}`)
   }
 
+  public async getAllCompartiments(buildingid : number) : Promise<Compartiment[]>{
+    return await this.fetchService.get<Compartiment[]>(`buildings/${buildingid}/greenhouses`)
+  }
+
   public async getCompartiment(buildingid : number) : Promise<Compartiment> {
     return await this.fetchService.get(`greenhouses/${buildingid}`)
   }

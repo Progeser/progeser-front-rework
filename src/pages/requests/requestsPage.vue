@@ -37,30 +37,61 @@
             class="ml-2"
             variant="outlined"
             color="primary">
-            {{ t('common.information') }}
+            {{ t('common.show') }}
           </v-btn>
         </div>
       </template>
     </v-data-table-server>
   </v-container>
+  <v-dialog v-model="showDialog" max-width="800px">
+    <v-card>
+      <v-card-title>
+        <h1>{{t('request.dialog.title')}}</h1>
+      </v-card-title>
+      <v-card-text>
+        <v-select :items="buildingList" v-model="selectedBuilding" item-title="name" item-value="id" variant="outlined"/>
+        <v-select :items="compartimentList" :disabled="selectedBuilding === null" v-model="selectedCompartement" item-title="name" item-value="id" variant="outlined"/>
+      </v-card-text>
+      <v-card-actions class="justify-space-between">
+        <v-btn @click="cancelDistribution" color="cancel" variant="outlined">
+          {{t('common.cancel')}}
+        </v-btn>
+        <v-btn @click="sendDistribution" color="primary" variant="outlined" :disabled="selectedBuilding === null || selectedCompartement === null">
+          {{t('common.send')}}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
-import {ref, onBeforeMount, Ref} from 'vue';
-import { Request } from '@/model/Request';
+import {ref, onBeforeMount, Ref, watch} from 'vue';
+import { RequestModel } from '@/model/RequestModel';
 import { useI18n } from "vue-i18n";
 import { RequestRepository } from "@/repository/requestRepository";
 import router from "@/router"
+import {Building} from "@/model/Building";
+import BuildingRepository from "@/repository/buildingRepository";
+import {Compartiment} from "@/model/Compartiment";
+import CompartimentRepository from "@/repository/compartimentRepository";
 
 const requestRepository = new RequestRepository();
+const buildingRepository = new BuildingRepository()
+const compartimentRepository = new CompartimentRepository()
 const { d,t } = useI18n();
 
-const requestsList = ref<Request[]>([]);
+const requestsList = ref<RequestModel[]>([]);
+const buildingList = ref<Building[]>([]);
+const compartimentList = ref<Compartiment[]>([]);
 const loading = ref(false);
 
 const pageNumber = ref(1);
 const itemsPerPage = ref(10);
 const totalCount = ref(0);
+const showDialog = ref(false);
+const selectedRequest = ref<number | null>(null);
+const selectedBuilding = ref<number | null>(null);
+const selectedCompartement = ref<number | null>(null);
 
 const headers: Ref<any> = ref<any>([
   { title: t('form.request.table.requesterName'), key: 'requester_name', align: 'center', sortable: true },
@@ -68,13 +99,14 @@ const headers: Ref<any> = ref<any>([
   { title: t('form.request.table.plant'), key: 'plant_name', align: 'center', sortable: true },
   { title: t('form.request.table.quantity'), key: 'quantity', align: 'center', sortable: true },
   { title: t('form.request.table.dueDate'), key: 'due_date', align: 'center', sortable: true,
-    value: (item: Request) => !item.due_date ? '': d(new Date(item.due_date), 'short')},
+    value: (item: RequestModel) => !item.due_date ? '': d(new Date(item.due_date), 'short')},
   { title: t('common.actions'), key: 'actions', align: 'center', sortable: false },
 ]);
 
 const updateRequests = async (page: number, itemsPerPage: number) => {
   loading.value = true;
   try {
+    buildingList.value = await buildingRepository.getAllBuildings()
     const response = await requestRepository.getRequests(page, itemsPerPage);
     totalCount.value = response.totalCount || 0;
     requestsList.value = response.content.map((request) => ({
@@ -94,32 +126,52 @@ const updateOptions = (options: { page: number; itemsPerPage: number }) => {
   updateRequests(pageNumber.value, itemsPerPage.value);
 };
 
-onBeforeMount(() => updateRequests(pageNumber.value, itemsPerPage.value));
-
-const acceptRequest = async (item: Request) => {
-  if (confirm(t('request.confirmAccept'))) {
-    try {
-      await requestRepository.acceptRequest(item.id!);
-      updateRequests(pageNumber.value, itemsPerPage.value);
-    } catch (error) {
-      alert(t('request.acceptError'));
-    }
-  }
-};
-
-// Fonction pour rejeter une requête
-const rejectRequest = async (item: Request) => {
+const rejectRequest = async (item: RequestModel) => {
   if (confirm(t('request.confirmReject'))) {
     try {
-      await requestRepository.rejectRequest(item.id!);
+      await requestRepository.rejectRequest(item.id.toString());
       updateRequests(pageNumber.value, itemsPerPage.value);
     } catch (error) {
       alert(t('request.rejectError'));
     }
   }
-};
+}
+
+const acceptRequest = (item: RequestModel) => {
+  showDialog.value = true;
+  selectedCompartement.value = item.id
+}
+
+const getBuildingCompartiment = async () => {
+  if (selectedBuilding.value !== null) {
+    compartimentList.value = await compartimentRepository.getAllCompartiments(selectedBuilding.value);
+  }
+}
+
+const sendDistribution = async () => {
+  showDialog.value = false;
+  await router.push({name: 'plantingPage', params: {buildingId: selectedBuilding.value,greenhouseId: selectedCompartement.value,requestId: selectedRequest.value}});
+  reset()
+}
+
+const cancelDistribution = () => {
+  reset()
+}
 
 const navigateToInformationPage = async (id: number) => {
-  router.push({ name: 'RequestInformation' , params: { idRequest: id } });
+  await router.push({ name: 'RequestShow' , params: { idRequest: id } });
 }
+
+const reset = () => {
+  selectedRequest.value = null
+  selectedBuilding.value = null
+  selectedCompartement.value = null
+}
+
+watch(selectedBuilding, async () => {
+  selectedCompartement.value = null;
+  await getBuildingCompartiment();
+})
+
+onBeforeMount(() => updateRequests(pageNumber.value, itemsPerPage.value));
 </script>

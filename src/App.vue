@@ -12,7 +12,6 @@
 </template>
 
 <script lang="ts" setup>
-//
 import MenuSideBar from "@/components/MenuSideBarComponent.vue";
 import router from "@/router"
 import {computed} from "vue";

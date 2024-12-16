@@ -1,4 +1,4 @@
-export class Request {
+export class RequestModel {
   constructor(
     public id: number,
     public comment: string | null,
