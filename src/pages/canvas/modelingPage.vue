@@ -33,21 +33,20 @@
 <script lang="ts" setup>
 import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue';
 import {useBenchStore} from "@/store/BenchStore";
+import {useRoute} from 'vue-router';
 
 const canvasRef: Ref<HTMLCanvasElement | undefined> = ref();
 const canvasContext: Ref<CanvasRenderingContext2D | undefined> = ref();
 const formData = ref({width: 0, height: 0, name: ''});
 
+const route = useRoute();
 const benchStore = useBenchStore();
+const greenhouseId = Number(route.params.idCompartiment);
 
 let clickIsMaintained = false;
 let clickOnX = 0;
 let clickOnY = 0;
 let animationFrameId: number | null = null;
-
-const props = defineProps({
-  idCompartiment: Number,
-})
 
 // Watchers
 watch(
@@ -64,7 +63,16 @@ watch(
 
 // Lifecycle hooks
 onMounted(async () => {
+  addEventListeners();
+  resizeCanvas();
+  await benchStore.loadBenches(greenhouseId);
+});
 
+onBeforeUnmount(() => {
+  removeEventListeners();
+});
+
+function addEventListeners() {
   window.addEventListener('resize', resizeCanvas);
 
   if (!canvasRef.value) return
@@ -74,12 +82,9 @@ onMounted(async () => {
   canvasRef.value.addEventListener('mousedown', handleMouseDown);
   canvasRef.value.addEventListener('mouseup', handleMouseUp);
   canvasRef.value.addEventListener('mousemove', handleMouseMove);
+}
 
-  resizeCanvas();
-  await benchStore.loadBenches(props.idCompartiment!);
-});
-
-onBeforeUnmount(() => {
+function removeEventListeners() {
   window.removeEventListener('resize', resizeCanvas);
 
   if (!canvasRef.value) return
@@ -87,7 +92,7 @@ onBeforeUnmount(() => {
   canvasRef.value.removeEventListener('mousedown', handleMouseDown);
   canvasRef.value.removeEventListener('mouseup', handleMouseUp);
   canvasRef.value.removeEventListener('mousemove', handleMouseMove);
-});
+}
 
 // Functions
 function resizeCanvas() {
@@ -108,7 +113,7 @@ function renderCanvas() {
   canvasContext.value.reset();
   canvasContext.value.clearRect(0, 0, width, height);
 
-  benchStore.benches.forEach((bench : Bench) => {
+  benchStore.benches.forEach((bench: Bench) => {
     if (!canvasContext.value) return;
 
     if (benchStore.selectedBench && bench.id === benchStore.selectedBench.id) {
@@ -144,12 +149,7 @@ function handleMouseOverBench(event: MouseEvent) {
   let cursor = 'default';
 
   for (const bench of benchStore.benches) {
-    if (
-      mouseX >= bench.positions[0] &&
-      mouseX <= bench.positions[0] + bench.dimensions[0] &&
-      mouseY >= bench.positions[1] &&
-      mouseY <= bench.positions[1] + bench.dimensions[1]
-    ) {
+    if (mouseIsOverBench(bench, mouseX, mouseY)) {
       cursor = 'pointer';
       break;
     }
@@ -167,12 +167,7 @@ function handleMouseDown(event: MouseEvent) {
   let isOverBench = false;
 
   for (const bench of benchStore.benches) {
-    if (
-      mouseX >= bench.positions[0] &&
-      mouseX <= bench.positions[0] + bench.dimensions[0] &&
-      mouseY >= bench.positions[1] &&
-      mouseY <= bench.positions[1] + bench.dimensions[1]
-    ) {
+    if (mouseIsOverBench(bench, mouseX, mouseY)) {
       benchStore.selectBench(bench);
       formData.value = {
         name: bench.name,
@@ -214,7 +209,7 @@ async function createNewBench(event: MouseEvent) {
   };
 
   await benchStore
-    .addBench(props.idCompartiment!, bench)
+    .addBench(greenhouseId, bench)
     .then(() => {
       if (benchStore.selectedBench === null) return;
 
@@ -289,7 +284,7 @@ function updateBenchInfo() {
   const {id, positions} = benchStore.selectedBench;
   const {width, height} = formData.value;
 
-  const isOverlapping = benchStore.benches.some((bench : Bench) =>
+  const isOverlapping = benchStore.benches.some((bench: Bench) =>
     bench.id !== id &&
     positions[0] < bench.positions[0] + bench.dimensions[0] &&
     positions[0] + width > bench.positions[0] &&
@@ -315,6 +310,13 @@ function removeBench() {
   if (!benchStore.selectedBench) return
 
   benchStore.deleteBench(benchStore.selectedBench.id);
+}
+
+function mouseIsOverBench(bench: Bench, mouseX: number, mouseY: number) {
+  return mouseX >= bench.positions[0] &&
+    mouseX <= bench.positions[0] + bench.dimensions[0] &&
+    mouseY >= bench.positions[1] &&
+    mouseY <= bench.positions[1] + bench.dimensions[1]
 }
 </script>
 

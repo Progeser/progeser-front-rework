@@ -1,16 +1,16 @@
 <template>
   <v-container fluid>
-    <v-divider class="my-2" />
+    <v-divider class="my-2"/>
     <v-data-table-server
       v-model:items-per-page="itemsPerPage"
       :headers="headers"
       :items="requestsList"
       :items-length="totalCount"
+      :items-per-page-text="t('common.item_per_page')"
       :loading="loading"
       item-value="name"
-      :items-per-page-text="t('common.item_per_page')"
-      @update:options="updateOptions"
       style="border: #008B8B 2px solid; border-radius: 10px"
+      @update:options="updateOptions"
     >
       <template v-slot:item.actions="{ item }">
         <div class="d-flex justify-center">
@@ -18,18 +18,20 @@
             v-if="isNewPage"
             @click="acceptRequest()"
             class="ml-2"
-            variant="outlined"
             color="success"
+            variant="outlined"
+            @click="acceptRequest(item)"
           >
             {{ t('common.accept') }}
-            <v-icon icon="mdi-check" />
+            <v-icon icon="mdi-check"/>
           </v-btn>
           <v-btn
             v-if="isNewPage"
             @click="rejectRequest(item)"
             class="ml-2"
-            variant="outlined"
             color="error"
+            variant="outlined"
+            @click="rejectRequest(item)"
           >
             {{ t('common.reject') }}
             <v-icon icon="mdi-close" />
@@ -44,8 +46,8 @@
             {{t("common.finish")}}
           </v-btn>
           <v-btn
-            @click="navigateToInformationPage(item.id)"
             class="ml-2"
+            color="primary"
             variant="outlined"
             color="primary">
             {{ t('common.show') }}
