@@ -1,7 +1,6 @@
 <template>
   <v-container class="fill-height d-flex justify-center align-center">
     <v-card elevation="3" width="800" class="pa-5">
-      <!-- Header -->
       <v-card-title class="text-h5 text-center primary--text">
         {{ t('form.user.title') }}
       </v-card-title>
@@ -77,7 +76,6 @@
           </v-col>
         </v-row>
 
-        <!-- Action Buttons -->
         <v-row class="d-flex justify-space-between align-center mt-5">
           <v-btn @click="router.push({ name: 'users' })" variant="outlined" class="mr-4">
             {{ t('common.cancel') }}

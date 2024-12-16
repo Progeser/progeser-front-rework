@@ -42,7 +42,7 @@ import { ref, onBeforeMount, Ref, computed } from 'vue';
 import { useI18n } from "vue-i18n";
 import { UserModel } from "@/model/UserModel";
 import UserRepository from "@/repository/userRepository";
-import { useUserStore } from "@/store/userStore";
+import { useUserStore } from "@/store/UserStore";
 import router from "@/router";
 
 // Références
@@ -62,7 +62,6 @@ const headers: Ref<any> = ref<any>([
   { title: t('common.actions'), key: 'actions', align: 'center', sortable: false },
 ]);
 
-// Store utilisateur pour obtenir l'utilisateur actuel
 const userStore = useUserStore();
 const currentUser = computed(() => userStore.currentUser);
 
@@ -89,7 +88,7 @@ const updateOptions = (options: { page: number; itemsPerPage: number }) => {
 };
 
 onBeforeMount(async () => {
-  await userStore.setCurrentUser(); // Charge l'utilisateur connecté
+  await userStore.setCurrentUser();
   await updateUsers(pageNumber.value, itemsPerPage.value);
 });
 
