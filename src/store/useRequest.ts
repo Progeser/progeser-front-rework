@@ -1,6 +1,7 @@
 // src/stores/useBenchStore.ts
 import {defineStore} from 'pinia';
 import RequestRepository from "@/repository/requestRepository";
+import {Request} from "@/model/Request";
 
 interface RequestStoreState {
   request: Request | undefined;

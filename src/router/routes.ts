@@ -37,13 +37,6 @@ const routes: RouteRecordRaw[] = [
     meta: {role: 'grower'}
   },
   {
-    path: '/buildings/:idBuilding/compartiments/:idCompartiment/view',
-    name: 'View',
-    props: true,
-    component: () => import('@/pages/viewPage.vue'),
-    meta: {role: 'grower'}
-  },
-  {
     path: '/login',
     name: 'Login',
     component: () => import('@/pages/connexion/loginPage.vue'),

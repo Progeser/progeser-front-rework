@@ -4,7 +4,7 @@ import {GenericPagination} from "@/model/GenericPagination";
 import {Request} from "@/model/Request";
 import {RequestOutput} from "@/model/output/RequestOutput";
 
-export class RequestRepository {
+class RequestRepository {
   private readonly fetchService: FetchService = new FetchService();
 
   public async getRequests(pageNumber: number, pageSize: number = 10): Promise<GenericPagination<Request[]>> {
@@ -27,3 +27,5 @@ export class RequestRepository {
     return await this.fetchService.get<Request>(`requests/${requestId}/`)
   }
 }
+
+export default new RequestRepository();

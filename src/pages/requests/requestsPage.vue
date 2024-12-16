@@ -1,42 +1,42 @@
 <template>
   <v-container fluid>
-    <v-divider class="my-2" />
+    <v-divider class="my-2"/>
     <v-data-table-server
       v-model:items-per-page="itemsPerPage"
       :headers="headers"
       :items="requestsList"
       :items-length="totalCount"
+      :items-per-page-text="t('common.item_per_page')"
       :loading="loading"
       item-value="name"
-      :items-per-page-text="t('common.item_per_page')"
-      @update:options="updateOptions"
       style="border: #008B8B 2px solid; border-radius: 10px"
+      @update:options="updateOptions"
     >
       <template v-slot:item.actions="{ item }">
         <div class="d-flex justify-center">
           <v-btn
-            @click="acceptRequest(item)"
             class="ml-2"
-            variant="outlined"
             color="success"
+            variant="outlined"
+            @click="acceptRequest(item)"
           >
             {{ t('common.accept') }}
-            <v-icon icon="mdi-check" />
+            <v-icon icon="mdi-check"/>
           </v-btn>
           <v-btn
-            @click="rejectRequest(item)"
             class="ml-2"
-            variant="outlined"
             color="error"
+            variant="outlined"
+            @click="rejectRequest(item)"
           >
             {{ t('common.reject') }}
-            <v-icon icon="mdi-close" />
+            <v-icon icon="mdi-close"/>
           </v-btn>
           <v-btn
-            @click="navigateToInformationPage(item.id)"
             class="ml-2"
+            color="primary"
             variant="outlined"
-            color="primary">
+            @click="navigateToInformationPage(item.id)">
             {{ t('common.information') }}
           </v-btn>
         </div>
@@ -45,15 +45,14 @@
   </v-container>
 </template>
 
-<script setup lang="ts">
-import {ref, onBeforeMount, Ref} from 'vue';
-import { Request } from '@/model/Request';
-import { useI18n } from "vue-i18n";
-import { RequestRepository } from "@/repository/requestRepository";
+<script lang="ts" setup>
+import {onBeforeMount, ref, Ref} from 'vue';
+import {Request} from '@/model/Request';
+import {useI18n} from "vue-i18n";
+import RequestRepository from "@/repository/requestRepository";
 import router from "@/router"
 
-const requestRepository = new RequestRepository();
-const { d,t } = useI18n();
+const {d, t} = useI18n();
 
 const requestsList = ref<Request[]>([]);
 const loading = ref(false);
@@ -63,19 +62,21 @@ const itemsPerPage = ref(10);
 const totalCount = ref(0);
 
 const headers: Ref<any> = ref<any>([
-  { title: t('form.request.table.requesterName'), key: 'requester_name', align: 'center', sortable: true },
-  { title: t('form.request.table.email'), key: 'requester_email', align: 'center', sortable: true },
-  { title: t('form.request.table.plant'), key: 'plant_name', align: 'center', sortable: true },
-  { title: t('form.request.table.quantity'), key: 'quantity', align: 'center', sortable: true },
-  { title: t('form.request.table.dueDate'), key: 'due_date', align: 'center', sortable: true,
-    value: (item: Request) => !item.due_date ? '': d(new Date(item.due_date), 'short')},
-  { title: t('common.actions'), key: 'actions', align: 'center', sortable: false },
+  {title: t('form.request.table.requesterName'), key: 'requester_name', align: 'center', sortable: true},
+  {title: t('form.request.table.email'), key: 'requester_email', align: 'center', sortable: true},
+  {title: t('form.request.table.plant'), key: 'plant_name', align: 'center', sortable: true},
+  {title: t('form.request.table.quantity'), key: 'quantity', align: 'center', sortable: true},
+  {
+    title: t('form.request.table.dueDate'), key: 'due_date', align: 'center', sortable: true,
+    value: (item: Request) => !item.due_date ? '' : d(new Date(item.due_date), 'short')
+  },
+  {title: t('common.actions'), key: 'actions', align: 'center', sortable: false},
 ]);
 
 const updateRequests = async (page: number, itemsPerPage: number) => {
   loading.value = true;
   try {
-    const response = await requestRepository.getRequests(page, itemsPerPage);
+    const response = await RequestRepository.getRequests(page, itemsPerPage);
     totalCount.value = response.totalCount || 0;
     requestsList.value = response.content.map((request) => ({
       ...request,
@@ -99,7 +100,7 @@ onBeforeMount(() => updateRequests(pageNumber.value, itemsPerPage.value));
 const acceptRequest = async (item: Request) => {
   if (confirm(t('request.confirmAccept'))) {
     try {
-      await requestRepository.acceptRequest(item.id!.toString());
+      await RequestRepository.acceptRequest(item.id!.toString());
       updateRequests(pageNumber.value, itemsPerPage.value);
     } catch (error) {
       alert(t('request.acceptError'));
@@ -111,7 +112,7 @@ const acceptRequest = async (item: Request) => {
 const rejectRequest = async (item: Request) => {
   if (confirm(t('request.confirmReject'))) {
     try {
-      await requestRepository.rejectRequest(item.id!.toString());
+      await RequestRepository.rejectRequest(item.id!.toString());
       updateRequests(pageNumber.value, itemsPerPage.value);
     } catch (error) {
       alert(t('request.rejectError'));
@@ -120,6 +121,6 @@ const rejectRequest = async (item: Request) => {
 };
 
 const navigateToInformationPage = async (id: number) => {
-  router.push({ name: 'RequestInformation' , params: { idRequest: id } });
+  router.push({name: 'RequestInformation', params: {idRequest: id}});
 }
 </script>

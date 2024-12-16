@@ -4,28 +4,28 @@
       <v-card-title class="text-h6 text-center primary--text">
         {{ t('form.request.title') }}
       </v-card-title>
-      <v-form @submit.prevent="handleSubmit" ref="registerForm" class="pa-4">
+      <v-form ref="registerForm" class="pa-4" @submit.prevent="handleSubmit">
         <v-row>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.firstName') }}</h4>
             <v-text-field
               v-model="firstName"
-              variant="outlined"
               :placeholder="t('form.request.firstNamePlaceholder')"
               :rules="[isRequired]"
-              required
               class="custom-input align-self-center mb-4"
+              required
+              variant="outlined"
             />
           </v-col>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.lastName') }}</h4>
             <v-text-field
               v-model="lastName"
-              variant="outlined"
               :placeholder="t('form.request.lastNamePlaceholder')"
               :rules="[isRequired]"
-              required
               class="custom-input align-self-center mb-4"
+              required
+              variant="outlined"
             />
           </v-col>
         </v-row>
@@ -35,21 +35,21 @@
             <h4 class="mr-2 align-self-center">{{ t('form.request.email') }}</h4>
             <v-text-field
               v-model="email"
-              variant="outlined"
-              type="email"
-              placeholder="request@domain.com"
               :rules="[isRequired, isEmail]"
-              required
               class="custom-input align-self-center mb-4"
+              placeholder="request@domain.com"
+              required
+              type="email"
+              variant="outlined"
             />
           </v-col>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.lab') }}</h4>
             <v-text-field
               v-model="lab"
-              variant="outlined"
               :placeholder="t('form.request.labPlaceholder')"
               class="custom-input align-self-center mb-4"
+              variant="outlined"
             />
           </v-col>
         </v-row>
@@ -58,22 +58,22 @@
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.species') }}</h4>
             <v-select ref="speciesSelect"
-                      :items="species"
-                      item-title="name"
                       v-model="selectedSpecies"
-                      variant="outlined"
-                      return-object
-                      :rules="[isNotNull]"
+                      :items="species"
                       :loading="isLoading"
+                      :rules="[isNotNull]"
+                      item-title="name"
+                      return-object
+                      variant="outlined"
             />
           </v-col>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.stage') }}</h4>
-            <v-select :disabled="selectedSpecies === null" :items="selectedSpecies?.plant_stages"
+            <v-select v-model="selectedSpeciesStageId" :disabled="selectedSpecies === null"
+                      :items="selectedSpecies?.plant_stages"
+                      :rules="[isNotNull]"
                       item-title="name"
                       item-value="id"
-                      :rules="[isNotNull]"
-                      v-model="selectedSpeciesStageId"
                       variant="outlined"/>
           </v-col>
         </v-row>
@@ -81,55 +81,55 @@
         <v-row>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.quantity') }}</h4>
-            <v-text-field type="number" v-model="quantity" :rules="[isGreaterThanZero]" variant="outlined"/>
+            <v-text-field v-model="quantity" :rules="[isGreaterThanZero]" type="number" variant="outlined"/>
           </v-col>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.temperature') }}</h4>
-            <v-text-field type="number" v-model="temperature" :rules="[isGreaterThanZero]" variant="outlined"/>
+            <v-text-field v-model="temperature" :rules="[isGreaterThanZero]" type="number" variant="outlined"/>
           </v-col>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.request.photoperiod') }}</h4>
-            <v-text-field type="number" v-model="photoperiod" :rules="[isGreaterThanZero]" variant="outlined"/>
+            <v-text-field v-model="photoperiod" :rules="[isGreaterThanZero]" type="number" variant="outlined"/>
           </v-col>
         </v-row>
         <v-col>
           <h4 class="mr-2 align-self-center">{{ t('form.request.due_date') }} : </h4>
           <v-date-input
             v-model="date"
-            min-width="200"
             :rules="[isNotNull]"
-            variant="outlined"
+            min-width="200"
             placeholder="DD/MM/YYYY"
+            variant="outlined"
           />
         </v-col>
         <v-col>
           <h4 class="mr-2 align-self-center">{{ t('form.request.subject') }}</h4>
           <v-text-field
             v-model="subject"
-            variant="outlined"
             :placeholder="t('form.request.subjectPlaceholder')"
             class="custom-input align-self-center mb-4"
+            variant="outlined"
           />
 
           <h4 class="mr-2 align-self-center">{{ t('form.request.reason') }}</h4>
           <v-textarea
             v-model="reason"
-            variant="outlined"
             :placeholder="t('form.request.reasonPlaceholder')"
-            rows="4"
             class="custom-input align-self-center mb-4"
+            rows="4"
+            variant="outlined"
           />
 
         </v-col>
 
 
         <v-btn
-          class="mt-4"
+          :disabled="!isFormValid"
+          :loading="isLoading"
           block
+          class="mt-4"
           color="primary"
           type="submit"
-          :loading="isLoading"
-          :disabled="!isFormValid"
         >
           {{ t('common.send') }}
         </v-btn>
@@ -139,16 +139,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, Ref, onBeforeMount } from "vue";
-import { useI18n } from "vue-i18n";
-import { Species } from "@/model/Species";
+import {computed, onBeforeMount, Ref, ref} from "vue";
+import {useI18n} from "vue-i18n";
+import {Species} from "@/model/Species";
 import SpeciesRepository from "@/repository/speciesRepository";
 import {RequestOutput} from "@/model/output/RequestOutput";
-import {RequestRepository} from "@/repository/requestRepository";
+import RequestRepository from "@/repository/requestRepository";
 
 const speciesRepository = new SpeciesRepository();
-const resquestRepository = new RequestRepository()
-const { t } = useI18n();
+const {t} = useI18n();
 const firstName = ref("");
 const lastName = ref("");
 const email = ref("");
@@ -206,7 +205,7 @@ const fetchSpecies = async () => {
 const handleSubmit = async () => {
   isLoading.value = true;
   try {
-    const requestOutput : RequestOutput = new RequestOutput(
+    const requestOutput: RequestOutput = new RequestOutput(
       email.value,
       firstName.value,
       lastName.value,
@@ -219,12 +218,12 @@ const handleSubmit = async () => {
       temperature.value,
       photoperiod.value
     );
-    await resquestRepository.postRequest(requestOutput);
+    await RequestRepository.postRequest(requestOutput);
     alert(t('form.request.success'))
     resetForm()
-  }catch (error) {
+  } catch (error) {
     alert(t('form.request.error.sending'))
-  }finally {
+  } finally {
     isLoading.value = false;
   }
 };
