@@ -67,6 +67,8 @@
 <script setup lang="ts">
 import {ref, onBeforeMount, Ref, watch} from 'vue';
 import { RequestModel } from '@/model/RequestModel';
+import {ref, onBeforeMount, Ref} from 'vue';
+import { Request } from '@/model/Request';
 import { useI18n } from "vue-i18n";
 import { RequestRepository } from "@/repository/requestRepository";
 import router from "@/router"
