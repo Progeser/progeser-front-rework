@@ -48,6 +48,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/requests/requestInformationPage.vue'),
   },
   {
+    path: '/users/creation',
+    name: 'UserCreation',
+    component: () => import('@/pages/user/userCreationPage.vue'),
+  },
+  {
     path: '/:catchAll(.*)*',
     component: () => import('@/pages/connexion/loginPage.vue'),
   },
@@ -62,6 +67,18 @@ const routes: RouteRecordRaw[] = [
     name: 'PlantingPage',
     props: true,
     component: () => import('@/pages/canvas/plantingPage.vue'),
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    props: true,
+    component: () => import('@/pages/profile/profilePage.vue'),
+  },
+  {
+    path: '/profile/password',
+    name: 'PasswordUpdate',
+    props: true,
+    component: () => import('@/pages/profile/passwordUpdatePage.vue'),
   }
 ];
 

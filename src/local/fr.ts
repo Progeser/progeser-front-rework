@@ -12,11 +12,14 @@ export default {
       users: 'Utilisateurs',
       compartiments: 'Compartiments',
       form: 'Formulaire',
+      creation: 'Création',
       view: 'Modélisation',
       show: 'Voir',
       new: 'Nouvelles',
       accepted: 'En Cours',
-      archived: 'Archivées'
+      archived: 'Archivées',
+      profile: 'Mes informations',
+      password: 'Modifier mon mot de passe'
     },
   },
   common: {
@@ -32,6 +35,8 @@ export default {
     item_per_page: 'Résultat par page : ',
     show: 'Voir',
     finish: 'Terminer',
+    logout: 'Déconnexion',
+    required: 'Ce champ est obligatoire'
   },
   form: {
     species: {
@@ -145,15 +150,36 @@ export default {
         notNull: "Doit être Selectionné",
         invalidEmail:'Email invalide'
       },
-      password: "Mot de passe",
-      confirmPassword: "Confirmez le mot de passe",
-      required: "Ce champ est obligatoire.",
-      invalidEmail: "Veuillez entrer une adresse e-mail valide.",
-      passwordTooWeak: "Le mot de passe doit comporter au moins 8 caractères.",
-      passwordMismatch: "Les mots de passe ne correspondent pas.",
-      success: "Votre demande a été envoyée avec succès !",
-      alreadyAccount: "Déjà un compte ?",
-      loginHere: "Connectez-vous ici",
+      success: "Votre demande a été envoyée avec succès !"
+    },
+    user: {
+      title: 'Utilisateurs',
+      table: {
+        name: 'Nom',
+        email: 'Email',
+        role: 'Rôle',
+        actions: 'Actions'
+      },
+      confirmDelete: 'Voulez-vous vraiment supprimer cet utilisateur ?',
+      deleteError: 'Erreur lors de la suppression de l\'utilisateur',
+      firstName: 'Prénom',
+      lastName: 'Nom',
+      email: 'Email',
+      password: 'Mot de passe',
+      confirmPassword: 'Confirmez le mot de passe',
+      lastNamePlaceholder: 'Nom de famille',
+      firstNamePlaceholder: 'Prénom',
+      emailPlaceholder: 'Adresse e-mail',
+      passwordPlaceholder: 'Mot de passe',
+      confirmPasswordPlaceholder: 'Confirmez le mot de passe',
+      error : {
+        fetchUsers: "Erreur lors de la récupération des utilisateurs.",
+        required: "Ce champ est obligatoire.",
+        invalidEmail: "Veuillez entrer une adresse e-mail valide.",
+        passwordTooWeak: "Le mot de passe doit comporter au moins 8 caractères.",
+        passwordMismatch: "Les mots de passe ne correspondent pas.",
+        creationFailed: "Erreur lors de la création de l'utilisateur."
+      },
     }
   },
   request: {
@@ -167,5 +193,37 @@ export default {
     dialog:{
       title: 'Choisissez votre distribution',
     },
+  },
+  profile: {
+    title: "Mes informations personnelles",
+    firstName: "Prénom",
+    lastName: "Nom",
+    email: "Email",
+    firstNamePlaceholder: "Votre prénom",
+    lastNamePlaceholder: "Votre nom",
+    updatePassword: "Modifier le mot de passe",
+    delete: "Supprimer mon compte",
+    error : {
+      required: "Ce champ est obligatoire."
+    },
+    successUpdate: "Vos informations ont été mises à jour avec succès !",
+    errorUpdate: "Erreur lors de la mise à jour de vos informations.",
+    confirmDelete: "Voulez-vous vraiment supprimer votre compte ?",
+    errorDelete: "Erreur lors de la suppression de votre compte."
+  },
+  password: {
+    title: "Modifier le mot de passe",
+    currentPassword: "Mot de passe actuel",
+    currentPasswordPlaceholder: "Votre mot de passe actuel",
+    newPassword: "Nouveau mot de passe",
+    newPasswordPlaceholder: "Votre nouveau mot de passe",
+    confirmPassword: "Confirmez le mot de passe",
+    confirmPasswordPlaceholder: "Confirmez votre nouveau mot de passe",
+    updateButton: "Mettre à jour",
+    resetButton: "Réinitialiser",
+    successUpdate: "Votre mot de passe a été mis à jour avec succès.",
+    errorUpdate: "Erreur lors de la mise à jour du mot de passe.",
+    minLength: "Le mot de passe doit contenir au moins {length} caractères.",
+    passwordMismatch: "Les mots de passe ne correspondent pas.",
   }
 };

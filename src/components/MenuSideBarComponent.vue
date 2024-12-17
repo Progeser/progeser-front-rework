@@ -22,29 +22,35 @@
           </v-list-item>
         </router-link>
       </v-list>
-      <button class="user-profile pa-4" @click="showLogoutModal = true">
-        <div class="d-flex align-center">
-          <v-avatar size="40" class="mr-3">
-            <v-img
-              src="https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D"
-              alt="Profile"/>
-          </v-avatar>
-          <div>
-            <div class="text-white font-weight-medium">{{ `${user?.first_name} ${user?.last_name}` }}</div>
-            <div class="text-white text-caption">{{ user?.email }}</div>
-          </div>
-        </div>
-      </button>
-      <v-dialog v-model="showLogoutModal" max-width="400">
-        <v-card>
-          <v-card-title class="text-h5 mb-4">Se déconnecter</v-card-title>
-          <v-card-text>Voulez-vous vous déconnecter ?</v-card-text>
-          <v-card-actions>
-            <v-btn color="primary" @click="showLogoutModal = false">Annuler</v-btn>
-            <v-btn color="error" @click="logout">Se déconnecter</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
+      <div class="user-profile pa-4" ref="profileMenuActivator">
+        <v-menu
+          v-model="profileMenu"
+          :close-on-content-click="false"
+          offset-y
+        >
+          <template #activator="{ props }">
+            <div class="d-flex align-center" v-bind="props">
+              <v-avatar size="40" class="mr-3">
+                <v-img
+                  src="https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D"
+                  alt="Profile"/>
+              </v-avatar>
+              <div>
+                <div class="text-white font-weight-medium">{{ `${user?.first_name} ${user?.last_name}` }}</div>
+                <div class="text-white text-caption">{{ user?.email }}</div>
+              </div>
+            </div>
+          </template>
+          <v-list>
+            <v-list-item @click="redirectToProfilePage">
+              <v-list-item-title>Voir le profil</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="logout">
+              <v-list-item-title>Se déconnecter</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
     </v-navigation-drawer>
     <v-app-bar app color="white">
       <v-row align="center" justify="start">
@@ -52,7 +58,7 @@
           <v-app-bar-nav-icon @click="drawer = !drawer"/>
         </v-col>
         <v-col class="d-flex" cols="auto">
-          <img src="@/assets/logo.webp" alt="Logo" height="40">
+          <img src="@/assets/logo.jpg" alt="Logo" height="50">
         </v-col>
         <NavigationStepper class="ml-2"/>
       </v-row>
@@ -67,31 +73,36 @@
 import {onBeforeMount, ref} from 'vue';
 import menuRoutes, {icons} from "@/router/menuRoutes";
 import {useRoute} from "vue-router";
-import router from "@/router"
 import {useI18n} from "vue-i18n";
 import {UserModel} from "@/model/UserModel";
-import {useAuthStore} from "@/store/AuthStore";
 import {useUserStore} from "@/store/UserStore";
 import NavigationStepper from "@/components/NavigationStepper.vue";
+import router from "@/router";
+import {useAuthStore} from "@/store/AuthStore";
 
-const AuthStore = useAuthStore()
 const drawer = ref(false);
 const route = useRoute();
 const {t} = useI18n();
 const userStore = useUserStore();
 const user = ref<UserModel | null>(null);
-const showLogoutModal = ref(false);
-
-const logout = () => {
-  showLogoutModal.value = false
-  AuthStore.logout();
-  router.push({name: "Login"});
-}
+const AuthStore = useAuthStore();
+const profileMenu = ref(false);
 
 onBeforeMount(async () => {
     user.value = await userStore.getCurrentUser()
   }
 )
+
+const redirectToProfilePage =  () => {
+  profileMenu.value = false;
+  router.push({name: 'Profile'});
+}
+
+const logout = () => {
+  profileMenu.value = false;
+  AuthStore.logout();
+  router.push({name: "Login"});
+}
 </script>
 
 <style scoped>
@@ -129,9 +140,5 @@ onBeforeMount(async () => {
   background-color: #00B0B0;
   transition: background-color 0.3s ease;
   border-radius: 4px;
-}
-
-.v-navigation-drawer {
-  padding-bottom: 80px;
 }
 </style>
