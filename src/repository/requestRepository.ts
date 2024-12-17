@@ -1,30 +1,34 @@
 import FetchService from "@/service/fetchService";
 
 import {GenericPagination} from "@/model/GenericPagination";
-import {Request} from "@/model/Request";
+import {RequestModel} from "@/model/RequestModel";
 import {RequestOutput} from "@/model/output/RequestOutput";
 
 class RequestRepository {
   private readonly fetchService: FetchService = new FetchService();
 
-  public async getRequests(pageNumber: number, pageSize: number = 10): Promise<GenericPagination<Request[]>> {
-    return await this.fetchService.getWithPagination(`requests?page[number]=${pageNumber}&page[size]=${pageSize}`)
+  public async getRequests(pageNumber : number, pageSize : number = 10, status : string): Promise<GenericPagination<RequestModel[]>> {
+    return await this.fetchService.getWithPagination(`requests?page[number]=${pageNumber}&page[size]=${pageSize}&filter[status]=${status}`);
   }
 
-  public async acceptRequest(id: string): Promise<Request> {
+  public async getRequest(id: number): Promise<RequestModel> {
+    return await this.fetchService.get(`requests/${id}`)
+  }
+
+  public async acceptRequest(id: string): Promise<RequestModel> {
     return await this.fetchService.post(`requests/${id}/accept`)
   }
 
-  public async rejectRequest(id: string): Promise<Request> {
+  public async rejectRequest(id: string): Promise<RequestModel> {
     return await this.fetchService.post(`requests/${id}/refuse`)
   }
 
-  public async postRequest(data: RequestOutput): Promise<any> { //todo remove any
+  public async postRequest(data: RequestOutput): Promise<RequestModel> {
     return await this.fetchService.postWithoutBearer(`requests`, data);
   }
 
-  public async getRequest(requestId: number): Promise<Request> {
-    return await this.fetchService.get<Request>(`requests/${requestId}/`)
+  public async finishRequest(id: string): Promise<RequestModel> {
+    return await this.fetchService.post(`requests/${id}/complete`)
   }
 }
 

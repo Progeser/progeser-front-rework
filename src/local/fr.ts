@@ -6,14 +6,20 @@ export default {
       species: 'Espèces',
       containers: 'Conteneurs',
       requests: 'Demandes',
+      requestsNew: 'Nouvelles demandes',
+      requestsAccepted: 'Demandes en cours',
+      requestsArchived: 'Demandes archivées',
       users: 'Utilisateurs',
       compartiments: 'Compartiments',
       form: 'Formulaire',
       creation: 'Création',
       view: 'Modélisation',
-      information: 'Information',
+      show: 'Voir',
+      new: 'Nouvelles',
+      accepted: 'En Cours',
+      archived: 'Archivées',
       profile: 'Mes informations',
-      password: 'Modifier mon mot de passe',
+      password: 'Modifier mon mot de passe'
     },
   },
   common: {
@@ -27,9 +33,10 @@ export default {
     reject: 'Refuser',
     actions: 'Actions',
     item_per_page: 'Résultat par page : ',
-    information: 'Information',
+    show: 'Voir',
+    finish: 'Terminer',
     logout: 'Déconnexion',
-    required: 'Ce champ est obligatoire',
+    required: 'Ce champ est obligatoire'
   },
   form: {
     species: {
@@ -111,7 +118,16 @@ export default {
         plant: "Plante",
         quantity: "Quantité",
         dueDate: "Date souhaitée",
-        actions: "Actions"
+        actions: "Actions",
+        status: "Status",
+        status_trad:{
+          pending:"En cour",
+          accepted:"Accepter",
+          refused:"Refuser",
+          in_cancelation:"En annulation",
+          canceled:"Annuler",
+          completed:"Completer"
+        }
       },
       confirmAccept: "Êtes-vous sûr de vouloir accepter cette demande ?",
       confirmReject: "Êtes-vous sûr de vouloir rejeter cette demande ?",
@@ -174,6 +190,20 @@ export default {
         creationFailed: "Erreur lors de la création de l'utilisateur."
       },
     }
+  },
+  request: {
+    error: {
+      fetch: "Une erreur est survenue dans la recupération des requettes.",
+      finish: "Une erreur est survenue lors de la finalisation de cette request.",
+      reject: "Une erreur est survenue lors du rejet de cette demande."
+    },
+    confirmReject: "Voulez-vous refuser cette demande ?",
+    confirmFinish: "Voulez-vous terminer cette demande ?",
+    dialog:{
+      title: 'Choisissez votre distribution',
+      building: 'Choisissez votre bâtiments',
+      compartiment: 'Choisissez votre compartiments'
+    },
   },
   profile: {
     title: "Mes informations personnelles",
