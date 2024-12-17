@@ -1,23 +1,20 @@
-export class RequestModel {
-  constructor(
-    public id: number,
-    public comment: string | null,
-    public due_date: string,
-    public handler_id: number | null,
-    public laboratory: string,
-    public name: string,
-    public photoperiod: number | null,
-    public plant_id: number | null,
-    public plant_name: string | null,
-    public plant_stage_id: number,
-    public plant_stage_name: string | null,
-    public quantity: number,
-    public requester_email: string,
-    public requester_first_name: string,
-    public requester_last_name: string,
-    public status: string,
-    public temperature: number | null,
-    public updated_at: string
-  ) {
-  }
+export interface RequestModel {
+  id: number;
+  comment: string | null;
+  due_date: string;
+  handler_id: number | null;
+  laboratory: string;
+  name: string;
+  photoperiod: number | null;
+  plant_id: number | null;
+  plant_name: string | null;
+  plant_stage_id: number;
+  plant_stage_name: string | null;
+  quantity: number;
+  requester_email: string;
+  requester_first_name: string;
+  requester_last_name: string;
+  status: string;
+  temperature: number | null;
+  updated_at: string;
 }
