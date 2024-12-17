@@ -8,7 +8,6 @@
       <v-divider />
 
       <v-form @submit.prevent="createUser" class="pa-4">
-        <!-- Form Fields -->
         <v-row>
           <v-col>
             <h4 class="mr-2 align-self-center">{{ t('form.user.firstName') }}</h4>
@@ -116,16 +115,18 @@ const isPasswordMatch = (value: string) =>
 const isFormValid = ref(false);
 watch(
   () => user.value,
-  () => {
-    isFormValid.value =
-      user.value.first_name.trim().length > 0 &&
-      user.value.last_name.trim().length > 0 &&
-      /^\S+@\S+\.\S+$/.test(user.value.email) &&
-      user.value.password.trim().length > 0 &&
-      user.value.password === user.value.password_confirmation;
-  },
+  () => checkForm(),
   { deep: true }
 );
+
+const checkForm = () => {
+  isFormValid.value =
+    user.value.first_name.trim().length > 0 &&
+    user.value.last_name.trim().length > 0 &&
+    /^\S+@\S+\.\S+$/.test(user.value.email) &&
+    user.value.password.trim().length > 0 &&
+    user.value.password === user.value.password_confirmation;
+};
 
 const createUser = async () => {
   try {

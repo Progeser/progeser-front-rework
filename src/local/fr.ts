@@ -151,10 +151,6 @@ export default {
       },
       confirmDelete: 'Voulez-vous vraiment supprimer cet utilisateur ?',
       deleteError: 'Erreur lors de la suppression de l\'utilisateur',
-      role: {
-        admin: 'Administrateur',
-        user: 'Utilisateur'
-      },
       firstName: 'Prénom',
       lastName: 'Nom',
       email: 'Email',
