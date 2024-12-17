@@ -33,5 +33,7 @@ declare module 'vue-router/auto-routes' {
     '/requests/requestsPage': RouteRecordInfo<'/requests/requestsPage', '/requests/requestsPage', Record<never, never>, Record<never, never>>,
     '/species/specieFormPage': RouteRecordInfo<'/species/specieFormPage', '/species/specieFormPage', Record<never, never>, Record<never, never>>,
     '/species/speciesPage': RouteRecordInfo<'/species/speciesPage', '/species/speciesPage', Record<never, never>, Record<never, never>>,
+    '/user/userCreationPage': RouteRecordInfo<'/user/userCreationPage', '/user/userCreationPage', Record<never, never>, Record<never, never>>,
+    '/user/usersPage': RouteRecordInfo<'/user/usersPage', '/user/usersPage', Record<never, never>, Record<never, never>>,
   }
 }

@@ -4,7 +4,5 @@ export interface UserModel{
   email : string;
   first_name : string;
   last_name : string;
-  laboratory : string;
-  role : string;
   updated_at : string;
 }

@@ -52,7 +52,7 @@
           <v-app-bar-nav-icon @click="drawer = !drawer"/>
         </v-col>
         <v-col class="d-flex" cols="auto">
-          <img src="@/assets/logo.webp" alt="Logo" height="40">
+          <img src="@/assets/logo.jpg" alt="Logo" height="50">
         </v-col>
         <NavigationStepper class="ml-2"/>
       </v-row>

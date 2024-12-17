@@ -1,5 +1,7 @@
 import FetchService from "@/service/fetchService";
 import {UserModel} from "@/model/UserModel";
+import {UserOutput} from "@/model/output/UserOutput";
+import {GenericPagination} from "@/model/GenericPagination";
 
 class UserRepository {
 
@@ -8,6 +10,19 @@ class UserRepository {
   public async getCurrentUser() : Promise<UserModel>{
     return await this.fetchService.get<UserModel>('me')
   }
+
+  public async createUser(user: UserOutput) : Promise<UserModel>{
+    return await this.fetchService.post<UserModel, UserOutput>('users', user)
+  }
+
+  public async deleteUser(id: number): Promise<void> {
+    return await this.fetchService.delete(`users/${id}`)
+  }
+
+  public async getUsers(pageNumber: number, pageSize: number = 10): Promise<GenericPagination<UserModel[]>>{
+    return await this.fetchService.getWithPagination<UserModel[]>(`users?page[number]=${pageNumber}&page[size]=${pageSize}`)
+  }
+
 }
 
 export default UserRepository
