@@ -3,7 +3,7 @@
     <v-divider class="my-2"/>
     <v-data-table-server
       v-model:items-per-page="itemsPerPage"
-      :headers="headers"
+      :headers="getHeaders"
       :items="requestsList"
       :items-length="totalCount"
       :items-per-page-text="t('common.item_per_page')"
@@ -57,11 +57,13 @@
   </v-container>
   <v-dialog v-model="showDialog" max-width="800px">
     <v-card>
-      <v-card-title>
+      <v-card-title class="bg-primary">
         <h1>{{t('request.dialog.title')}}</h1>
       </v-card-title>
       <v-card-text>
+        <h4>{{t("request.dialog.building")}}</h4>
         <v-select :items="buildingList" v-model="selectedBuilding" item-title="name" item-value="id" variant="outlined"/>
+        <h4>{{t("request.dialog.compartiment")}}</h4>
         <v-select :items="compartimentList" :disabled="selectedBuilding === null" v-model="selectedCompartement" item-title="name" item-value="id" variant="outlined"/>
       </v-card-text>
       <v-card-actions class="justify-space-between">
@@ -113,6 +115,16 @@ const headers: Ref<any> = ref<any>([
     value: (item: RequestModel) => !item.due_date ? '': d(new Date(item.due_date), 'short')},
   { title: t('common.actions'), key: 'actions', align: 'center', sortable: false },
 ]);
+
+const getHeaders = computed(() => {
+  if (isArchivedPage.value) {
+    const headersCopy = [...headers.value];
+    const newColumn = { title: t('form.request.table.status'), key: 'status', align: 'center', sortable: true,  value: (item: RequestModel) => t(`form.request.table.status_trad.${item.status}`) };
+    headersCopy.splice(headersCopy.length - 1, 0, newColumn);
+    return headersCopy;
+  }
+  return headers.value;
+});
 
 const updateRequests = async (page: number, itemsPerPage: number) => {
   loading.value = true;
@@ -197,6 +209,10 @@ const isNewPage = computed(() => {
 
 const isAcceptedPage = computed(() => {
   return router.currentRoute.value.name === "requestsAccepted";
+})
+
+const isArchivedPage = computed(() => {
+  return router.currentRoute.value.name === 'requestsArchived';
 })
 
 const getFetchStatus = () => {

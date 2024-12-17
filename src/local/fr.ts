@@ -118,7 +118,16 @@ export default {
         plant: "Plante",
         quantity: "Quantité",
         dueDate: "Date souhaitée",
-        actions: "Actions"
+        actions: "Actions",
+        status: "Status",
+        status_trad:{
+          pending:"En cour",
+          accepted:"Accepter",
+          refused:"Refuser",
+          in_cancelation:"En annulation",
+          canceled:"Annuler",
+          completed:"Completer"
+        }
       },
       confirmAccept: "Êtes-vous sûr de vouloir accepter cette demande ?",
       confirmReject: "Êtes-vous sûr de vouloir rejeter cette demande ?",
@@ -192,6 +201,8 @@ export default {
     confirmFinish: "Voulez-vous terminer cette demande ?",
     dialog:{
       title: 'Choisissez votre distribution',
+      building: 'Choisissez votre bâtiments',
+      compartiment: 'Choisissez votre compartiments'
     },
   },
   profile: {
