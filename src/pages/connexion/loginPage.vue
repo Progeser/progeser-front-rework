@@ -34,18 +34,6 @@
         >
           {{ t('common.send') }}
         </v-btn>
-        <!-- Register Link -->
-        <v-row justify="center" class="mt-4" align="center">
-          <span>{{ t('form.login.noAccount') }}</span>
-          <v-btn
-            variant="text"
-            color="primary"
-            @click="navigateToRegister"
-            class="ml-2"
-          >
-            {{ t('form.login.registerHere') }}
-          </v-btn>
-        </v-row>
       </v-form>
     </v-card>
   </v-container>
@@ -64,22 +52,13 @@ const authStore = useAuthStore();
 const {t} = useI18n();
 
 
-// Validation des champs
 const isRequired = (value: string) => {
   return value.trim().length > 0 || t('form.login.required');
 };
 
-// Vérification globale du formulaire
 const isFormValid = computed(() => {
   return email.value.trim().length > 0 && password.value.trim().length > 0;
 });
-
-// Gestion de l'authentification
-
-
-const navigateToRegister = () => {
-  router.push("/register");
-};
 
 const handleLogin = async () => {
   isLoading.value = true;
