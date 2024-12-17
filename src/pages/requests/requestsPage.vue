@@ -16,7 +16,7 @@
         <div class="d-flex justify-center">
           <v-btn
             v-if="isNewPage"
-            @click="acceptRequest()"
+            @click="acceptRequest(item)"
             class="ml-2"
             color="success"
             variant="outlined"
@@ -159,8 +159,9 @@ const finishRequest = async (item: RequestModel) => {
   }
 }
 
-const acceptRequest = () => {
+const acceptRequest = (item: RequestModel) => {
   showDialog.value = true;
+  selectedRequest.value = item.id
 }
 
 const getBuildingCompartiment = async () => {
@@ -171,7 +172,7 @@ const getBuildingCompartiment = async () => {
 
 const sendDistribution = async () => {
   showDialog.value = false;
-  await router.push({name: 'plantingPage', params: {buildingId: selectedBuilding.value,greenhouseId: selectedCompartement.value,requestId: selectedRequest.value}});
+  await router.push({name: 'PlantingPage', params: {buildingId: selectedBuilding.value,greenhouseId: selectedCompartement.value,requestId: selectedRequest.value}});
   reset()
 }
 
