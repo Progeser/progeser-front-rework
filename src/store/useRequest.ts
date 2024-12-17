@@ -1,10 +1,10 @@
 // src/stores/useBenchStore.ts
 import {defineStore} from 'pinia';
 import RequestRepository from "@/repository/requestRepository";
-import {Request} from "@/model/Request";
+import {RequestModel} from "@/model/RequestModel";
 
 interface RequestStoreState {
-  request: Request | undefined;
+  request: RequestModel | undefined;
   seeds_left_to_plant: number;
 }
 

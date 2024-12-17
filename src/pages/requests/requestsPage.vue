@@ -20,7 +20,6 @@
             class="ml-2"
             color="success"
             variant="outlined"
-            @click="acceptRequest(item)"
           >
             {{ t('common.accept') }}
             <v-icon icon="mdi-check"/>
@@ -31,7 +30,6 @@
             class="ml-2"
             color="error"
             variant="outlined"
-            @click="rejectRequest(item)"
           >
             {{ t('common.reject') }}
             <v-icon icon="mdi-close" />
@@ -46,10 +44,11 @@
             {{t("common.finish")}}
           </v-btn>
           <v-btn
+            @click="navigateToInformationPage(item.id)"
             class="ml-2"
             color="primary"
             variant="outlined"
-            color="primary">
+            >
             {{ t('common.show') }}
           </v-btn>
         </div>
@@ -62,7 +61,6 @@
         <h1>{{t('request.dialog.title')}}</h1>
       </v-card-title>
       <v-card-text>
-        <h4></h4>
         <v-select :items="buildingList" v-model="selectedBuilding" item-title="name" item-value="id" variant="outlined"/>
         <v-select :items="compartimentList" :disabled="selectedBuilding === null" v-model="selectedCompartement" item-title="name" item-value="id" variant="outlined"/>
       </v-card-text>
@@ -82,14 +80,13 @@
 import { RequestModel } from '@/model/RequestModel';
 import {ref, onBeforeMount, Ref, watch, computed} from 'vue';
 import { useI18n } from "vue-i18n";
-import { RequestRepository } from "@/repository/requestRepository";
+import  RequestRepository  from "@/repository/requestRepository";
 import router from "@/router"
 import {Building} from "@/model/Building";
 import BuildingRepository from "@/repository/buildingRepository";
 import {Compartiment} from "@/model/Compartiment";
 import CompartimentRepository from "@/repository/compartimentRepository";
 
-const requestRepository = new RequestRepository();
 const buildingRepository = new BuildingRepository()
 const compartimentRepository = new CompartimentRepository()
 const { d,t } = useI18n();
@@ -121,7 +118,7 @@ const updateRequests = async (page: number, itemsPerPage: number) => {
   loading.value = true;
   try {
     buildingList.value = await buildingRepository.getAllBuildings()
-    const response = await requestRepository.getRequests(page, itemsPerPage,getFetchStatus());
+    const response = await RequestRepository.getRequests(page, itemsPerPage,getFetchStatus());
     totalCount.value = response.totalCount || 0;
     requestsList.value = response.content.map((request) => ({
       ...request,
@@ -143,7 +140,7 @@ const updateOptions = (options: { page: number; itemsPerPage: number }) => {
 const rejectRequest = async (item: RequestModel) => {
   if (confirm(t('request.confirmReject'))) {
     try {
-      await requestRepository.rejectRequest(item.id.toString());
+      await RequestRepository.rejectRequest(item.id.toString());
       updateRequests(pageNumber.value, itemsPerPage.value);
     } catch (error) {
       alert(t('request.error.reject'));
@@ -154,7 +151,7 @@ const rejectRequest = async (item: RequestModel) => {
 const finishRequest = async (item: RequestModel) => {
   if (confirm(t('request.confirmFinish'))) {
     try {
-      await requestRepository.finishRequest(item.id.toString());
+      await RequestRepository.finishRequest(item.id.toString());
       updateRequests(pageNumber.value, itemsPerPage.value);
     } catch (error) {
       alert(t('request.error.finish'));
