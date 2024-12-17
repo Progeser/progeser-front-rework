@@ -117,7 +117,7 @@ export default {
         email: "Email",
         plant: "Plante",
         quantity: "Quantité",
-        dueDate: "Date souhaitée",
+        dueDate: "Date de début",
         actions: "Actions",
         status: "Status",
         status_trad:{
@@ -150,7 +150,7 @@ export default {
       quantity: "Quantité",
       temperature: "Température",
       photoperiod: "Photopériode",
-      due_date: "Date souhaitée",
+      due_date: "Date de début",
       error: {
         fetchSpecies: "Une erreur est survenue dans la recupération des espèces",
         sending: "Une erreur est survenue lors de l'envoi",
