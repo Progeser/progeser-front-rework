@@ -11,7 +11,9 @@ export default {
       form: 'Formulaire',
       creation: 'Création',
       view: 'Modélisation',
-      information: 'Information'
+      information: 'Information',
+      profile: 'Mes informations',
+      password: 'Modifier mon mot de passe',
     },
   },
   common: {
@@ -25,7 +27,9 @@ export default {
     reject: 'Refuser',
     actions: 'Actions',
     item_per_page: 'Résultat par page : ',
-    information: 'Information'
+    information: 'Information',
+    logout: 'Déconnexion',
+    required: 'Ce champ est obligatoire',
   },
   form: {
     species: {
@@ -170,5 +174,37 @@ export default {
         creationFailed: "Erreur lors de la création de l'utilisateur."
       },
     }
+  },
+  profile: {
+    title: "Mes informations personnelles",
+    firstName: "Prénom",
+    lastName: "Nom",
+    email: "Email",
+    firstNamePlaceholder: "Votre prénom",
+    lastNamePlaceholder: "Votre nom",
+    updatePassword: "Modifier le mot de passe",
+    delete: "Supprimer mon compte",
+    error : {
+      required: "Ce champ est obligatoire."
+    },
+    successUpdate: "Vos informations ont été mises à jour avec succès !",
+    errorUpdate: "Erreur lors de la mise à jour de vos informations.",
+    confirmDelete: "Voulez-vous vraiment supprimer votre compte ?",
+    errorDelete: "Erreur lors de la suppression de votre compte."
+  },
+  password: {
+    title: "Modifier le mot de passe",
+    currentPassword: "Mot de passe actuel",
+    currentPasswordPlaceholder: "Votre mot de passe actuel",
+    newPassword: "Nouveau mot de passe",
+    newPasswordPlaceholder: "Votre nouveau mot de passe",
+    confirmPassword: "Confirmez le mot de passe",
+    confirmPasswordPlaceholder: "Confirmez votre nouveau mot de passe",
+    updateButton: "Mettre à jour",
+    resetButton: "Réinitialiser",
+    successUpdate: "Votre mot de passe a été mis à jour avec succès.",
+    errorUpdate: "Erreur lors de la mise à jour du mot de passe.",
+    minLength: "Le mot de passe doit contenir au moins {length} caractères.",
+    passwordMismatch: "Les mots de passe ne correspondent pas.",
   }
 };
