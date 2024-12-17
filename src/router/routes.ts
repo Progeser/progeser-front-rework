@@ -66,6 +66,12 @@ const routes: RouteRecordRaw[] = [
     name: 'PlantingPage',
     props: true,
     component: () => import('@/pages/canvas/plantingPage.vue'),
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    props: true,
+    component: () => import('@/pages/profile/profilePage.vue'),
   }
 ];
 

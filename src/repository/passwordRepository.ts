@@ -9,3 +9,5 @@ class PasswordRepository {
     return await this.fetchService.put<void, PasswordUpdateOutput>('passwords', passwordUpdate);
   }
 }
+
+export default PasswordRepository;

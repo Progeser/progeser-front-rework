@@ -11,7 +11,8 @@ export default {
       form: 'Formulaire',
       creation: 'Création',
       view: 'Modélisation',
-      information: 'Information'
+      information: 'Information',
+      profile: 'Mes informations'
     },
   },
   common: {
@@ -25,7 +26,8 @@ export default {
     reject: 'Refuser',
     actions: 'Actions',
     item_per_page: 'Résultat par page : ',
-    information: 'Information'
+    information: 'Information',
+    logout: 'Déconnexion',
   },
   form: {
     species: {
@@ -170,5 +172,22 @@ export default {
         creationFailed: "Erreur lors de la création de l'utilisateur."
       },
     }
+  },
+  profile: {
+    title: "Mes informations personnelles",
+    firstName: "Prénom",
+    lastName: "Nom",
+    email: "Email",
+    firstNamePlaceholder: "Votre prénom",
+    lastNamePlaceholder: "Votre nom",
+    updatePassword: "Modifier le mot de passe",
+    delete: "Supprimer mon compte",
+    error : {
+      required: "Ce champ est obligatoire."
+    },
+    successUpdate: "Vos informations ont été mises à jour avec succès !",
+    errorUpdate: "Erreur lors de la mise à jour de vos informations.",
+    confirmDelete: "Voulez-vous vraiment supprimer votre compte ?",
+    errorDelete: "Erreur lors de la suppression de votre compte."
   }
 };
