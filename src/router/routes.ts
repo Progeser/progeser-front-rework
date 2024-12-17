@@ -72,6 +72,12 @@ const routes: RouteRecordRaw[] = [
     name: 'Profile',
     props: true,
     component: () => import('@/pages/profile/profilePage.vue'),
+  },
+  {
+    path: '/profile/password',
+    name: 'PasswordUpdate',
+    props: true,
+    component: () => import('@/pages/profile/passwordUpdatePage.vue'),
   }
 ];
 

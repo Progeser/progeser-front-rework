@@ -12,7 +12,8 @@ export default {
       creation: 'Création',
       view: 'Modélisation',
       information: 'Information',
-      profile: 'Mes informations'
+      profile: 'Mes informations',
+      password: 'Modifier mon mot de passe',
     },
   },
   common: {
@@ -28,6 +29,7 @@ export default {
     item_per_page: 'Résultat par page : ',
     information: 'Information',
     logout: 'Déconnexion',
+    required: 'Ce champ est obligatoire',
   },
   form: {
     species: {
@@ -189,5 +191,20 @@ export default {
     errorUpdate: "Erreur lors de la mise à jour de vos informations.",
     confirmDelete: "Voulez-vous vraiment supprimer votre compte ?",
     errorDelete: "Erreur lors de la suppression de votre compte."
+  },
+  password: {
+    title: "Modifier le mot de passe",
+    currentPassword: "Mot de passe actuel",
+    currentPasswordPlaceholder: "Votre mot de passe actuel",
+    newPassword: "Nouveau mot de passe",
+    newPasswordPlaceholder: "Votre nouveau mot de passe",
+    confirmPassword: "Confirmez le mot de passe",
+    confirmPasswordPlaceholder: "Confirmez votre nouveau mot de passe",
+    updateButton: "Mettre à jour",
+    resetButton: "Réinitialiser",
+    successUpdate: "Votre mot de passe a été mis à jour avec succès.",
+    errorUpdate: "Erreur lors de la mise à jour du mot de passe.",
+    minLength: "Le mot de passe doit contenir au moins {length} caractères.",
+    passwordMismatch: "Les mots de passe ne correspondent pas.",
   }
 };

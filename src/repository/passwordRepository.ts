@@ -5,7 +5,7 @@ class PasswordRepository {
 
   private readonly fetchService: FetchService = new FetchService();
 
-  public async resetPassword(passwordUpdate: PasswordUpdateOutput): Promise<void> {
+  public async updatePassword(passwordUpdate: PasswordUpdateOutput): Promise<void> {
     return await this.fetchService.put<void, PasswordUpdateOutput>('passwords', passwordUpdate);
   }
 }

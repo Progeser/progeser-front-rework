@@ -128,7 +128,7 @@ const deleteUser = async () => {
 };
 
 const navigateToUpdatePassword = () => {
-  router.push({ name: "updatePassword" });
+  router.push({ name: "PasswordUpdate" });
 };
 
 const logout = () => {
