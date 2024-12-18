@@ -12,6 +12,7 @@
       :loading="loading"
       item-value="name"
       style="border: #008B8B 2px solid; border-radius: 10px"
+      disable-sort
       @update:options="updateOptions"
     >
       <template v-slot:item.actions="{ item }">
