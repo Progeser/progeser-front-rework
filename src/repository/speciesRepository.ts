@@ -42,8 +42,17 @@ class SpeciesRepository {
         speciesStage.duration = stage.duration
         speciesStage.position = stage.position
         speciesOutput.plant_stages_attributes.push(speciesStage)
+      }else if(stage._destroy){
+        const speciesStage : SpeciesStageAttributes = new SpeciesStageAttributes()
+        speciesStage.id = stage.id
+        speciesStage.name = stage.name;
+        speciesStage.duration = stage.duration
+        speciesStage.position = stage.position
+        speciesStage._destroy = true
+        speciesOutput.plant_stages_attributes.push(speciesStage)
       }
     })
+    console.log(speciesOutput)
     return speciesOutput
   }
 

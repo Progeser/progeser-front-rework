@@ -34,7 +34,7 @@
         class="border"
       >
         <template #item="{ element }">
-          <v-list-item :key="element.id" class="drag-item">
+          <v-list-item v-if="element._destroy !== true" :key="element.id" class="drag-item">
             <v-row class="d-flex align-center">
               <v-col cols="1" class="icon-col d-flex align-center">
                 <v-icon>mdi-drag</v-icon>
@@ -59,7 +59,10 @@
                 />
               </v-col>
               <v-col cols="1" class="icon-col d-flex align-center">
-                <v-btn>
+                <v-btn
+                  @click="element._destroy = true"
+                  color="error"
+                >
                   <v-icon  icon="mdi-trash-can-outline"/>
                 </v-btn>
               </v-col>
