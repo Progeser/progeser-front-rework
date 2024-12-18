@@ -55,10 +55,12 @@
 import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue';
 import {useRequestDistribution} from "@/store/useRequestDistribution";
 import {useRequest} from "@/store/useRequest";
-import {useRoute} from "vue-router";
+import router from "@/router"
 import {useBenchStore} from "@/store/BenchStore";
 import {usePot} from "@/store/usePot";
 import {useGreenhouse} from "@/store/useGreenhouse";
+import RequestRepository from "@/repository/requestRepository";
+import {useRoute} from "vue-router";
 
 const canvasRef: Ref<HTMLCanvasElement | undefined> = ref();
 const canvasContext: Ref<CanvasRenderingContext2D | undefined> = ref();
@@ -442,8 +444,19 @@ async function createNewDistribution(event: MouseEvent) {
     .then(() => {
       if (requestDistributionStore.selectedDistribution === null) return;
 
-      requestStore.decreasesNumberOfSeedsLeftToPlant(seed_quantity)
+      requestStore.decreasesNumberOfSeedsLeftToPlant(seed_quantity);
       updateFormDistributions();
+
+      if (requestStore.seeds_left_to_plant === 0) {
+        console.log('Request is done')
+
+        RequestRepository.acceptRequest(requestId)
+          .then(() => {
+            router.push({
+              name: 'requestsAccepted',
+            })
+          })
+      }
     })
     .catch(renderCanvas);
 }
