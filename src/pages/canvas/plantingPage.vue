@@ -473,7 +473,7 @@ function calculateNumberOfPotsWithSpacing(areaZone: number, potArea: number, spa
   const effectiveSide = potSide + 2 * spacing;
   const potAreaWithSpacing = Math.pow(effectiveSide, 2);
 
-  return Math.floor(areaZone / potAreaWithSpacing);
+  return Math.abs(Math.floor(areaZone / potAreaWithSpacing));
 }
 
 function mouseIsOverBench(bench: Bench, mouseX: number, mouseY: number) {
