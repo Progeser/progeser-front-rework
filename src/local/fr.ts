@@ -36,7 +36,9 @@ export default {
     show: 'Voir',
     finish: 'Terminer',
     logout: 'Déconnexion',
-    required: 'Ce champ est obligatoire'
+    required: 'Ce champ est obligatoire.',
+    no_data: 'Pas de données disponibles.',
+    loading: 'Chargement'
   },
   form: {
     species: {
