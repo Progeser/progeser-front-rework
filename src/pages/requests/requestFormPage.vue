@@ -60,6 +60,7 @@
                       v-model="selectedSpecies"
                       :items="species"
                       :loading="isLoading"
+                      :no-data-text="t('common.no_data')"
                       :rules="[isNotNull]"
                       item-title="name"
                       return-object
@@ -71,6 +72,7 @@
             <v-select v-model="selectedSpeciesStageId" :disabled="selectedSpecies === null"
                       :items="selectedSpecies?.plant_stages"
                       :rules="[isNotNull]"
+                      :no-data-text="t('common.no_data')"
                       item-title="name"
                       item-value="id"
                       variant="outlined"/>
@@ -88,6 +90,7 @@
             <v-select v-model="temperature"
                       :items="temperatureField"
                       :rules="[isNotNull]"
+                      :no-data-text="t('common.no_data')"
                       variant="outlined"/>
           </v-col>
           <v-col cols="4">

@@ -13,6 +13,8 @@
       :items="usersList"
       :items-length="totalCount"
       :loading="loading"
+      :loading-text="t('common.loading')"
+      :no-data-text="t('common.no_data')"
       item-value="name"
       :items-per-page-text="t('common.item_per_page')"
       @update:options="updateOptions"
