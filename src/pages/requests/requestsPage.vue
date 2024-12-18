@@ -7,6 +7,8 @@
       :items="requestsList"
       :items-length="totalCount"
       :items-per-page-text="t('common.item_per_page')"
+      :no-data-text="t('common.no_data')"
+      :loading-text="t('common.loading')"
       :loading="loading"
       item-value="name"
       style="border: #008B8B 2px solid; border-radius: 10px"
