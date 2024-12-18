@@ -46,6 +46,7 @@
                   density="compact"
                   variant="outlined"
                   :rules="[isNotBlanck]"
+                  hide-details="auto"
                 />
               </v-col>
               <v-col cols="5" class="icon-col d-flex align-center">
@@ -56,6 +57,7 @@
                   variant="outlined"
                   type="number"
                   :rules="[validationTime]"
+                  hide-details="auto"
                 />
               </v-col>
               <v-col cols="1" class="icon-col d-flex align-center">

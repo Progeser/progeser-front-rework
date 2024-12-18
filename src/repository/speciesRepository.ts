@@ -52,7 +52,6 @@ class SpeciesRepository {
         speciesOutput.plant_stages_attributes.push(speciesStage)
       }
     })
-    console.log(speciesOutput)
     return speciesOutput
   }
 
