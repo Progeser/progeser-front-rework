@@ -23,12 +23,12 @@ export const usePot = defineStore('pot', {
     },
 
     selectPot(id: number | null) {
-      if (id === null || id >= this.pots.length) {
+      if (id === null) {
         this._selectedPot = null;
         return;
       }
 
-      this._selectedPot = this.pots[id];
+      this._selectedPot = this.pots.find(p => p.id === id) || null;
     },
   }
 });
