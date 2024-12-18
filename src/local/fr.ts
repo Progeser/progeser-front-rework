@@ -16,7 +16,7 @@ export default {
       view: 'Modélisation',
       show: 'Voir',
       new: 'Nouvelles',
-      accepted: 'En Cours',
+      accepted: 'En cours',
       archived: 'Archivées',
       profile: 'Mes informations',
       password: 'Modifier mon mot de passe'
@@ -32,7 +32,7 @@ export default {
     accept: 'Accepter',
     reject: 'Refuser',
     actions: 'Actions',
-    item_per_page: 'Résultat par page : ',
+    item_per_page: 'Résultats par page : ',
     show: 'Voir',
     finish: 'Terminer',
     logout: 'Déconnexion',
@@ -66,7 +66,7 @@ export default {
       title: 'Compartiment',
       nameTitle: 'Nom : ',
       height: 'Hauteur : ',
-      width: 'Longueur : ',
+      width: 'Largeur : ',
       occupation: 'Occupation : ',
       error: {
         name: 'Le nom ne doit pas être vide',
@@ -81,11 +81,11 @@ export default {
       shape: 'Forme : ',
       areaTitle: 'Surface (en cm²) : ',
       dimensions: 'Dimensions (en cm) : ',
-      area: 'Aire',
+      area: 'Surface',
       errors: {
         nameRequired: 'Le nom ne doit pas être vide',
         shapeRequired: 'La forme ne doit pas être vide',
-        dimensionsInvalid: 'Les dimensions doivent être valide pour la forme indiquée',
+        dimensionsInvalid: 'Les dimensions doivent être valides pour la forme indiquée',
         dimensionsRequired: 'Les dimensions doivent être renseignées',
         areaRequired: 'La surface doit être supérieure à zéro',
         general: 'Les données du formulaire contiennent des erreurs, vérifiez les champs'
@@ -119,14 +119,14 @@ export default {
         quantity: "Quantité",
         dueDate: "Date de début",
         actions: "Actions",
-        status: "Status",
+        status: "Statut",
         status_trad:{
-          pending:"En cour",
-          accepted:"Accepter",
-          refused:"Refuser",
+          pending:"En attente",
+          accepted:"En cours",
+          refused:"Refusé",
           in_cancelation:"En annulation",
-          canceled:"Annuler",
-          completed:"Completer"
+          canceled:"Annulé",
+          completed:"Complété"
         }
       },
       confirmAccept: "Êtes-vous sûr de vouloir accepter cette demande ?",
@@ -134,10 +134,10 @@ export default {
       acceptError: "Erreur lors de l'acceptation de la demande.",
       rejectError: "Erreur lors du rejet de la demande.",
       noRequests: "Aucune demande disponible.",
-      firstName: "Nom",
-      firstNamePlaceholder: "Votre nom",
-      lastName: "Prénom",
-      lastNamePlaceholder: "Votre prénom",
+      firstName: "Prénom",
+      firstNamePlaceholder: "Votre prénom",
+      lastName: "Nom",
+      lastNamePlaceholder: "Votre nom",
       email: "Adresse e-mail",
       lab: "Laboratoire (optionnel)",
       labPlaceholder: "Nom du laboratoire",
@@ -146,17 +146,17 @@ export default {
       species: "Espèce",
       stage: "Stade",
       subject: "Objet de la demande",
-      subjectPlaceholder: "Donner l'objet de la demande",
+      subjectPlaceholder: "Donnez l'objet de la demande",
       quantity: "Quantité",
       temperature: "Température",
       photoperiod: "Photopériode",
       due_date: "Date de début",
       error: {
-        fetchSpecies: "Une erreur est survenue dans la recupération des espèces",
+        fetchSpecies: "Une erreur est survenue lors de la récupération des espèces",
         sending: "Une erreur est survenue lors de l'envoi",
         required: "Ne doit pas être vide",
-        greaterThanZero:"Doit être supérieur a zero",
-        notNull: "Doit être Selectionné",
+        greaterThanZero:"Doit être supérieur à zéro",
+        notNull: "Doit être sélectionné",
         invalidEmail:'Email invalide'
       },
       success: "Votre demande a été envoyée avec succès !"
@@ -186,23 +186,23 @@ export default {
         required: "Ce champ est obligatoire.",
         invalidEmail: "Veuillez entrer une adresse e-mail valide.",
         passwordTooWeak: "Le mot de passe doit comporter au moins 8 caractères.",
-        passwordMismatch: "Les mots de passe ne correspondent pas.",
+        passwordMismatch: "Les mots de passe ne correspondent",
         creationFailed: "Erreur lors de la création de l'utilisateur."
       },
     }
   },
   request: {
     error: {
-      fetch: "Une erreur est survenue dans la recupération des requettes.",
-      finish: "Une erreur est survenue lors de la finalisation de cette request.",
+      fetch: "Une erreur est survenue dans la récupération des requêtes.",
+      finish: "Une erreur est survenue lors de la finalisation de cette requête.",
       reject: "Une erreur est survenue lors du rejet de cette demande."
     },
     confirmReject: "Voulez-vous refuser cette demande ?",
     confirmFinish: "Voulez-vous terminer cette demande ?",
     dialog:{
       title: 'Choisissez votre distribution',
-      building: 'Choisissez votre bâtiments',
-      compartiment: 'Choisissez votre compartiments'
+      building: 'Choisissez votre bâtiment',
+      compartiment: 'Choisissez votre compartiment'
     },
   },
   profile: {
