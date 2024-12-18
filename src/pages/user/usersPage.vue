@@ -22,7 +22,6 @@
     >
       <template v-slot:item.actions="{ item }">
         <div class="d-flex justify-center">
-          <!-- Bouton supprimer conditionné -->
           <v-btn
             v-if="currentUser?.id !== item.id"
             @click="deleteUser(item)"
