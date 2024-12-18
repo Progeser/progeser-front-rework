@@ -185,7 +185,7 @@ const isNotNull = (value: Object) => {
 const isEmail = (value: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || t("form.request.error.invalidEmail");
 
-const temperatureField = ["Chaud","Froid","Extéreur","Autre"]
+const temperatureField = ["Chaud","Froid","Extérieur","Autre"]
 
 const isFormValid = computed(() => {
   return (

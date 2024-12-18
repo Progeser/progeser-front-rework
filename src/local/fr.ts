@@ -126,7 +126,7 @@ export default {
           refused:"Refusé",
           in_cancelation:"En annulation",
           canceled:"Annulé",
-          completed:"Complété"
+          completed:"Terminé"
         }
       },
       confirmAccept: "Êtes-vous sûr de vouloir accepter cette demande ?",
@@ -186,7 +186,7 @@ export default {
         required: "Ce champ est obligatoire.",
         invalidEmail: "Veuillez entrer une adresse e-mail valide.",
         passwordTooWeak: "Le mot de passe doit comporter au moins 8 caractères.",
-        passwordMismatch: "Les mots de passe ne correspondent",
+        passwordMismatch: "Les mots de passe ne correspondent pas.",
         creationFailed: "Erreur lors de la création de l'utilisateur."
       },
     }
