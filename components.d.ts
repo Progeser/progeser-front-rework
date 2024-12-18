@@ -7,11 +7,15 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    BenchesComponent: typeof import('./src/components/canvas/BenchesComponent.vue')['default']
     Card: typeof import('./src/components/Card.vue')['default']
+    GridComponent: typeof import('./src/components/canvas/GridComponent.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    InfoComponent: typeof import('./src/components/canvas/InfoComponent.vue')['default']
     MenuSideBarComponent: typeof import('./src/components/MenuSideBarComponent.vue')['default']
     NavigationStepper: typeof import('./src/components/NavigationStepper.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ToolsComponent: typeof import('./src/components/canvas/ToolsComponent.vue')['default']
   }
 }

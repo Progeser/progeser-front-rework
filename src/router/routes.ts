@@ -56,16 +56,22 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/connexion/loginPage.vue'),
   },
   {
-    path: '/buildings/:idBuilding/compartiments/:idCompartiment/view',
+    path: '/buildings/:idBuilding/compartiments/:idCompartiment/modeling',
     name: 'ModelingPage',
     props: true,
     component: () => import('@/pages/canvas/modelingPage.vue'),
   },
   {
-    path: '/building/:buildingId/greenhouse/:greenhouseId/request/:requestId/view',
+    path: '/buildings/:idBuilding/compartiments/:idCompartiment/request/:idRequest/planting',
     name: 'PlantingPage',
     props: true,
     component: () => import('@/pages/canvas/plantingPage.vue'),
+  },
+  {
+    path: '/buildings/:idBuilding/compartiments/:idCompartiment/view',
+    name: 'ViewSeeds',
+    props: true,
+    component: () => import('@/pages/canvas/viewPage.vue'),
   }
 ];
 

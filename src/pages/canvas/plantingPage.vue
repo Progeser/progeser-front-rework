@@ -70,9 +70,9 @@ const potStore = usePot()
 const greenhouseStore = useGreenhouse();
 
 const route = useRoute();
-const requestId = Number(route.params.requestId);
-const buildingId = Number(route.params.buildingId);
-const greenhouseId = Number(route.params.greenhouseId);
+const requestId = Number(route.params.idRequest);
+const buildingId = Number(route.params.idBuilding);
+const greenhouseId = Number(route.params.idCompartiment);
 
 let clickIsMaintained = false;
 let clickIsOnBench: null | Bench = null;
@@ -154,7 +154,6 @@ function addEventListeners() {
   canvasRef.value.addEventListener('mousedown', handleMouseDown);
   canvasRef.value.addEventListener('mouseup', handleMouseUp);
   canvasRef.value.addEventListener('mousemove', handleMouseMove);
-
 }
 
 function removeEventListeners() {
