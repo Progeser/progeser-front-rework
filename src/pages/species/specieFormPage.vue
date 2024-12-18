@@ -34,21 +34,22 @@
         class="border"
       >
         <template #item="{ element }">
-          <v-list-item :key="element.id" class="drag-item">
+          <v-list-item v-if="element._destroy !== true" :key="element.id" class="drag-item">
             <v-row class="d-flex align-center">
-              <v-col cols="auto" class="icon-col d-flex align-center">
+              <v-col cols="1" class="icon-col d-flex align-center">
                 <v-icon>mdi-drag</v-icon>
               </v-col>
-              <v-col>
+              <v-col cols="5" class="icon-col d-flex align-center">
                 <v-text-field
                   v-model="element.name"
                   :label="t('form.species.drag.name')"
                   density="compact"
                   variant="outlined"
                   :rules="[isNotBlanck]"
+                  hide-details="auto"
                 />
               </v-col>
-              <v-col>
+              <v-col cols="5" class="icon-col d-flex align-center">
                 <v-text-field
                   v-model="element.duration"
                   :label="t('form.species.drag.time')"
@@ -56,7 +57,16 @@
                   variant="outlined"
                   type="number"
                   :rules="[validationTime]"
+                  hide-details="auto"
                 />
+              </v-col>
+              <v-col cols="1" class="icon-col d-flex align-center">
+                <v-btn
+                  @click="element._destroy = true"
+                  color="error"
+                >
+                  <v-icon  icon="mdi-trash-can-outline"/>
+                </v-btn>
               </v-col>
             </v-row>
           </v-list-item>
