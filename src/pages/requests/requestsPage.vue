@@ -12,6 +12,7 @@
       :loading="loading"
       item-value="name"
       style="border: #008B8B 2px solid; border-radius: 10px"
+      disable-sort
       @update:options="updateOptions"
     >
       <template v-slot:item.actions="{ item }">
@@ -109,19 +110,19 @@ const selectedBuilding = ref<number | null>(null);
 const selectedCompartement = ref<number | null>(null);
 
 const headers: Ref<any> = ref<any>([
-  { title: t('form.request.table.requesterName'), key: 'requester_name', align: 'center', sortable: true },
-  { title: t('form.request.table.email'), key: 'requester_email', align: 'center', sortable: true },
-  { title: t('form.request.table.plant'), key: 'plant_name', align: 'center', sortable: true },
-  { title: t('form.request.table.quantity'), key: 'quantity', align: 'center', sortable: true },
-  { title: t('form.request.table.dueDate'), key: 'due_date', align: 'center', sortable: true,
+  { title: t('form.request.table.requesterName'), key: 'requester_name', align: 'center'},
+  { title: t('form.request.table.email'), key: 'requester_email', align: 'center'},
+  { title: t('form.request.table.plant'), key: 'plant_name', align: 'center'},
+  { title: t('form.request.table.quantity'), key: 'quantity', align: 'center'},
+  { title: t('form.request.table.dueDate'), key: 'due_date', align: 'center',
     value: (item: RequestModel) => !item.due_date ? '': d(new Date(item.due_date), 'short')},
-  { title: t('common.actions'), key: 'actions', align: 'center', sortable: false },
+  { title: t('common.actions'), key: 'actions', align: 'center'},
 ]);
 
 const getHeaders = computed(() => {
   if (isArchivedPage.value) {
     const headersCopy = [...headers.value];
-    const newColumn = { title: t('form.request.table.status'), key: 'status', align: 'center', sortable: true,  value: (item: RequestModel) => t(`form.request.table.status_trad.${item.status}`) };
+    const newColumn = { title: t('form.request.table.status'), key: 'status', align: 'center',  value: (item: RequestModel) => t(`form.request.table.status_trad.${item.status}`) };
     headersCopy.splice(headersCopy.length - 1, 0, newColumn);
     return headersCopy;
   }
