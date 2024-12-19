@@ -13,7 +13,6 @@
       :loading="loading"
       item-value="name"
       style="border: #008B8B 2px solid; border-radius: 10px"
-      disable-sort
       @update:options="updateOptions"
     >
       <template v-slot:item.actions="{ item }">
@@ -111,22 +110,23 @@ const showDialog = ref(false);
 const selectedRequest = ref<number | null>(null);
 const selectedBuilding = ref<number | null>(null);
 const selectedCompartement = ref<number | null>(null);
+const sortOption: Ref<[]> = ref([]);
 
 const headers: Ref<any> = ref<any>([
-  { title: t('form.request.table.requesterName'), key: 'requester_name', align: 'center'},
-  { title: t('form.request.table.email'), key: 'requester_email', align: 'center'},
-  { title: t('form.request.table.plant'), key: 'plant_name', align: 'center'},
-  { title: t('form.request.table.quantity'), key: 'quantity', align: 'center'},
+  { title: t('form.request.table.requesterName'), key: 'requester_name', align: 'center', sortable: false},
+  { title: t('form.request.table.email'), key: 'requester_email', align: 'center', sortable: false},
+  { title: t('form.request.table.plant'), key: 'plant_name', align: 'center', sortable: true},
+  { title: t('form.request.table.quantity'), key: 'quantity', align: 'center', sortable: false},
   { title: t('form.request.table.dueDate'), key: 'due_date', align: 'center',
-    value: (item: RequestModel) => !item.due_date ? '': d(new Date(item.due_date), 'short')},
-  { title: t('common.actions'), key: 'actions', align: 'center'},
+    value: (item: RequestModel) => !item.due_date ? '': d(new Date(item.due_date), 'short'), sortable: true},
+  { title: t('common.actions'), key: 'actions', align: 'center', sortable: false},
 ]);
 
 const getHeaders = computed(() => {
   if (isArchivedPage.value) {
     const headersCopy = [...headers.value];
-    const newColumn = { title: t('form.request.table.status'), key: 'status', align: 'center',  value: (item: RequestModel) => t(`form.request.table.status_trad.${item.status}`) };
-    const newColumn2 = { title: t('form.request.table.handler'), key: 'handler_name', align: 'center'}
+    const newColumn = { title: t('form.request.table.status'), key: 'status', align: 'center',  value: (item: RequestModel) => t(`form.request.table.status_trad.${item.status}`), sortable: true};
+    const newColumn2 = { title: t('form.request.table.handler'), key: 'handler_name', align: 'center', sortable: false}
     headersCopy.splice(headersCopy.length - 1, 0, newColumn);
     headersCopy.splice(2, 0, newColumn2);
     return headersCopy;
@@ -149,7 +149,7 @@ const updateRequests = async (page: number, itemsPerPage: number) => {
     // do all fetch in thread
     const [buildingResponse, requestsResponse] = await Promise.all([
       buildingRepository.getAllBuildings(),
-      RequestRepository.getRequests(page, itemsPerPage, getFetchStatus())
+      RequestRepository.getRequests(page, itemsPerPage, getFetchStatus(), sortOption.value),
     ]);
 
     buildingList.value = buildingResponse;
@@ -177,7 +177,8 @@ const updateRequests = async (page: number, itemsPerPage: number) => {
   }
 };
 
-const updateOptions = (options: { page: number; itemsPerPage: number }) => {
+const updateOptions = (options: { page: number; itemsPerPage: number, sortBy: [], sortDesc: [], }) => {
+  sortOption.value  = options.sortBy
   pageNumber.value = options.page;
   itemsPerPage.value = options.itemsPerPage;
   updateRequests(pageNumber.value, itemsPerPage.value);
