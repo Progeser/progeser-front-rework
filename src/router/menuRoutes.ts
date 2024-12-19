@@ -22,21 +22,29 @@ const menuRoutes: RouteRecordRaw[] = [
     component: () => import('@/pages/containers/containersPage.vue'),
   },
   {
-    path: '/requests/new',
-    name: 'requestsNew',
-    component: () => import('@/pages/requests/requestsPage.vue'),
-    meta: { role: 'grower' }
-  },
-  {
-    path: '/requests/accepted',
-    name: 'requestsAccepted',
-    component: () => import('@/pages/requests/requestsPage.vue'),
-    meta: { role: 'grower' }
-  },
-  {
-    path: '/requests/archived',
-    name: 'requestsArchived',
-    component: () => import('@/pages/requests/requestsPage.vue'),
+    path: '/requests',
+    meta: { role: 'grower' },
+    name:"requests",
+    children: [
+      {
+        path: '/new',
+        name: 'requestsNew',
+        component: () => import('@/pages/requests/requestsPage.vue'),
+        meta: { role: 'grower' }
+      },
+      {
+        path: '/accepted',
+        name: 'requestsAccepted',
+        component: () => import('@/pages/requests/requestsPage.vue'),
+        meta: { role: 'grower' }
+      },
+      {
+        path: '/archived',
+        name: 'requestsArchived',
+        component: () => import('@/pages/requests/requestsPage.vue'),
+        meta: { role: 'grower' }
+      }
+    ]
   },
   {
     path: '/users',
@@ -50,6 +58,7 @@ export const icons: Record<string, string> = {
   buildings: 'mdi-city',
   species: 'mdi-flower',
   containers: 'mdi-pot',
+  requests: 'mdi-bell',
   requestsNew: 'mdi-bell',
   requestsAccepted: 'mdi-calendar-clock',
   requestsArchived: 'mdi-calendar-remove',

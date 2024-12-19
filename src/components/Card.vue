@@ -4,8 +4,10 @@
       <v-btn icon="mdi-pencil" class="bg-white mr-1 position-absolute btn-position" style="z-index: 2" @click="exec()"/>
       <v-img :height="imgHeight" :src="imgSource" cover/>
     </div>
-    <v-card-title> {{title}} </v-card-title>
-    <v-card-text> {{description}} </v-card-text>
+    <v-container :height="textHeight">
+      <v-card-title> {{title}} </v-card-title>
+      <v-card-text> {{description}} </v-card-text>
+    </v-container>
   </v-card>
 </template>
 
@@ -32,6 +34,9 @@ defineProps({
   exec : {
     type : Function,
     default : () => null
+  },
+  textHeight : {
+    type: Number
   }
 })
 

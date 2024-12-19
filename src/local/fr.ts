@@ -109,8 +109,8 @@ export default {
       passwordPlaceholder: "********",
       error: "Mauvais identifiant ou mot de passe",
       required: "Ce champ est obligatoire",
-      noAccount: "Pas encore de compte ?",
-      registerHere: "Inscrivez-vous ici"
+      requester: "Vous êtes demandeur ? Faite une demande en cliquant",
+      here: "ici"
     },
     request: {
       title: "Demandes de cultures",

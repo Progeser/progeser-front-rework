@@ -34,6 +34,22 @@
         >
           {{ t('common.send') }}
         </v-btn>
+        <v-row class="ma-2 mt-3">
+          <v-col class="pa-0">
+    <span>
+      {{ t('form.login.requester') }}
+      <v-btn
+        variant="text"
+        color="primary"
+        class="pa-0"
+        style="min-width: auto; padding: 0;"
+        @click="router.push({name: 'Request'})"
+      >
+        {{ t('form.login.here') }}
+      </v-btn>
+    </span>
+          </v-col>
+        </v-row>
       </v-form>
     </v-card>
   </v-container>
