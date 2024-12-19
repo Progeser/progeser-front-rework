@@ -1,10 +1,13 @@
 import axios, { AxiosResponse } from 'axios';
 import { useAuthStore } from "@/store/AuthStore";
 import { GenericPagination } from '@/model/GenericPagination';
+import router from "@/router";
+import {useSnackbarStore} from "@/store/snackbarStore";
 
 class FetchService {
   private readonly baseUrl: string = `${import.meta.env.VITE_API_URL}`;
   private readonly authStore = useAuthStore();
+  private readonly snackbarStore = useSnackbarStore();
 
   // GET request
   public async get<T>(endpoint: string): Promise<T> {
@@ -96,12 +99,18 @@ class FetchService {
     }
   }
 
-  // Handle errors
-  private handleError(error: any): void {
+  private async handleError(error: any): Promise<void> {
+    if (error.status === 401 || error.status === 403) {
+      this.snackbarStore.showMessage('Session expirée. Veuillez vous reconnecter.')
+
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      await router.push({name: 'Login'})
+    }
+
     if (axios.isAxiosError(error)) {
-      console.error('Axios error:', error.response?.data || error.message);
+      console.error('Axios error:', error.response?.data || error.message)
     } else {
-      console.error('Unexpected error:', error);
+      console.error('Unexpected error:', error)
     }
   }
 }

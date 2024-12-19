@@ -448,8 +448,6 @@ async function createNewDistribution(event: MouseEvent) {
       updateFormDistributions();
 
       if (requestStore.seeds_left_to_plant === 0) {
-        console.log('Request is done')
-
         RequestRepository.acceptRequest(requestId)
           .then(() => {
             router.push({
