@@ -28,6 +28,10 @@ class UserRepository {
     return await this.fetchService.delete(`users/${id}`)
   }
 
+  public async getUser(id: number): Promise<UserModel> {
+    return await this.fetchService.get(`users/${id}`)
+  }
+
   public async getUsers(pageNumber: number, pageSize: number = 10): Promise<GenericPagination<UserModel[]>>{
     return await this.fetchService.getWithPagination<UserModel[]>(`users?page[number]=${pageNumber}&page[size]=${pageSize}`)
   }

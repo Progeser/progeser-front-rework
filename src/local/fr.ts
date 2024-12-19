@@ -38,7 +38,8 @@ export default {
     logout: 'Déconnexion',
     required: 'Ce champ est obligatoire.',
     no_data: 'Pas de données disponibles.',
-    loading: 'Chargement'
+    loading: 'Chargement',
+    not_assigned: 'Non assigné'
   },
   form: {
     species: {
@@ -122,6 +123,7 @@ export default {
         dueDate: "Date de début",
         actions: "Actions",
         status: "Statut",
+        handler: "Gestionnaire",
         status_trad:{
           pending:"En attente",
           accepted:"En cours",
