@@ -66,9 +66,9 @@
       </v-card-title>
       <v-card-text>
         <h4>{{t("request.dialog.building")}}</h4>
-        <v-select :items="buildingList" v-model="selectedBuilding" item-title="name" item-value="id" variant="outlined"/>
+        <v-select :items="buildingList" v-model="selectedBuilding" item-title="name" item-value="id" variant="outlined" :no-data-text="t('common.no_data')"/>
         <h4>{{t("request.dialog.compartiment")}}</h4>
-        <v-select :items="compartimentList" :disabled="selectedBuilding === null" v-model="selectedCompartement" item-title="name" item-value="id" variant="outlined"/>
+        <v-select :items="compartimentList" :disabled="selectedBuilding === null" v-model="selectedCompartement" item-title="name" item-value="id" variant="outlined" :no-data-text="t('common.no_data')"/>
       </v-card-text>
       <v-card-actions class="justify-space-between">
         <v-btn @click="cancelDistribution" color="cancel" variant="outlined">

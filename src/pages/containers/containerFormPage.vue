@@ -29,6 +29,7 @@
           :item-title="(item: string) => t('form.container.shapes.' + item)"
           :item-value="(item: string) => item"
           :items="shapes"
+          :no-data-text="t('common.no_data')"
           variant="outlined"
           class="custom-input"
           @change="validateShape"
