@@ -9,7 +9,7 @@
       :items-per-page-text="t('common.item_per_page')"
       :no-data-text="t('common.no_data')"
       :loading-text="t('common.loading')"
-      :items-per-page-options="[1,10,20,50]"
+      :items-per-page-options="[10,20,50]"
       :loading="loading"
       item-value="name"
       style="border: #008B8B 2px solid; border-radius: 10px"
