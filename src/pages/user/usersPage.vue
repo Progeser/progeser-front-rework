@@ -13,6 +13,8 @@
       :items="usersList"
       :items-length="totalCount"
       :loading="loading"
+      :loading-text="t('common.loading')"
+      :no-data-text="t('common.no_data')"
       item-value="name"
       :items-per-page-text="t('common.item_per_page')"
       @update:options="updateOptions"
@@ -20,7 +22,6 @@
     >
       <template v-slot:item.actions="{ item }">
         <div class="d-flex justify-center">
-          <!-- Bouton supprimer conditionné -->
           <v-btn
             v-if="currentUser?.id !== item.id"
             @click="deleteUser(item)"
