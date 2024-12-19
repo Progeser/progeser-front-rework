@@ -93,7 +93,7 @@ const container = ref<Container>(new Container());
 const { t } = useI18n();
 const shapes = Object.values(ContainerShape);
 
-const props = defineProps<{ id: number }>();
+const props = defineProps<{ id: string }>();
 
 const dimensionsInput = ref<string>("");
 const errors = ref<Record<string, string | null>>({});
@@ -166,7 +166,7 @@ const updateDimensionNames = () => {
 
 const updateContainer = async () => {
   if (props.id.toString() !== "0") {
-    container.value = await containerRepository.getContainer(props.id);
+    container.value = await containerRepository.getContainer(parseInt(props.id));
     dimensionsInput.value = container.value.dimensions?.join(", ") || "";
   }
 };

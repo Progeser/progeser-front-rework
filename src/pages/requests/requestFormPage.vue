@@ -179,6 +179,7 @@ const date = ref<Date | null>(null);
 
 const isRequired = (value: string) =>
   value.trim().length > 0 || t("form.request.error.required");
+
 const isGreaterThanZero = (value: number) => {
   return value > 0 || t("form.request.error.greaterThanZero");
 }

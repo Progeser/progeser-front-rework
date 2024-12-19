@@ -97,11 +97,11 @@ const stages: Ref<SpeciesStage[]> = ref([]);
 const drag = ref(false);
 const { t } = useI18n()
 
-const props = defineProps<{ id: number }>();
+const props = defineProps<{ id: string }>();
 
 const updatePlants = async () => {
   if(props.id.toString() !== '0'){
-    species.value = await speciesRepository.getSpecies(props.id);
+    species.value = await speciesRepository.getSpecies(parseInt(props.id));
     stages.value = species.value.plant_stages;
   }
 };

@@ -134,7 +134,7 @@ import {RequestModel} from "@/model/RequestModel";
 
 const props = defineProps({
   idRequest: {
-    type: Number,
+    type: String,
     required: true
   }
 });
@@ -145,7 +145,7 @@ const requestInformation = ref<RequestModel | null>(null);
 onBeforeMount(async () => {
   if (props.idRequest) {
     try {
-      requestInformation.value = await RequestRepository.getRequest(props.idRequest);
+      requestInformation.value = await RequestRepository.getRequest(parseInt(props.idRequest));
     } catch (error) {
       console.error("Erreur lors de la récupération de la requête :", error);
     }

@@ -13,7 +13,7 @@
               :exec="() => navigateToCompartimentForm(compartiment.id!)"
               :title="compartiment.name"
               img-source="https://serres.univ-lille.fr/fileadmin/_processed_/4/f/csm_33656_IMG_1477_cellule_e31e62c32f.jpg"
-              @click.capture="navigateToView(idBuilding,compartiment.id!)"
+              @click.capture="navigateToView(parseInt(idBuilding),compartiment.id!)"
         />
       </div>
     </v-row>
@@ -39,7 +39,7 @@ const pageNumber: Ref<number> = ref<number>(1);
 const paginationInformation: Ref<GenericPagination<Compartiment[]> | undefined> = ref<GenericPagination<Compartiment[]> | undefined>();
 const {t} = useI18n()
 
-const props = defineProps<{ idBuilding: number }>();
+const props = defineProps<{ idBuilding: string }>();
 
 const updateCompartiments = async (buildingId: number) => {
   paginationInformation.value = await compartimentRepository.getCompartimentsPage(buildingId, pageNumber.value)
@@ -72,11 +72,11 @@ const navigateToView = (buildingId: number, compartimentId: number) => {
 }
 
 onMounted(async () => {
-  await updateCompartiments(props.idBuilding);
+  await updateCompartiments(parseInt(props.idBuilding));
 })
 
 watch(pageNumber, () => {
-  updateCompartiments(props.idBuilding);
+  updateCompartiments(parseInt(props.idBuilding));
 })
 </script>
 
