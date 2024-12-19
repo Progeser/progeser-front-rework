@@ -132,7 +132,6 @@ const toggleMenu = (menuName: string) => {
 const flattenedRoutes = computed(() => {
   return menuRoutes.map(route => {
     if (route.children) {
-      // Initialize menu state for routes with children
       if (!(route.name as string in openMenus)) {
         openMenus[route.name as string] = false;
       }

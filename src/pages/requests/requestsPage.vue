@@ -9,7 +9,7 @@
       :items-per-page-text="t('common.item_per_page')"
       :no-data-text="t('common.no_data')"
       :loading-text="t('common.loading')"
-      :items-per-page-options="[10,20,50]"
+      :items-per-page-options="[1,10,20,50]"
       :loading="loading"
       item-value="name"
       style="border: #008B8B 2px solid; border-radius: 10px"
@@ -92,9 +92,11 @@ import {Building} from "@/model/Building";
 import BuildingRepository from "@/repository/buildingRepository";
 import {Compartiment} from "@/model/Compartiment";
 import CompartimentRepository from "@/repository/compartimentRepository";
+import UserRepository from "@/repository/userRepository";
 
 const buildingRepository = new BuildingRepository()
 const compartimentRepository = new CompartimentRepository()
+const userRepository = new UserRepository()
 const { d,t } = useI18n();
 
 const requestsList = ref<RequestModel[]>([]);
@@ -124,22 +126,50 @@ const getHeaders = computed(() => {
   if (isArchivedPage.value) {
     const headersCopy = [...headers.value];
     const newColumn = { title: t('form.request.table.status'), key: 'status', align: 'center',  value: (item: RequestModel) => t(`form.request.table.status_trad.${item.status}`) };
+    const newColumn2 = { title: t('form.request.table.handler'), key: 'handler_name', align: 'center'}
     headersCopy.splice(headersCopy.length - 1, 0, newColumn);
+    headersCopy.splice(2, 0, newColumn2);
     return headersCopy;
   }
   return headers.value;
 });
 
+const getHandlerName = async (id: number | null) => {
+  if (id) {
+    let handler = await userRepository.getUser(id);
+    return `${handler.first_name} ${handler.last_name}`;
+  } else {
+    return t('common.not_assigned');
+  }
+};
+
 const updateRequests = async (page: number, itemsPerPage: number) => {
   loading.value = true;
   try {
-    buildingList.value = await buildingRepository.getAllBuildings()
-    const response = await RequestRepository.getRequests(page, itemsPerPage,getFetchStatus());
-    totalCount.value = response.totalCount || 0;
-    requestsList.value = response.content.map((request) => ({
+    // do all fetch in thread
+    const [buildingResponse, requestsResponse] = await Promise.all([
+      buildingRepository.getAllBuildings(),
+      RequestRepository.getRequests(page, itemsPerPage, getFetchStatus())
+    ]);
+
+    buildingList.value = buildingResponse;
+    totalCount.value = requestsResponse.totalCount || 0;
+
+    const mappedRequests = requestsResponse.content.map(request => ({
       ...request,
       requester_name: `${request.requester_first_name} ${request.requester_last_name}`,
+      handler_name: null,
     }));
+
+    const handlerNames = await Promise.all(
+      requestsResponse.content.map(request => getHandlerName(request.handler_id))
+    );
+
+    requestsList.value = mappedRequests.map((request, index) => ({
+      ...request,
+      handler_name: handlerNames[index],
+    }));
+
   } catch (error) {
     alert(t('request.error.fetch'));
   } finally {
