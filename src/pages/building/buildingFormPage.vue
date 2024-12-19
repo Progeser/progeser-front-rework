@@ -43,11 +43,11 @@ const buildingRepository = new BuildingRepository();
 const building = ref<Building>(new Building());
 const { t } = useI18n();
 
-const props = defineProps<{ id: number }>();
+const props = defineProps<{ id: string }>();
 
 const updateBuilding = async () => {
   if (props.id.toString() !== '0') {
-    building.value = await buildingRepository.getBuilding(props.id);
+    building.value = await buildingRepository.getBuilding(parseInt(props.id));
   }
 };
 

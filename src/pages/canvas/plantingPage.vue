@@ -86,43 +86,6 @@ const formSelectedPot = ref<number | null>(null);
 const formSpace = ref<number>(0);
 const formDistributions = ref<{ bench_name: string, greenhouse_name: string, quantity: number }[]>([]);
 
-watch(
-  () => benchStore.benches,
-  renderCanvas,
-  {immediate: true}
-);
-
-watch(
-  () => requestDistributionStore.requestDistributions,
-  renderCanvas,
-  {immediate: true}
-);
-
-watch(
-  () => requestDistributionStore.selectedDistribution,
-  renderCanvas,
-  {immediate: true}
-);
-
-
-// Lifecycle hooks
-onMounted(async () => {
-  addEventListeners();
-  resizeCanvas();
-
-  await Promise.all([
-    requestStore.loadRequest(requestId),
-    requestDistributionStore.loadDistributions(),
-    benchStore.loadBenches(greenhouseId),
-    potStore.loadPots(),
-    greenhouseStore.loadGreenhouse(buildingId)
-  ]);
-
-  updateFormDistributions();
-
-  computeSeedLeftToPlant();
-});
-
 onBeforeUnmount(() => {
   removeEventListeners();
 });
@@ -360,7 +323,42 @@ function updateFormDistributions() {
   const distributions = requestDistributionStore.getDistributionByRequestId(requestId)
   if (!distributions) return
 
-  distributions.forEach((distribution) => {
+  distributions.forEach((distribution) => {watch(
+  () => benchStore.benches,
+  renderCanvas,
+  {immediate: true}
+);
+
+watch(
+  () => requestDistributionStore.requestDistributions,
+  renderCanvas,
+  {immediate: true}
+);
+
+watch(
+  () => requestDistributionStore.selectedDistribution,
+  renderCanvas,
+  {immediate: true}
+);
+
+
+// Lifecycle hooks
+onMounted(async () => {
+  addEventListeners();
+  resizeCanvas();
+
+  await Promise.all([
+    requestStore.loadRequest(requestId),
+    requestDistributionStore.loadDistributions(),
+    benchStore.loadBenches(greenhouseId),
+    potStore.loadPots(),
+    greenhouseStore.loadGreenhouse(buildingId)
+  ]);
+
+  updateFormDistributions();
+
+  computeSeedLeftToPlant();
+});
     const seed_quantity = distribution.pot_quantity
     const bench = benchStore.getBenchById(distribution.bench_id)
     const greenhouseName = bench ? greenhouseStore.getGreenhouseById(bench.greenhouse_id)?.name : undefined
@@ -489,6 +487,43 @@ function mouseIsOverDistribution(distribution: RequestDistribution, bench: Bench
     mouseY >= distribution.positions_on_bench[1] + bench.positions[1] &&
     mouseY <= distribution.positions_on_bench[1] + bench.positions[1] + distribution.dimensions[1]
 }
+
+watch(
+  () => benchStore.benches,
+  renderCanvas,
+  {immediate: true}
+);
+
+watch(
+  () => requestDistributionStore.requestDistributions,
+  renderCanvas,
+  {immediate: true}
+);
+
+watch(
+  () => requestDistributionStore.selectedDistribution,
+  renderCanvas,
+  {immediate: true}
+);
+
+
+// Lifecycle hooks
+onMounted(async () => {
+  addEventListeners();
+  resizeCanvas();
+
+  await Promise.all([
+    requestStore.loadRequest(requestId),
+    requestDistributionStore.loadDistributions(),
+    benchStore.loadBenches(greenhouseId),
+    potStore.loadPots(),
+    greenhouseStore.loadGreenhouse(buildingId)
+  ]);
+
+  updateFormDistributions();
+
+  computeSeedLeftToPlant();
+});
 </script>
 
 <style scoped>

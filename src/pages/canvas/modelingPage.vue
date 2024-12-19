@@ -48,30 +48,6 @@ let clickOnX = 0;
 let clickOnY = 0;
 let animationFrameId: number | null = null;
 
-// Watchers
-watch(
-  () => benchStore.benches,
-  renderCanvas,
-  {immediate: true}
-);
-
-watch(
-  () => benchStore.selectedBench,
-  renderCanvas,
-  {immediate: true}
-);
-
-// Lifecycle hooks
-onMounted(async () => {
-  addEventListeners();
-  resizeCanvas();
-  await benchStore.loadBenches(greenhouseId);
-});
-
-onBeforeUnmount(() => {
-  removeEventListeners();
-});
-
 function addEventListeners() {
   window.addEventListener('resize', resizeCanvas);
 
@@ -318,6 +294,30 @@ function mouseIsOverBench(bench: Bench, mouseX: number, mouseY: number) {
     mouseY >= bench.positions[1] &&
     mouseY <= bench.positions[1] + bench.dimensions[1]
 }
+
+// Watchers
+watch(
+  () => benchStore.benches,
+  renderCanvas,
+  {immediate: true}
+);
+
+watch(
+  () => benchStore.selectedBench,
+  renderCanvas,
+  {immediate: true}
+);
+
+// Lifecycle hooks
+onMounted(async () => {
+  addEventListeners();
+  resizeCanvas();
+  await benchStore.loadBenches(greenhouseId);
+});
+
+onBeforeUnmount(() => {
+  removeEventListeners();
+});
 </script>
 
 <style scoped>

@@ -32,7 +32,7 @@
       </v-col>
     </div>
     <v-row class="d-flex justify-space-between align-center">
-      <v-btn @click="router.push({ name: 'compartiments', params: {id: props.idBuilding} })">
+      <v-btn @click="router.push({ name: 'compartiments', params: {id: props.idBuilding.valueOf()} })">
         {{ t('common.cancel') }}
       </v-btn>
       <v-btn @click="sendCompartiment()"
@@ -55,11 +55,11 @@ const compartimentRepository = new CompartimentRepository()
 const compartiment = ref<Compartiment>(new Compartiment());
 const { t } = useI18n();
 
-const props = defineProps<{ idBuilding: number, idCompartiment: number }>();
+const props = defineProps<{ idBuilding: string, idCompartiment: string }>();
 
 const updateCompartiment = async () => {
   if (props.idCompartiment.toString() !== '0') {
-    compartiment.value = await compartimentRepository.getCompartiment(props.idCompartiment);
+    compartiment.value = await compartimentRepository.getCompartiment(parseInt(props.idCompartiment));
   }
 };
 
@@ -67,7 +67,7 @@ const sendCompartiment = async () => {
   if (props.idCompartiment.toString() !== '0') {
     await compartimentRepository.putCompartiment(compartiment.value?.id!, compartiment.value);
   } else {
-    await compartimentRepository.postCompartiment(props.idBuilding,compartiment.value);
+    await compartimentRepository.postCompartiment(parseInt(props.idBuilding),compartiment.value);
   }
   await router.push({name: 'compartiments', params: {id: props.idBuilding}});
 };

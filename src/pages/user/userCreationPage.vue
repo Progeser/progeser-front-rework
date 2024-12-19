@@ -107,17 +107,14 @@ const user = ref<UserOutput>({
 });
 
 const isNotBlank = (value: string) => value.trim().length > 0 || t("form.user.error.required");
+
 const isValidEmail = (value: string) =>
   /^\S+@\S+\.\S+$/.test(value) || t("form.user.error.invalidEmail");
+
 const isPasswordMatch = (value: string) =>
   value === user.value.password || t("form.user.error.passwordMismatch");
 
 const isFormValid = ref(false);
-watch(
-  () => user.value,
-  () => checkForm(),
-  { deep: true }
-);
 
 const checkForm = () => {
   isFormValid.value =
@@ -137,6 +134,12 @@ const createUser = async () => {
     alert(t("form.user.error.creationFailed"));
   }
 };
+
+watch(
+  () => user.value,
+  () => checkForm(),
+  { deep: true }
+);
 </script>
 
 <style scoped>
