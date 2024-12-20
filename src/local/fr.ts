@@ -229,6 +229,9 @@ export default {
         loadRequest: "Erreur lors du chargement des données de la demande",
       },
       success: "Demande mise à jour avec succès",
+      other: "Autre",
+      plantName: "Nom de la plante",
+      plantStageName: "Nom du stade de la plante"
     }
   },
   request: {
