@@ -100,8 +100,8 @@ const { t } = useI18n()
 const props = defineProps<{ id: string }>();
 
 const updatePlants = async () => {
-  if(props.idRequest.toString() !== '0'){
-    species.value = await speciesRepository.getSpecies(parseInt(props.idRequest));
+  if(props.id.toString() !== '0'){
+    species.value = await speciesRepository.getSpecies(parseInt(props.id));
     stages.value = species.value.plant_stages;
   }
 };
@@ -126,7 +126,7 @@ const onDragEnd = async () => {
 
 const sendSpecies = async () => {
   species.value.plant_stages = stages.value;
-  if (props.idRequest.toString() !== '0'){
+  if (props.id.toString() !== '0'){
     await speciesRepository.putSpecies(species.value.id!,species.value)
   }else{
     await speciesRepository.postSpecies(species.value)
