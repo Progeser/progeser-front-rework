@@ -2,11 +2,6 @@ import {RouteRecordRaw} from "vue-router";
 
 const menuRoutes: RouteRecordRaw[] = [
   {
-    path: '/home',
-    name: 'home',
-    component: () => import('@/pages/homePage.vue'),
-  },
-  {
     path: '/buildings',
     name: 'buildings',
     component: () => import('@/pages/building/buildingsPage.vue'),
