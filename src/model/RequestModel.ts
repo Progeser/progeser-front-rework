@@ -15,6 +15,6 @@ export interface RequestModel {
   requester_first_name: string;
   requester_last_name: string;
   status: string;
-  temperature: number | null;
+  temperature: string | null;
   updated_at: string;
 }

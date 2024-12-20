@@ -20,7 +20,7 @@ export const useRequest = defineStore('request', {
   },
 
   actions: {
-    async loadRequest(requestId: number) {
+    async loadRequest(requestId: string) {
       this.request = await RequestRepository.getRequest(requestId);
       this.seeds_left_to_plant = this.request.quantity
     },

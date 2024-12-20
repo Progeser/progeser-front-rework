@@ -111,7 +111,7 @@ onMounted(async () => {
   resizeCanvas();
 
   await Promise.all([
-    requestStore.loadRequest(requestId),
+    requestStore.loadRequest(requestId.toString()),
     requestDistributionStore.loadDistributions(),
     benchStore.loadBenches(greenhouseId),
     potStore.loadPots(),

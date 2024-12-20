@@ -11,7 +11,7 @@ class RequestRepository {
     return await this.fetchService.getWithPagination(`requests?page[number]=${pageNumber}&page[size]=${pageSize}&filter[status]=${status}&sort=${this.getSortString(sortBy)}`);
   }
 
-  public async getRequest(id: number): Promise<RequestModel> {
+  public async getRequest(id: string): Promise<RequestModel> {
     return await this.fetchService.get(`requests/${id}`)
   }
 
@@ -25,6 +25,10 @@ class RequestRepository {
 
   public async postRequest(data: RequestOutput): Promise<RequestModel> {
     return await this.fetchService.postWithoutBearer(`requests`, data);
+  }
+
+  public async putRequest(id: string, data: RequestOutput): Promise<RequestModel> {
+    return await this.fetchService.put(`requests/${id}`, data);
   }
 
   public async finishRequest(id: string): Promise<RequestModel> {
