@@ -1,30 +1,19 @@
 <template>
   <v-row>
     <div v-for="(step, index) in routeList" :key="step">
-      <div v-if="isNaN(+step)">
-        <v-icon v-if="index < routeList.length && index !== 0" :key="step" icon="mdi-chevron-right" class="font-weight-bold"/>
-        <router-link :to="getRouteLink(index)">{{ t(`menu.name.${step}`) }}</router-link>
-      </div>
+      <v-icon v-if="index < routeList.length && index !== 0" :key="step" icon="mdi-chevron-right" class="font-weight-bold"/>
+      <router-link :to="{name: step, params: router.currentRoute.value.params}">{{ t(`menu.name.${step}`) }}</router-link>
     </div>
   </v-row>
 </template>
 
 <script setup lang="ts">
 import router from "@/router";
-import {computed} from "vue";
+import {computed, ComputedRef} from "vue";
 import {useI18n} from "vue-i18n";
 
-const { t } = useI18n();
-const specialCase = ["buildings","compartiments","new","accepted","archived"]
-
-const routeList = computed(() => router.currentRoute.value.fullPath.split("/").slice(1));
-
-const getRouteLink = (index: number) => {
-  if (!isNaN(+routeList.value[index+1]) && !specialCase.some((word) => routeList.value[index].includes(word))) {
-    return "/" + routeList.value.slice(0, index + 2).join("/");
-  }
-  return "/" + routeList.value.slice(0, index + 1).join("/");
-};
+const {t} = useI18n()
+const routeList: ComputedRef<string[]> = computed((): string[] => [...(router.currentRoute.value.meta.previousStep as string[] || []), router.currentRoute.value.name!.toString()])
 </script>
 
 <style scoped>
