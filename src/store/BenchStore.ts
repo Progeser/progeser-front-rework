@@ -7,7 +7,7 @@ interface BenchStoreState {
   _selectedBench: Bench | null;
 }
 
-export const useBenchStore = defineStore('bench', {
+export const BenchStore = defineStore('bench', {
   state: (): BenchStoreState => ({
     benches: [],
     _selectedBench: null,

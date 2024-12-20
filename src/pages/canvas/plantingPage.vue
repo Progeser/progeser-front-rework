@@ -53,28 +53,28 @@
 
 <script lang="ts" setup>
 import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue';
-import {useRequestDistribution} from "@/store/useRequestDistribution";
-import {useRequest} from "@/store/useRequest";
 import router from "@/router"
-import {useBenchStore} from "@/store/BenchStore";
+import {BenchStore} from "@/store/BenchStore";
+import {RequestDistributionStore} from "@/store/RequestDistribution";
+import {RequestStore} from "@/store/RequestStore";
+import {useRoute} from "vue-router";
 import {usePot} from "@/store/usePot";
 import {useGreenhouse} from "@/store/useGreenhouse";
 import RequestRepository from "@/repository/requestRepository";
-import {useRoute} from "vue-router";
 
 const canvasRef: Ref<HTMLCanvasElement | undefined> = ref();
 const canvasContext: Ref<CanvasRenderingContext2D | undefined> = ref();
 
-const requestDistributionStore = useRequestDistribution();
-const requestStore = useRequest();
-const benchStore = useBenchStore();
+const requestDistributionStore = RequestDistributionStore();
+const requestStore = RequestStore();
+const benchStore = BenchStore();
 const potStore = usePot()
 const greenhouseStore = useGreenhouse();
 
 const route = useRoute();
-const requestId = Number(route.params.requestId);
+const requestId = Number(route.params.idRequest);
 const buildingId = Number(route.params.idBuilding);
-const greenhouseId = Number(route.params.greenhouseId);
+const greenhouseId = Number(route.params.idCompartiment);
 
 let clickIsMaintained = false;
 let clickIsOnBench: null | Bench = null;
@@ -156,7 +156,6 @@ function addEventListeners() {
   canvasRef.value.addEventListener('mousedown', handleMouseDown);
   canvasRef.value.addEventListener('mouseup', handleMouseUp);
   canvasRef.value.addEventListener('mousemove', handleMouseMove);
-
 }
 
 function removeEventListeners() {
@@ -448,7 +447,7 @@ async function createNewDistribution(event: MouseEvent) {
       updateFormDistributions();
 
       if (requestStore.seeds_left_to_plant === 0) {
-        RequestRepository.acceptRequest(requestId)
+        RequestRepository.acceptRequest(String(requestId))
           .then(() => {
             router.push({
               name: 'requestsAccepted',

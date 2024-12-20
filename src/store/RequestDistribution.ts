@@ -7,7 +7,7 @@ interface RequestDistributionStoreState {
   _selectedDistribution: RequestDistribution | null;
 }
 
-export const useRequestDistribution = defineStore('requestDistribution', {
+export const RequestDistributionStore = defineStore('requestDistribution', {
   state: (): RequestDistributionStoreState => ({
     requestDistributions: [],
     _selectedDistribution: null,
