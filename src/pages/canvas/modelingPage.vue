@@ -32,7 +32,7 @@
 
 <script lang="ts" setup>
 import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue';
-import {useBenchStore} from "@/store/BenchStore";
+import {BenchStore} from "@/store/BenchStore";
 import {useRoute} from 'vue-router';
 
 const canvasRef: Ref<HTMLCanvasElement | undefined> = ref();
@@ -40,7 +40,7 @@ const canvasContext: Ref<CanvasRenderingContext2D | undefined> = ref();
 const formData = ref({width: 0, height: 0, name: ''});
 
 const route = useRoute();
-const benchStore = useBenchStore();
+const benchStore = BenchStore();
 const greenhouseId = Number(route.params.idCompartiment);
 
 let clickIsMaintained = false;

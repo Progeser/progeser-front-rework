@@ -7,7 +7,10 @@ import {RequestOutput} from "@/model/output/RequestOutput";
 class RequestRepository {
   private readonly fetchService: FetchService = new FetchService();
 
-  public async getRequests(pageNumber: number, pageSize: number = 10, status: string, sortBy: { key: "plant_name", order: "asc" }[]): Promise<GenericPagination<RequestModel[]>> {
+  public async getRequests(pageNumber: number, pageSize: number = 10, status: string, sortBy: {
+    key: "plant_name",
+    order: "asc"
+  }[]): Promise<GenericPagination<RequestModel[]>> {
     return await this.fetchService.getWithPagination(`requests?page[number]=${pageNumber}&page[size]=${pageSize}&filter[status]=${status}&sort=${this.getSortString(sortBy)}`);
   }
 
@@ -15,7 +18,11 @@ class RequestRepository {
     return await this.fetchService.get(`requests/${id}`)
   }
 
-  public async acceptRequest(id: number): Promise<RequestModel> {
+  public async getAllRequest(): Promise<RequestModel[]> {
+    return await this.fetchService.get<RequestModel[]>(`requests`)
+  }
+
+  public async acceptRequest(id: string): Promise<RequestModel> {
     return await this.fetchService.post(`requests/${id}/accept`)
   }
 

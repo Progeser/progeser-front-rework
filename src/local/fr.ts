@@ -23,7 +23,8 @@ export default {
       compartimentForm: "Formulaire du compartiment",
       SpeciesForm: 'Formulaire de l\'espèces',
       ContainerForm: 'Formulaire du conteneur',
-      RequestShow : 'Résumé de la demande'
+      RequestShow: 'Résumé de la demande',
+      ViewSeedsPage: 'vue'
     },
   },
   common: {
@@ -129,13 +130,13 @@ export default {
         actions: "Actions",
         status: "Statut",
         handler: "Gestionnaire",
-        status_trad:{
-          pending:"En attente",
-          accepted:"En cours",
-          refused:"Refusé",
-          in_cancelation:"En annulation",
-          canceled:"Annulé",
-          completed:"Terminé"
+        status_trad: {
+          pending: "En attente",
+          accepted: "En cours",
+          refused: "Refusé",
+          in_cancelation: "En annulation",
+          canceled: "Annulé",
+          completed: "Terminé"
         }
       },
       confirmAccept: "Êtes-vous sûr de vouloir accepter cette demande ?",
@@ -164,9 +165,9 @@ export default {
         fetchSpecies: "Une erreur est survenue lors de la récupération des espèces",
         sending: "Une erreur est survenue lors de l'envoi, la distribution de cette demande à déjà commencé",
         required: "Ne doit pas être vide",
-        greaterThanZero:"Doit être supérieur à zéro",
+        greaterThanZero: "Doit être supérieur à zéro",
         notNull: "Doit être sélectionné",
-        invalidEmail:'Email invalide'
+        invalidEmail: 'Email invalide'
       },
       success: "Votre demande a été envoyée avec succès !"
     },
@@ -190,7 +191,7 @@ export default {
       emailPlaceholder: 'Adresse e-mail',
       passwordPlaceholder: 'Mot de passe',
       confirmPasswordPlaceholder: 'Confirmez le mot de passe',
-      error : {
+      error: {
         fetchUsers: "Erreur lors de la récupération des utilisateurs.",
         required: "Ce champ est obligatoire.",
         invalidEmail: "Veuillez entrer une adresse e-mail valide.",
@@ -242,7 +243,7 @@ export default {
     },
     confirmReject: "Voulez-vous refuser cette demande ?",
     confirmFinish: "Voulez-vous terminer cette demande ?",
-    dialog:{
+    dialog: {
       title: 'Choisissez votre distribution',
       building: 'Choisissez votre bâtiment',
       compartiment: 'Choisissez votre compartiment'
@@ -257,7 +258,7 @@ export default {
     lastNamePlaceholder: "Votre nom",
     updatePassword: "Modifier le mot de passe",
     delete: "Supprimer mon compte",
-    error : {
+    error: {
       required: "Ce champ est obligatoire."
     },
     successUpdate: "Vos informations ont été mises à jour avec succès !",
