@@ -99,7 +99,7 @@ const addStage = () => {
 
 const sendSpecies = async () => {
   species.value.plant_stages = stages.value;
-  if (props.id.toString() !== '0'){
+  if (props.id !== '0'){
     await speciesRepository.putSpecies(species.value.id!,species.value)
   }else{
     await speciesRepository.postSpecies(species.value)

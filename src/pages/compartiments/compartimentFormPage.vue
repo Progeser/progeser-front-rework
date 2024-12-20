@@ -58,13 +58,13 @@ const { t } = useI18n();
 const props = defineProps<{ idBuilding: string, idCompartiment: string }>();
 
 const updateCompartiment = async () => {
-  if (props.idCompartiment.toString() !== '0') {
+  if (props.idCompartiment !== '0') {
     compartiment.value = await compartimentRepository.getCompartiment(parseInt(props.idCompartiment));
   }
 };
 
 const sendCompartiment = async () => {
-  if (props.idCompartiment.toString() !== '0') {
+  if (props.idCompartiment !== '0') {
     await compartimentRepository.putCompartiment(compartiment.value?.id!, compartiment.value);
   } else {
     await compartimentRepository.postCompartiment(parseInt(props.idBuilding),compartiment.value);
