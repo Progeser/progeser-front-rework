@@ -46,13 +46,13 @@ const { t } = useI18n();
 const props = defineProps<{ id: string }>();
 
 const updateBuilding = async () => {
-  if (props.id.toString() !== '0') {
+  if (props.id !== '0') {
     building.value = await buildingRepository.getBuilding(parseInt(props.id));
   }
 };
 
 const sendBuilding = async () => {
-  if (props.id.toString() !== '0') {
+  if (props.id !== '0') {
     await buildingRepository.putBuilding(building.value?.id!, building.value);
   } else {
     await buildingRepository.postBuilding(building.value);
