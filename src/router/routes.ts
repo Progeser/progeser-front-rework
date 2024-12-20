@@ -51,7 +51,7 @@ const routes: RouteRecordRaw[] = [
     name : 'RequestShow',
     props: true,
     component: () => import('@/pages/requests/requestInformationPage.vue'),
-    meta: { previousStep: ['requests'] }
+    meta: { previousStep: ['requestsNew'] }
   },
   {
     path: '/users/creation',
