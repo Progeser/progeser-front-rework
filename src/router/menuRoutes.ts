@@ -23,26 +23,22 @@ const menuRoutes: RouteRecordRaw[] = [
   },
   {
     path: '/requests',
-    meta: { role: 'grower' },
     name:"requests",
     children: [
       {
         path: '/new',
         name: 'requestsNew',
         component: () => import('@/pages/requests/requestsPage.vue'),
-        meta: { role: 'grower' }
       },
       {
         path: '/accepted',
         name: 'requestsAccepted',
         component: () => import('@/pages/requests/requestsPage.vue'),
-        meta: { role: 'grower' }
       },
       {
         path: '/archived',
         name: 'requestsArchived',
         component: () => import('@/pages/requests/requestsPage.vue'),
-        meta: { role: 'grower' }
       }
     ]
   },

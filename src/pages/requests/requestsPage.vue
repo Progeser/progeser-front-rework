@@ -219,7 +219,7 @@ const getBuildingCompartiment = async () => {
 
 const sendDistribution = async () => {
   showDialog.value = false;
-  await router.push({name: 'PlantingPage', params: {buildingId: selectedBuilding.value,greenhouseId: selectedCompartement.value,requestId: selectedRequest.value}});
+  await router.push({name: 'PlantingPage', params: {idBuilding: selectedBuilding.value,greenhouseId: selectedCompartement.value,requestId: selectedRequest.value}});
   reset()
 }
 

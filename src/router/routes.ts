@@ -6,30 +6,35 @@ const routes: RouteRecordRaw[] = [
     name: 'SpeciesForm',
     props: true,
     component: () => import('@/pages/species/specieFormPage.vue'),
+    meta: { previousStep: ['species'] }
   },
   {
     path: '/buildings/form/:id',
     name: 'BuildingForm',
     props: true,
     component: () => import('@/pages/building/buildingFormPage.vue'),
+    meta: { previousStep: ['buildings'] }
   },
   {
     path: '/buildings/:idBuilding/compartiments',
     name: 'compartiments',
     props: true,
     component: () => import('@/pages/compartiments/compartimentPage.vue'),
+    meta: { previousStep: ['buildings'] }
   },
   {
     path: '/buildings/:idBuilding/compartiments/form/:idCompartiment',
     name: 'compartimentForm',
     props: true,
     component: () => import('@/pages/compartiments/compartimentFormPage.vue'),
+    meta: { previousStep: ['buildings','compartiments'] }
   },
   {
     path: '/containers/form/:id',
     name: 'ContainerForm',
     props: true,
     component: () => import('@/pages/containers/containerFormPage.vue'),
+    meta: { previousStep: ['containers'] }
   },
   {
     path: '/login',
@@ -46,27 +51,27 @@ const routes: RouteRecordRaw[] = [
     name : 'RequestShow',
     props: true,
     component: () => import('@/pages/requests/requestInformationPage.vue'),
+    meta: { previousStep: ['requests'] }
   },
   {
     path: '/users/creation',
     name: 'UserCreation',
     component: () => import('@/pages/user/userCreationPage.vue'),
-  },
-  {
-    path: '/:catchAll(.*)*',
-    component: () => import('@/pages/connexion/loginPage.vue'),
+    meta: { previousStep: ['users'] }
   },
   {
     path: '/buildings/:idBuilding/compartiments/:idCompartiment/view',
     name: 'ModelingPage',
     props: true,
     component: () => import('@/pages/canvas/modelingPage.vue'),
+    meta: { previousStep: ['buildings','compartiments'] }
   },
   {
-    path: '/buildings/:buildingId/compartiments/:greenhouseId/requests/:requestId/view',
+    path: '/buildings/:idBuilding/compartiments/:greenhouseId/requests/:requestId/view',
     name: 'PlantingPage',
     props: true,
     component: () => import('@/pages/canvas/plantingPage.vue'),
+    meta: { previousStep: ['buildings','compartiments'] }
   },
   {
     path: '/profile',
@@ -79,7 +84,12 @@ const routes: RouteRecordRaw[] = [
     name: 'PasswordUpdate',
     props: true,
     component: () => import('@/pages/profile/passwordUpdatePage.vue'),
-  }
+    meta: { previousStep: ['Profile'] }
+  },
+  { //AT THE END
+    path: '/:catchAll(.*)*',
+    component: () => import('@/pages/connexion/loginPage.vue'),
+  },
 ];
 
 export default routes;

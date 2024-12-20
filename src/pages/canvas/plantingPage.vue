@@ -73,7 +73,7 @@ const greenhouseStore = useGreenhouse();
 
 const route = useRoute();
 const requestId = Number(route.params.requestId);
-const buildingId = Number(route.params.buildingId);
+const buildingId = Number(route.params.idBuilding);
 const greenhouseId = Number(route.params.greenhouseId);
 
 let clickIsMaintained = false;
