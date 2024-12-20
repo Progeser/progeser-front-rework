@@ -165,8 +165,8 @@ const updateDimensionNames = () => {
 };
 
 const updateContainer = async () => {
-  if (props.id.toString() !== "0") {
-    container.value = await containerRepository.getContainer(parseInt(props.id));
+  if (props.idRequest.toString() !== "0") {
+    container.value = await containerRepository.getContainer(parseInt(props.idRequest));
     dimensionsInput.value = container.value.dimensions?.join(", ") || "";
   }
 };
@@ -187,7 +187,7 @@ const submitContainer = async () => {
   }
 
   try {
-    if (props.id.toString() !== "0") {
+    if (props.idRequest.toString() !== "0") {
       await containerRepository.putContainer(container.value.id!, container.value);
     } else {
       await containerRepository.postContainer(container.value);

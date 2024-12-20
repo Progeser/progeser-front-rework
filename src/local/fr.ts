@@ -43,7 +43,8 @@ export default {
     required: 'Ce champ est obligatoire.',
     no_data: 'Pas de données disponibles.',
     loading: 'Chargement',
-    not_assigned: 'Non assigné'
+    not_assigned: 'Non assigné',
+    update: "Mettre à jour"
   },
   form: {
     species: {
@@ -161,7 +162,7 @@ export default {
       due_date: "Date de début",
       error: {
         fetchSpecies: "Une erreur est survenue lors de la récupération des espèces",
-        sending: "Une erreur est survenue lors de l'envoi",
+        sending: "Une erreur est survenue lors de l'envoi, la distribution de cette demande à déjà commencé",
         required: "Ne doit pas être vide",
         greaterThanZero:"Doit être supérieur à zéro",
         notNull: "Doit être sélectionné",
@@ -197,6 +198,37 @@ export default {
         passwordMismatch: "Les mots de passe ne correspondent pas.",
         creationFailed: "Erreur lors de la création de l'utilisateur."
       },
+    },
+    edit: {
+      title: "Modifier la demande",
+      firstName: "Prénom",
+      firstNamePlaceholder: "Entrez votre prénom",
+      lastName: "Nom",
+      lastNamePlaceholder: "Entrez votre nom",
+      email: "Adresse e-mail",
+      lab: "Laboratoire (optionnel)",
+      labPlaceholder: "Entrez le nom du laboratoire",
+      reason: "Raison (optionnel)",
+      reasonPlaceholder: "Expliquez brièvement votre demande",
+      species: "Espèce",
+      stage: "Stade",
+      quantity: "Quantité",
+      temperature: "Température",
+      photoperiod: "Photopériode",
+      due_date: "Date d'échéance",
+      subject: "Objet de la demande",
+      subjectPlaceholder: "Donnez l'objet de la demande",
+      error: {
+        required: "Ce champ est requis",
+        greaterThanZero: "La valeur doit être supérieure à zéro",
+        smallerThanTwentyFive: "La valeur doit être inférieure à 25",
+        notNull: "Ce champ ne peut pas être vide",
+        invalidEmail: "Adresse e-mail invalide",
+        fetchSpecies: "Erreur lors de la récupération des espèces",
+        update: "Erreur lors de la mise à jour de la demande",
+        loadRequest: "Erreur lors du chargement des données de la demande",
+      },
+      success: "Demande mise à jour avec succès",
     }
   },
   request: {
