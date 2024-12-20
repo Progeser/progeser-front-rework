@@ -187,7 +187,7 @@ const isSmallerThanTwentyFive = (value: number) => {
 };
 
 const isNotNull = (value: Object) => {
-  return (value !== null || true) || t("form.edit.error.notNull");
+  return (value !== null || value !== undefined) || t("form.edit.error.notNull");
 };
 const isEmail = (value: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || t("form.edit.error.invalidEmail");
