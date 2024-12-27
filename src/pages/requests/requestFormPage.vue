@@ -5,7 +5,6 @@
         {{ t('form.request.title') }}
       </v-card-title>
       <v-form ref="registerForm" class="pa-4" @submit.prevent="handleSubmit">
-        <!-- Ligne 1 -->
         <v-row>
           <v-col cols="4">
             <h4 class="mr-2 align-self-center">{{ t('form.request.firstName') }}</h4>
@@ -43,7 +42,6 @@
           </v-col>
         </v-row>
 
-        <!-- Ligne 2 -->
         <v-row>
           <v-col cols="4">
             <h4 class="mr-2 align-self-center">{{ t('form.request.lab') }}</h4>
@@ -79,7 +77,6 @@
           </v-col>
         </v-row>
 
-        <!-- Ligne 3 -->
         <v-row>
           <v-col cols="4">
             <h4 class="mr-2 align-self-center">{{ t('form.request.quantity') }}</h4>
@@ -99,7 +96,6 @@
           </v-col>
         </v-row>
 
-        <!-- Ligne 4 -->
         <v-row>
           <v-col cols="4" align-self-center>
             <h4 class="mr-2 align-self-center">{{ t('form.request.due_date') }} : </h4>
@@ -184,7 +180,7 @@ const isGreaterThanZero = (value: number) => {
   return value > 0 || t("form.request.error.greaterThanZero");
 }
 const isNotNull = (value: Object) => {
-  return (value !== null || value !== undefined) || t("form.request.error.notNull");
+  return (value !== null) || t("form.request.error.notNull");
 }
 const isEmail = (value: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || t("form.request.error.invalidEmail");
@@ -209,8 +205,7 @@ const isFormValid = computed(() => {
 const fetchSpecies = async () => {
   isLoading.value = true;
   try {
-    const fetchedSpecies = await speciesRepository.getAllSpecies();
-    species.value = fetchedSpecies;
+    species.value = await speciesRepository.getAllSpecies();
 
   } catch (error) {
     alert(t('form.request.error.fetchSpecies'))
@@ -230,6 +225,8 @@ const handleSubmit = async () => {
       subject.value,
       reason.value,
       selectedSpeciesStageId.value,
+      selectedSpecies.value?.name,
+      selectedSpecies.value?.plant_stages.find(stage => stage.id === selectedSpeciesStageId.value)?.name,
       date.value,
       quantity.value,
       temperature.value,
