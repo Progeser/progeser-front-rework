@@ -214,7 +214,7 @@ const isSmallerThanTwentyFive = (value: number) => {
 };
 
 const isNotNull = (value: Object) => {
-  return (value !== null || value !== undefined) || t("form.edit.error.notNull");
+  return (value !== null) || t("form.edit.error.notNull");
 };
 const isEmail = (value: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || t("form.edit.error.invalidEmail");
@@ -296,7 +296,7 @@ const handleSubmit = async () => {
       selectedSpeciesStageId.value,
       plantName.value || selectedSpecies.value?.name,
       plantStageName.value || selectedSpecies.value?.plant_stages.find(stage => stage.id === selectedSpeciesStageId.value)?.name,
-      date.value,
+      date.value?.toString(),
       quantity.value,
       temperature.value,
       photoperiod.value
@@ -305,6 +305,7 @@ const handleSubmit = async () => {
     router.push({ name: "requestsNew" });
   } catch (error) {
     alert(t("form.edit.error.update"));
+    router.push({ name: "requestsNew" });
   } finally {
     isLoading.value = false;
   }
@@ -314,6 +315,7 @@ onBeforeMount(async () => {
   await fetchSpecies();
   await loadRequestData();
 });
+
 function onSpecieChange() {
   selectedSpeciesStageId.value = null;
   plantName.value = null;
