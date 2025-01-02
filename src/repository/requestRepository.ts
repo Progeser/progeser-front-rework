@@ -17,11 +17,7 @@ class RequestRepository {
   public async getRequest(id: string): Promise<RequestModel> {
     return await this.fetchService.get(`requests/${id}`)
   }
-
-  public async getAllRequest(): Promise<RequestModel[]> {
-    return await this.fetchService.get<RequestModel[]>(`requests`)
-  }
-
+  
   public async acceptRequest(id: string): Promise<RequestModel> {
     return await this.fetchService.post(`requests/${id}/accept`)
   }

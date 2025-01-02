@@ -2,42 +2,42 @@
   <v-container class="container" fluid>
     <div ref="containerRef" class="canvas-container">
       <GridComponent
-          :offset="canvasOffset"
-          :size="containerSize"
-          :space="30"
+        :offset="canvasOffset"
+        :size="containerSize"
+        :space="30"
       />
       <BenchesComponent
-          :benches="benchStore.benches"
-          :display-labels="false"
-          :offset="canvasOffset"
-          :selected-bench-id="null"
-          :size="containerSize"
+        :benches="benchStore.benches"
+        :display-labels="false"
+        :offset="canvasOffset"
+        :selected-bench-id="null"
+        :size="containerSize"
       />
       <DistributionComponent
-          :benches="benchStore.benches"
-          :distribution="requestDistributionStore.requestDistributions"
-          :offset="canvasOffset"
-          :selected-distribution-id="selectedDistributionId"
-          :size="containerSize"
-          :unhighlighted-ids="unhighlightedDistributionId"
+        :benches="benchStore.benches"
+        :distribution="requestDistributionStore.requestDistributions"
+        :offset="canvasOffset"
+        :selected-distribution-id="selectedDistributionId"
+        :size="containerSize"
+        :unhighlighted-ids="unhighlightedDistributionId"
       />
     </div>
     <ToolsComponent
-        :onToolSelect="handleToolSelect"
-        :selected="selectedTool"
-        :tools="toolList"
-        class="tools"
+      :onToolSelect="handleToolSelect"
+      :selected="selectedTool"
+      :tools="toolList"
+      class="tools"
     />
     <div class="box-container">
       <PlantListComponent
-          :on-selected-plant="handlePlantSelect"
-          :plant="plantStore.plants"
-          :selected="selectedPlantId"
-          class="plant-list-box"
+        :on-selected-plant="handlePlantSelect"
+        :plant="plantStore.plants"
+        :selected="selectedPlantId"
+        class="plant-list-box"
       />
       <RequestInfoComponent
-          :info="requestInfo"
-          class="info-box"
+        :info="requestInfo"
+        class="info-box"
       />
     </div>
   </v-container>
@@ -100,12 +100,16 @@ onMounted(async () => {
   addEventListeners();
 
   await Promise.all([
-        benchStore.loadBenches(greenhouseId),
-        requestDistributionStore.loadDistributions(),
-        requestStore.loadRequests(),
-        plantStore.loadPlants()
-      ]
+      benchStore.loadBenches(greenhouseId),
+      plantStore.loadPlants()
+    ]
   );
+
+  const requestDistributionIds = new Set(benchStore.benches.map(b => b.request_distribution_ids).flat());
+  await requestDistributionStore.loadDistributionByIds(requestDistributionIds);
+
+  const requestIds = new Set(requestDistributionStore.requestDistributions.map(b => b.request_id).flat());
+  await requestStore.loadRequestById(requestIds)
 });
 
 onBeforeUnmount(() => {
