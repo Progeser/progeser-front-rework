@@ -19,59 +19,41 @@
           <v-icon icon="mdi-plus"/>
         </v-btn>
       </v-row>
-      <draggable
-        v-model="stages"
-        tag="div"
-        :component-data="{
-      tag: 'ul',
-      type: 'transition-group',
-    }"
-        item-key="id"
-        :animation="200"
-        ghost-class="ghost-class"
-        @start="drag=true"
-        @end="onDragEnd"
-        class="border"
-      >
-        <template #item="{ element }">
-          <v-list-item v-if="element._destroy !== true" :key="element.id" class="drag-item">
-            <v-row class="d-flex align-center">
-              <v-col cols="1" class="icon-col d-flex align-center">
-                <v-icon>mdi-drag</v-icon>
-              </v-col>
-              <v-col cols="5" class="icon-col d-flex align-center">
-                <v-text-field
-                  v-model="element.name"
-                  :label="t('form.species.drag.name')"
-                  density="compact"
-                  variant="outlined"
-                  :rules="[isNotBlanck]"
-                  hide-details="auto"
-                />
-              </v-col>
-              <v-col cols="5" class="icon-col d-flex align-center">
-                <v-text-field
-                  v-model="element.duration"
-                  :label="t('form.species.drag.time')"
-                  density="compact"
-                  variant="outlined"
-                  type="number"
-                  :rules="[validationTime]"
-                  hide-details="auto"
-                />
-              </v-col>
-              <v-col cols="1" class="icon-col d-flex align-center">
-                <v-btn
-                  @click="element._destroy = true"
-                  color="error"
-                >
-                  <v-icon  icon="mdi-trash-can-outline"/>
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-list-item>
-        </template>
-      </draggable>
+      <v-list class="border">
+        <v-list-item v-for="(element, index) in stages" :key="index">
+          <v-row class="d-flex align-center" v-if="element._destroy !== true">
+            <v-col cols="5" class="d-flex align-center">
+              <v-text-field
+                v-model="element.name"
+                :label="t('form.species.drag.name')"
+                density="compact"
+                variant="outlined"
+                :rules="[isNotBlanck]"
+                hide-details="auto"
+              />
+            </v-col>
+            <v-col cols="5" class="d-flex align-center">
+              <v-text-field
+                v-model="element.duration"
+                :label="t('form.species.drag.time')"
+                density="compact"
+                variant="outlined"
+                type="number"
+                :rules="[validationTime]"
+                hide-details="auto"
+              />
+            </v-col>
+            <v-col cols="2" class="d-flex align-center">
+              <v-btn
+                @click="element._destroy = true"
+                color="error"
+              >
+                <v-icon icon="mdi-trash-can-outline"/>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-list-item>
+      </v-list>
     </v-col>
     <v-row class="d-flex justify-space-between align-center">
       <v-btn @click="router.push({ name: 'species' })">{{t('common.cancel')}}</v-btn>
@@ -87,14 +69,12 @@ import {onBeforeMount, Ref, ref, watch} from "vue";
 import {Species} from "@/model/Species";
 import SpeciesRepository from "@/repository/speciesRepository";
 import {SpeciesStage} from "@/model/SpeciesStage";
-import draggable from 'vuedraggable';
 import router from "@/router"
 import {useI18n} from "vue-i18n";
 
 const speciesRepository = new SpeciesRepository();
 const species: Ref<Species> = ref<Species>(new Species());
 const stages: Ref<SpeciesStage[]> = ref([]);
-const drag = ref(false);
 const { t } = useI18n()
 
 const props = defineProps<{ id: string }>();
@@ -103,6 +83,7 @@ const updatePlants = async () => {
   if(props.id.toString() !== '0'){
     species.value = await speciesRepository.getSpecies(parseInt(props.id));
     stages.value = species.value.plant_stages;
+    stages.value.sort((a, b) => a.duration - b.duration);
   }
 };
 
@@ -112,17 +93,9 @@ watch(stages, (newStages) => {
   });
 }, {deep: true});
 
-
 const addStage = () => {
   stages.value.push(new SpeciesStage());
 }
-
-const onDragEnd = async () => {
-  drag.value = false;
-  stages.value.forEach((stage, index) => {
-    stage.position = index;
-  });
-};
 
 const sendSpecies = async () => {
   species.value.plant_stages = stages.value;
@@ -155,11 +128,6 @@ onBeforeMount(async () => {
 </script>
 
 <style scoped>
-.drag-item {
-  cursor: move;
-  width: 100%;
-}
-
 .v-list-item {
   width: 100%;
   background: white;
