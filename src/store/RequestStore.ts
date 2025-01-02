@@ -27,8 +27,12 @@ export const RequestStore = defineStore('request', {
       this.seeds_left_to_plant = this.request.quantity
     },
 
-    async loadRequests() {
-      this.requests = await RequestRepository.getAllRequest();
+    async loadRequestById(requestIds: Set<number>) {
+      for (const id of requestIds) {
+        const request = await RequestRepository.getRequest(id.toString());
+        if (!request) continue;
+        this.requests = [...this.requests, request];
+      }
     },
 
     decreasesNumberOfSeedsLeftToPlant(quantity: number) {

@@ -23,6 +23,14 @@ export const RequestDistributionStore = defineStore('requestDistribution', {
       this.requestDistributions = await RequestDistributionRepository.getRequestDistributions();
     },
 
+    async loadDistributionByIds(distributionIds: Set<number>) {
+      for (const id of distributionIds) {
+        const distribution = await RequestDistributionRepository.getDistributionById(id);
+        if (!distribution) continue;
+        this.requestDistributions = [...this.requestDistributions, distribution];
+      }
+    },
+
     getDistributionById(id: number): RequestDistribution[] | null {
       return this.requestDistributions.filter(rd => rd.id === id) || null;
     },
