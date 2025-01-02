@@ -80,7 +80,7 @@ const handleLogin = async () => {
   isLoading.value = true;
   try {
     await authStore.login(email.value, password.value);
-    router.push("/home");
+    router.push({name: "requestsNew"});
   } catch (error) {
     alert(t("form.login.error"));
   } finally {
