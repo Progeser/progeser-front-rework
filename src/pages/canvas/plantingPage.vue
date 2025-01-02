@@ -216,7 +216,7 @@ function renderCanvas() {
       canvasContext.value.font = 'bold 14px Arial';
       canvasContext.value.textAlign = 'center';
       canvasContext.value.textBaseline = 'middle';
-      canvasContext.value.fillText(String(distribution.pot_quantity), centerX, centerY + 2);
+      canvasContext.value.fillText(distribution.pot_quantity.toString(), centerX, centerY + 2);
 
       canvasContext.value.fillRect(
         distribution.positions_on_bench[0] + bench.positions[0],
@@ -402,7 +402,7 @@ function drawNewDistributionSelectionArea(event: MouseEvent) {
   canvasContext.value.font = 'bold 14px Arial';
   canvasContext.value.textAlign = 'center';
   canvasContext.value.textBaseline = 'middle';
-  canvasContext.value.fillText(String(seed_quantity), centerX, centerY + 2);
+  canvasContext.value.fillText(seed_quantity.toString(), centerX, centerY + 2);
 }
 
 async function createNewDistribution(event: MouseEvent) {
@@ -447,7 +447,7 @@ async function createNewDistribution(event: MouseEvent) {
       updateFormDistributions();
 
       if (requestStore.seeds_left_to_plant === 0) {
-        RequestRepository.acceptRequest(String(requestId))
+        RequestRepository.acceptRequest(requestId.toString())
           .then(() => {
             router.push({
               name: 'requestsAccepted',
