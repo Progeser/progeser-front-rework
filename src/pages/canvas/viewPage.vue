@@ -8,11 +8,12 @@
       />
       <BenchesComponent
         :benches="benchStore.benches"
+        :corner-size="0"
         :display-labels="false"
+        :is-editing="false"
         :offset="canvasOffset"
         :selected-bench-id="null"
-        :size="containerSize"
-      />
+        :size="containerSize"/>
       <DistributionComponent
         :benches="benchStore.benches"
         :distribution="requestDistributionStore.requestDistributions"
@@ -51,8 +52,8 @@ import BenchesComponent from "@/components/canvas/BenchesComponent.vue";
 import ToolsComponent from "@/components/canvas/ToolsComponent.vue";
 import DistributionComponent from "@/components/canvas/DistributionComponent.vue";
 import PlantListComponent from "@/components/canvas/PlantListComponent.vue";
-import {BenchStore} from "@/store/BenchStore";
-import {RequestDistributionStore} from "@/store/RequestDistribution";
+import {useBenchStore} from "@/store/BenchStore";
+import {useRequestDistributionStore} from "@/store/RequestDistribution";
 import {
   ApplyMouseMoveOnOffset,
   CreateContainerResizeObserver,
@@ -64,8 +65,8 @@ import {
   RequestInfoData,
   Size
 } from "@/utils/canvas";
-import {PlantStore} from "@/store/PlantStore";
-import {RequestStore} from "@/store/RequestStore";
+import {usePlantStore} from "@/store/PlantStore";
+import {useRequestStore} from "@/store/RequestStore";
 import {useRoute} from "vue-router";
 
 const containerRef: Ref<HTMLElement | undefined> = ref();
@@ -88,10 +89,10 @@ let isMouseDown = false;
 let startMousePosition: Position = {x: 0, y: 0};
 let startOffset: Offsets = {x: 0, y: 0};
 
-const benchStore = BenchStore();
-const requestDistributionStore = RequestDistributionStore();
-const requestStore = RequestStore();
-const plantStore = PlantStore();
+const benchStore = useBenchStore();
+const requestDistributionStore = useRequestDistributionStore();
+const requestStore = useRequestStore();
+const plantStore = usePlantStore();
 
 const route = useRoute();
 const greenhouseId = Number(route.params.idCompartiment);
@@ -105,10 +106,10 @@ onMounted(async () => {
     ]
   );
 
-  const requestDistributionIds = new Set(benchStore.benches.map(b => b.request_distribution_ids).flat());
+  const requestDistributionIds = benchStore.getRequestDistributionIdsFromBenchesInStore();
   await requestDistributionStore.loadDistributionByIds(requestDistributionIds);
 
-  const requestIds = new Set(requestDistributionStore.requestDistributions.map(b => b.request_id).flat());
+  const requestIds = requestDistributionStore.getRequestIdsFromDistributionInStore();
   await requestStore.loadRequestById(requestIds)
 });
 
@@ -164,8 +165,8 @@ function handlePlantSelect(plantId: number) {
     return;
   }
 
-  const plantStageId = plantStore.plants.filter(p => selectedPlantId.value.includes(p.id)).map(s => s.plant_stages.map(s => s.id)).flat()
-  unhighlightedDistributionId.value = requestDistributionStore.requestDistributions.filter(d => !plantStageId.includes(d.plant_stage_id)).map(d => d.id);
+  const plantStageIds = plantStore.getPlantStagesIdsFromPlantIds(selectedPlantId.value)
+  unhighlightedDistributionId.value = requestDistributionStore.idsOfDistributionNotAssociatedWithPlantStageList(plantStageIds)
 }
 
 function handleMouseMove(event: MouseEvent) {
@@ -177,7 +178,7 @@ function handleMouseMove(event: MouseEvent) {
 
     case 'Select':
       if (isMouseDown) return;
-      CursorPointerWhenOverDistributions(containerRef, event, canvasOffset.value, benchStore.benches, requestDistributionStore.requestDistributions);
+      CursorPointerWhenOverDistributions(containerRef, event, canvasOffset.value, benchStore, requestDistributionStore);
       break;
   }
 }
@@ -196,13 +197,13 @@ function handleMouseDown(event: MouseEvent) {
       break;
 
     case 'Select':
-      selectedDistributionId.value = DistributionUnderCursor(containerRef, event, canvasOffset.value, benchStore.benches, requestDistributionStore.requestDistributions);
+      selectedDistributionId.value = DistributionUnderCursor(containerRef, event, canvasOffset.value, benchStore, requestDistributionStore);
       if (!selectedDistributionId.value) {
         requestInfo.value = null;
         return;
       }
 
-      requestInfo.value = GetRequestInfoFromDistribution(selectedDistributionId.value, requestDistributionStore.requestDistributions, plantStore.plants, requestStore.requests);
+      requestInfo.value = GetRequestInfoFromDistribution(selectedDistributionId.value, requestDistributionStore, plantStore, requestStore);
       break;
   }
 }

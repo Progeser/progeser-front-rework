@@ -7,7 +7,7 @@ interface RequestDistributionStoreState {
   _selectedDistribution: RequestDistribution | null;
 }
 
-export const RequestDistributionStore = defineStore('requestDistribution', {
+export const useRequestDistributionStore = defineStore('requestDistribution', {
   state: (): RequestDistributionStoreState => ({
     requestDistributions: [],
     _selectedDistribution: null,
@@ -31,12 +31,12 @@ export const RequestDistributionStore = defineStore('requestDistribution', {
       }
     },
 
-    getDistributionById(id: number): RequestDistribution[] | null {
-      return this.requestDistributions.filter(rd => rd.id === id) || null;
+    getDistributionById(id: number): RequestDistribution | null {
+      return this.requestDistributions.find(rd => rd.id === id) || null;
     },
 
-    getDistributionByBenchId(benchId: number): RequestDistribution[] | null {
-      return this.requestDistributions.filter(rd => rd.bench_id === benchId) || null;
+    getDistributionByBenchId(benchId: number): RequestDistribution[] {
+      return this.requestDistributions.filter(rd => rd.bench_id === benchId);
     },
 
     selectDistribution(distribution: RequestDistribution | null) {
@@ -70,5 +70,27 @@ export const RequestDistributionStore = defineStore('requestDistribution', {
       this.requestDistributions.push(newDistribution);
       this._selectedDistribution = newDistribution;
     },
+
+    idsOfDistributionNotAssociatedWithPlantStageList(plantStageIds: Set<number>): number[] {
+      const ids: number[] = []
+
+      this.requestDistributions.forEach(rd => {
+        plantStageIds.has(rd.plant_stage_id) && ids.push(rd.id)
+      })
+
+      return ids
+    },
+
+    getRequestIdsFromDistributionInStore(): Set<number> {
+      const ids = new Set<number>();
+
+      this.requestDistributions.forEach(distribution => {
+        ids.add(distribution.request_id);
+      })
+
+      return ids;
+    }
   }
 });
+
+export type RequestDistributionStore = ReturnType<typeof useRequestDistributionStore>;

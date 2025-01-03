@@ -9,7 +9,7 @@ interface RequestStoreState {
   seeds_left_to_plant: number;
 }
 
-export const RequestStore = defineStore('request', {
+export const useRequestStore = defineStore('request', {
   state: (): RequestStoreState => ({
     request: undefined,
     requests: [],
@@ -37,6 +37,12 @@ export const RequestStore = defineStore('request', {
 
     decreasesNumberOfSeedsLeftToPlant(quantity: number) {
       this.seeds_left_to_plant -= quantity;
+    },
+
+    getRequestById(id: number): RequestModel | null {
+      return this.requests.find(request => request.id === id) || null;
     }
   }
 });
+
+export type RequestStore = ReturnType<typeof useRequestStore>;
