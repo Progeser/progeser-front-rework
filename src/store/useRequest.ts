@@ -5,14 +5,12 @@ import {RequestModel} from "@/model/RequestModel";
 
 interface RequestStoreState {
   request: RequestModel | undefined;
-  requests: RequestModel[];
   seeds_left_to_plant: number;
 }
 
-export const RequestStore = defineStore('request', {
+export const useRequest = defineStore('request', {
   state: (): RequestStoreState => ({
     request: undefined,
-    requests: [],
     seeds_left_to_plant: 0,
   }),
 
@@ -25,14 +23,6 @@ export const RequestStore = defineStore('request', {
     async loadRequest(requestId: string) {
       this.request = await RequestRepository.getRequest(requestId);
       this.seeds_left_to_plant = this.request.quantity
-    },
-
-    async loadRequestById(requestIds: Set<number>) {
-      for (const id of requestIds) {
-        const request = await RequestRepository.getRequest(id.toString());
-        if (!request) continue;
-        this.requests = [...this.requests, request];
-      }
     },
 
     decreasesNumberOfSeedsLeftToPlant(quantity: number) {

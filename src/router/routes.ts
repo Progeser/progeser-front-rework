@@ -6,35 +6,35 @@ const routes: RouteRecordRaw[] = [
     name: 'SpeciesForm',
     props: true,
     component: () => import('@/pages/species/specieFormPage.vue'),
-    meta: {previousStep: ['species']}
+    meta: { previousStep: ['species'] }
   },
   {
     path: '/buildings/form/:id',
     name: 'BuildingForm',
     props: true,
     component: () => import('@/pages/building/buildingFormPage.vue'),
-    meta: {previousStep: ['buildings']}
+    meta: { previousStep: ['buildings'] }
   },
   {
     path: '/buildings/:idBuilding/compartiments',
     name: 'compartiments',
     props: true,
     component: () => import('@/pages/compartiments/compartimentPage.vue'),
-    meta: {previousStep: ['buildings']}
+    meta: { previousStep: ['buildings'] }
   },
   {
     path: '/buildings/:idBuilding/compartiments/form/:idCompartiment',
     name: 'compartimentForm',
     props: true,
     component: () => import('@/pages/compartiments/compartimentFormPage.vue'),
-    meta: {previousStep: ['buildings', 'compartiments']}
+    meta: { previousStep: ['buildings','compartiments'] }
   },
   {
     path: '/containers/form/:id',
     name: 'ContainerForm',
     props: true,
     component: () => import('@/pages/containers/containerFormPage.vue'),
-    meta: {previousStep: ['containers']}
+    meta: { previousStep: ['containers'] }
   },
   {
     path: '/login',
@@ -48,30 +48,30 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/requests/:status/:idRequest/show',
-    name: 'RequestShow',
+    name : 'RequestShow',
     props: true,
     component: () => import('@/pages/requests/requestInformationPage.vue'),
-    meta: {previousStep: ['requestsNew']}
+    meta: { previousStep: ['requestsNew'] }
   },
   {
     path: '/users/creation',
     name: 'UserCreation',
     component: () => import('@/pages/user/userCreationPage.vue'),
-    meta: {previousStep: ['users']}
+    meta: { previousStep: ['users'] }
   },
   {
-    path: '/buildings/:idBuilding/compartiments/:idCompartiment/modeling',
+    path: '/buildings/:idBuilding/compartiments/:idCompartiment/view',
     name: 'ModelingPage',
     props: true,
     component: () => import('@/pages/canvas/modelingPage.vue'),
-    meta: {previousStep: ['buildings', 'compartiments']}
+    meta: { previousStep: ['buildings','compartiments'] }
   },
   {
-    path: '/buildings/:idBuilding/compartiments/:idCompartiment/requests/:idRequest/planting',
+    path: '/buildings/:idBuilding/compartiments/:greenhouseId/requests/:requestId/view',
     name: 'PlantingPage',
     props: true,
     component: () => import('@/pages/canvas/plantingPage.vue'),
-    meta: {previousStep: ['buildings', 'compartiments']}
+    meta: { previousStep: ['buildings','compartiments'] }
   },
   {
     path: '/profile',
@@ -84,18 +84,12 @@ const routes: RouteRecordRaw[] = [
     name: 'PasswordUpdate',
     props: true,
     component: () => import('@/pages/profile/passwordUpdatePage.vue'),
-    meta: {previousStep: ['Profile']}
+    meta: { previousStep: ['Profile'] }
   },
   { //AT THE END
     path: '/:catchAll(.*)*',
     component: () => import('@/pages/connexion/loginPage.vue'),
   },
-  {
-    path: '/buildings/:idBuilding/compartiments/:idCompartiment/view',
-    name: 'ViewSeedsPage',
-    props: true,
-    component: () => import('@/pages/canvas/viewPage.vue'),
-  }
 ];
 
 export default routes;
