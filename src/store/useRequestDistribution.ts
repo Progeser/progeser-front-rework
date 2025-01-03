@@ -7,7 +7,7 @@ interface RequestDistributionStoreState {
   _selectedDistribution: RequestDistribution | null;
 }
 
-export const RequestDistributionStore = defineStore('requestDistribution', {
+export const useRequestDistribution = defineStore('requestDistribution', {
   state: (): RequestDistributionStoreState => ({
     requestDistributions: [],
     _selectedDistribution: null,
@@ -21,14 +21,6 @@ export const RequestDistributionStore = defineStore('requestDistribution', {
   actions: {
     async loadDistributions() {
       this.requestDistributions = await RequestDistributionRepository.getRequestDistributions();
-    },
-
-    async loadDistributionByIds(distributionIds: Set<number>) {
-      for (const id of distributionIds) {
-        const distribution = await RequestDistributionRepository.getDistributionById(id);
-        if (!distribution) continue;
-        this.requestDistributions = [...this.requestDistributions, distribution];
-      }
     },
 
     getDistributionById(id: number): RequestDistribution[] | null {
