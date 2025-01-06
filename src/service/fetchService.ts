@@ -100,7 +100,7 @@ class FetchService {
   }
 
   private async handleError(error: any): Promise<void> {
-    if (error.status === 401 || error.status === 403) {
+    if (error.status === 401) {
       this.snackbarStore.showMessage('Session expirée. Veuillez vous reconnecter.')
 
       await new Promise(resolve => setTimeout(resolve, 1000))
