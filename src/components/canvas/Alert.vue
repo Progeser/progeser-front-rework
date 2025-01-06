@@ -4,7 +4,7 @@
     dismissible
     type="error"
   >
-    {{ props.error.message }}
+    {{ props.error ? props.error.message : '' }}
   </v-alert>
 </template>
 <script lang="ts" setup>

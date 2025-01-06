@@ -213,7 +213,8 @@ function handleMouseUp() {
       try {
         selectedBenchId.value = NewBenchFromArea(selectedArea.value, benchStore, greenhouseId, canvasOffset.value)
       } catch (e) {
-        errorMessages.value = e;
+        if (e instanceof Error)
+          errorMessages.value = e;
       }
       selectedArea.value = null;
       startMousePosition = {x: 0, y: 0};
