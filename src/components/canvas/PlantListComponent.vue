@@ -1,6 +1,6 @@
 <template>
-  <div class="plant-card">
-    <h2 class="plant-card__title">Plants</h2>
+  <v-card class="plant-card" outlined>
+    <v-card-title class="plant-card__title">Plants</v-card-title>
     <div class="plant-card__plant-list">
       <div
         v-for="item in plant"
@@ -11,7 +11,7 @@
         <p class="plant-card__plant-list__plant__name">{{ item.name }}</p>
       </div>
     </div>
-  </div>
+  </v-card>
 </template>
 
 <script lang="ts" setup>
@@ -30,10 +30,6 @@ const handleCardClick = (item: { id: number; name: string }) => {
 .plant-card {
   display: flex;
   flex-direction: column;
-  border-radius: 12px;
-  border: 1px solid #e0e0e0;
-  background: linear-gradient(145deg, #ffffff, #f0f0f0);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   max-height: 100%;
 }
 

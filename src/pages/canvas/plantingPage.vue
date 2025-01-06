@@ -54,9 +54,9 @@
 <script lang="ts" setup>
 import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue';
 import router from "@/router"
-import {BenchStore} from "@/store/BenchStore";
-import {RequestDistributionStore} from "@/store/RequestDistribution";
-import {RequestStore} from "@/store/RequestStore";
+import {useBenchStore} from "@/store/BenchStore";
+import {useRequestDistributionStore} from "@/store/RequestDistribution";
+import {useRequestStore} from "@/store/RequestStore";
 import {useRoute} from "vue-router";
 import {usePot} from "@/store/usePot";
 import {useGreenhouse} from "@/store/useGreenhouse";
@@ -65,9 +65,9 @@ import RequestRepository from "@/repository/requestRepository";
 const canvasRef: Ref<HTMLCanvasElement | undefined> = ref();
 const canvasContext: Ref<CanvasRenderingContext2D | undefined> = ref();
 
-const requestDistributionStore = RequestDistributionStore();
-const requestStore = RequestStore();
-const benchStore = BenchStore();
+const requestDistributionStore = useRequestDistributionStore();
+const requestStore = useRequestStore();
+const benchStore = useBenchStore();
 const potStore = usePot()
 const greenhouseStore = useGreenhouse();
 

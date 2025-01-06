@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import {onMounted, ref, Ref, watch} from "vue";
-import {Offsets, ResizeCanvas, SetupCanvas, Size} from "@/utils/canvas";
+import {NormalizesUnitToMetre, Offsets, ResizeCanvas, SetupCanvas, Size} from "@/utils/canvas";
 
 const canvasRef: Ref<HTMLCanvasElement | undefined> = ref();
 const canvasContext: Ref<CanvasRenderingContext2D | undefined> = ref();
@@ -16,6 +16,8 @@ const props = defineProps<{
   offset: Offsets;
   benches: Bench[];
   selectedBenchId: number | null;
+  isEditing: boolean;
+  cornerSize: number;
   displayLabels: boolean;
 }>();
 
@@ -36,6 +38,10 @@ watch(() => [props.selectedBenchId], () => {
   renderCanvas();
 })
 
+watch(() => [props.isEditing], () => {
+  renderCanvas();
+})
+
 onMounted(async () => {
   SetupCanvas(canvasRef, canvasContext);
   ResizeCanvas(canvasRef, props.size.width, props.size.height);
@@ -53,6 +59,7 @@ function renderCanvas() {
   props.benches?.forEach(bench => {
     drawBench(bench)
     props.displayLabels && drawLabels(bench)
+    props.isEditing && props.selectedBenchId == bench.id && drawResize(bench)
   })
 }
 
@@ -77,10 +84,61 @@ function drawLabels(bench: Bench) {
   const centerX = bench.positions[0] + bench.dimensions[0] / 2;
   const centerY = bench.positions[1] + bench.dimensions[1] / 2;
 
+  const widthInMeter = NormalizesUnitToMetre(bench.dimensions[0]).toString() + "m";
+  const heightInMeter = NormalizesUnitToMetre(bench.dimensions[1]).toString() + "m";
+
+  const labels = [
+    {text: bench.name, x: centerX, y: centerY},
+    {text: widthInMeter, x: centerX, y: bench.positions[1]},
+    {text: heightInMeter, x: bench.positions[0], y: centerY}
+  ];
+
   canvasContext.value.save()
   canvasContext.value.textAlign = 'center';
   canvasContext.value.textBaseline = 'middle';
-  canvasContext.value.fillText(bench.name, centerX, centerY);
+
+  labels.forEach(label => {
+    if (!canvasContext.value) return;
+
+    const textMetrics = canvasContext.value.measureText(label.text);
+    const textWidth = textMetrics.width;
+    const textHeight = 16;
+
+    canvasContext.value.fillStyle = 'white';
+    canvasContext.value.fillRect(
+      label.x - textWidth / 2 - 8,
+      label.y - textHeight / 2 - 4,
+      textWidth + 16,
+      textHeight + 8
+    );
+
+    canvasContext.value.fillStyle = 'black';
+    canvasContext.value.fillText(label.text, label.x, label.y);
+  });
+
+  canvasContext.value.restore();
+}
+
+
+function drawResize(bench: Bench) {
+  if (!canvasContext.value) return;
+
+  const [x, y] = bench.positions
+  const [w, h] = bench.dimensions
+  const cornerSize = props.cornerSize;
+
+  canvasContext.value.save();
+  canvasContext.value.fillStyle = "rgb(253,216,53)";
+
+  // Upper left corner
+  canvasContext.value.fillRect(x - cornerSize / 2, y - cornerSize / 2, cornerSize, cornerSize);
+  // Upper right corner
+  canvasContext.value.fillRect(x + w - cornerSize / 2, y - cornerSize / 2, cornerSize, cornerSize);
+  // Lower left corner
+  canvasContext.value.fillRect(x - cornerSize / 2, y + h - cornerSize / 2, cornerSize, cornerSize);
+  // Lower right corner
+  canvasContext.value.fillRect(x + w - cornerSize / 2, y + h - cornerSize / 2, cornerSize, cornerSize);
+
   canvasContext.value.restore();
 }
 </script>
