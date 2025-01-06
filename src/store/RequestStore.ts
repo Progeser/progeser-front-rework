@@ -28,6 +28,7 @@ export const useRequestStore = defineStore('request', {
     },
 
     async loadRequestById(requestIds: Set<number>) {
+      this.requests = [];
       for (const id of requestIds) {
         const request = await RequestRepository.getRequest(id.toString());
         if (!request) continue;

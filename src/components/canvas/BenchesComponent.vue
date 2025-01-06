@@ -38,6 +38,10 @@ watch(() => [props.selectedBenchId], () => {
   renderCanvas();
 })
 
+watch(() => [props.isEditing], () => {
+  renderCanvas();
+})
+
 onMounted(async () => {
   SetupCanvas(canvasRef, canvasContext);
   ResizeCanvas(canvasRef, props.size.width, props.size.height);

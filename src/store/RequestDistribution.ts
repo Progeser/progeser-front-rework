@@ -24,6 +24,7 @@ export const useRequestDistributionStore = defineStore('requestDistribution', {
     },
 
     async loadDistributionByIds(distributionIds: Set<number>) {
+      this.requestDistributions = [];
       for (const id of distributionIds) {
         const distribution = await RequestDistributionRepository.getDistributionById(id);
         if (!distribution) continue;
