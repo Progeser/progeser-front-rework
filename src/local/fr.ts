@@ -225,10 +225,13 @@ export default {
         notNull: "Ce champ ne peut pas être vide",
         invalidEmail: "Adresse e-mail invalide",
         fetchSpecies: "Erreur lors de la récupération des espèces",
-        update: "Erreur lors de la mise à jour de la demande",
+        update: "Cette demande ne peut être modifié car elle possède une ou des distributions en cours",
         loadRequest: "Erreur lors du chargement des données de la demande",
       },
       success: "Demande mise à jour avec succès",
+      otherSpecies: "Autre",
+      plantName: "Nom de la plante",
+      plantStageName: "Nom du stade de la plante"
     }
   },
   request: {

@@ -7,10 +7,11 @@ export class RequestOutput {
     public name: string = '',
     public comment: string = '',
     public plant_stage_id : number | null = null,
-    public due_date : Date | null = null,
+    public plant_name: string | null = null,
+    public plant_stage_name: string | null = null,
+    public due_date : string | null = null,
     public quantity: number | null = null,
     public temperature : string | null = null,
-    public photoperiod : number | null = null,
-  ) {
-  }
+    public photoperiod : number | null = null
+  ) {}
 }

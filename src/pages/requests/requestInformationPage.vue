@@ -41,7 +41,6 @@
             />
           </v-col>
         </v-row>
-
         <v-row>
           <v-col cols="4">
             <h4 class="mr-2 align-self-center">{{ t('form.edit.lab') }}</h4>
@@ -52,32 +51,80 @@
               variant="outlined"
             />
           </v-col>
+          <v-col cols="4" align-self-center>
+            <h4 class="mr-2 align-self-center">{{ t('form.edit.due_date') }} : </h4>
+            <v-date-input
+              v-model="date"
+              :rules="[isNotNull]"
+              min-width="180"
+              placeholder="DD/MM/YYYY"
+              variant="outlined"
+            />
+          </v-col>
+          <v-col cols="4" align-self-center>
+            <h4 class="mr-2 align-self-center">{{ t('form.edit.subject') }}</h4>
+            <v-text-field
+              v-model="subject"
+              :placeholder="t('form.edit.subjectPlaceholder')"
+              class="custom-input align-self-center mb-4"
+              variant="outlined"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
           <v-col cols="4">
             <h4 class="mr-2 align-self-center">{{ t('form.edit.species') }}</h4>
-            <v-select ref="speciesSelect"
-                      v-model="selectedSpecies"
-                      :items="species"
-                      :loading="isLoading"
-                      :no-data-text="t('common.no_data')"
-                      :rules="[isNotNull]"
-                      item-title="name"
-                      return-object
-                      variant="outlined"
-                      @update:modelValue="onSpecieChange"
-
+            <v-select
+              ref="speciesSelect"
+              v-model="selectedSpecies"
+              :items="[...species, { id: -1, name: t('form.edit.otherSpecies') }]"
+              :loading="isLoading"
+              :no-data-text="t('common.no_data')"
+              :rules="[isNotNull]"
+              item-title="name"
+              return-object
+              variant="outlined"
+              @update:modelValue="onSpecieChange"
             />
           </v-col>
           <v-col cols="4">
-            <h4 class="mr-2 align-self-center">{{ t('form.edit.stage') }}</h4>
-            <v-select v-model="selectedSpeciesStageId" :disabled="selectedSpecies === null"
-                      :items="selectedSpecies?.plant_stages"
-                      :rules="[isNotNull]"
-                      :no-data-text="t('common.no_data')"
-                      item-title="name"
-                      item-value="id"
-                      variant="outlined"/>
+            <template v-if="selectedSpecies?.id !== -1">
+              <h4 class="mr-2 align-self-center">{{ t('form.edit.stage') }}</h4>
+              <v-select
+                v-model="selectedSpeciesStageId"
+                :disabled="selectedSpecies === null"
+                :items="selectedSpecies?.plant_stages"
+                :rules="[isNotNull]"
+                :no-data-text="t('common.no_data')"
+                item-title="name"
+                item-value="id"
+                variant="outlined"
+                @update:modelValue="onStageChange"
+              />
+            </template>
+            <template v-else>
+              <h4 class="mr-2 align-self-center">{{ t('form.edit.plantName') }}</h4>
+              <v-text-field
+                v-model="plantName"
+                :placeholder="t('form.edit.plantName')"
+                class="custom-input align-self-center mb-4"
+                variant="outlined"
+              />
+            </template>
+          </v-col>
+          <v-col cols="4">
+            <template v-if="selectedSpecies?.id === -1">
+              <h4 class="mr-2 align-self-center">{{ t('form.edit.plantStageName') }}</h4>
+              <v-text-field
+                v-model="plantStageName"
+                :placeholder="t('form.edit.plantStageName')"
+                class="custom-input align-self-center mb-4"
+                variant="outlined"
+              />
+            </template>
           </v-col>
         </v-row>
+
 
         <v-row>
           <v-col cols="4">
@@ -95,28 +142,6 @@
           <v-col cols="4">
             <h4 class="mr-2 align-self-center">{{ t('form.edit.photoperiod') }}</h4>
             <v-text-field v-model="photoperiod" :rules="[isGreaterThanZero, isSmallerThanTwentyFive]" type="number" variant="outlined" suffix="h"/>
-          </v-col>
-        </v-row>
-
-        <v-row>
-          <v-col cols="4" align-self-center>
-            <h4 class="mr-2 align-self-center">{{ t('form.edit.due_date') }} : </h4>
-            <v-date-input
-              v-model="date"
-              :rules="[isNotNull]"
-              min-width="180"
-              placeholder="DD/MM/YYYY"
-              variant="outlined"
-            />
-          </v-col>
-          <v-col cols="8" align-self-center>
-            <h4 class="mr-2 align-self-center">{{ t('form.edit.subject') }}</h4>
-            <v-text-field
-              v-model="subject"
-              :placeholder="t('form.edit.subjectPlaceholder')"
-              class="custom-input align-self-center mb-4"
-              variant="outlined"
-            />
           </v-col>
         </v-row>
 
@@ -169,6 +194,8 @@ const reason = ref("");
 const species: Ref<Species[]> = ref([]);
 const selectedSpecies: Ref<Species | null> = ref(null);
 const selectedSpeciesStageId: Ref<number | null> = ref(null);
+const plantName = ref<string | null>(null);
+const plantStageName = ref<string | null>(null);
 const isLoading = ref(false);
 const subject = ref("");
 const quantity = ref(0);
@@ -187,7 +214,7 @@ const isSmallerThanTwentyFive = (value: number) => {
 };
 
 const isNotNull = (value: Object) => {
-  return (value !== null || value !== undefined) || t("form.edit.error.notNull");
+  return (value !== null) || t("form.edit.error.notNull");
 };
 const isEmail = (value: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || t("form.edit.error.invalidEmail");
@@ -200,7 +227,9 @@ const isFormValid = computed(() => {
     lastName.value.trim().length > 0 &&
     email.value.trim().length > 0 &&
     subject.value.trim().length > 0 &&
-    selectedSpeciesStageId.value !== null &&
+    (selectedSpeciesStageId.value !== null || selectedSpecies.value?.id === -1) &&
+    (plantName.value !== null || selectedSpecies.value?.id != -1) &&
+    (plantStageName.value !== null || selectedSpecies.value?.id != -1) &&
     date.value !== null &&
     quantity.value > 0 &&
     temperature.value !== null &&
@@ -230,8 +259,18 @@ const loadRequestData = async () => {
     lab.value = request.laboratory;
     subject.value = request.name;
     reason.value = request.comment || '';
-    selectedSpecies.value = species.value.find(species => species.id === request.plant_id) || null;
-    selectedSpeciesStageId.value = request.plant_stage_id;
+
+    const speciesData = species.value.find(species => species.id === request.plant_id);
+
+    if (speciesData?.plant_stages?.length === 0 || request.plant_stage_id === null) {
+      selectedSpecies.value = { id: -1, name: t('form.edit.otherSpecies'), plant_stages: [] };
+      plantName.value = request.plant_name || speciesData?.name || '';
+      plantStageName.value = request.plant_stage_name || '';
+    } else {
+      selectedSpecies.value = speciesData || null;
+      selectedSpeciesStageId.value = request.plant_stage_id;
+    }
+
     date.value = request.due_date ? new Date(request.due_date) : null;
     quantity.value = request.quantity;
     temperature.value = request.temperature || null;
@@ -242,6 +281,7 @@ const loadRequestData = async () => {
     isLoading.value = false;
   }
 };
+
 
 const handleSubmit = async () => {
   isLoading.value = true;
@@ -254,15 +294,18 @@ const handleSubmit = async () => {
       subject.value,
       reason.value,
       selectedSpeciesStageId.value,
-      date.value,
+      plantName.value || selectedSpecies.value?.name,
+      plantStageName.value || selectedSpecies.value?.plant_stages.find(stage => stage.id === selectedSpeciesStageId.value)?.name,
+      date.value?.toString(),
       quantity.value,
-      temperature.value!.toString(),
+      temperature.value,
       photoperiod.value
     );
     await RequestRepository.putRequest(props.idRequest, requestOutput);
-    router.push({name: 'requestsNew'});
+    router.push({ name: "requestsNew" });
   } catch (error) {
-    alert(t('form.edit.error.update'));
+    alert(t("form.edit.error.update"));
+    router.push({ name: "requestsNew" });
   } finally {
     isLoading.value = false;
   }
@@ -275,6 +318,17 @@ onBeforeMount(async () => {
 
 function onSpecieChange() {
   selectedSpeciesStageId.value = null;
+  plantName.value = null;
+  plantStageName.value = null;
+}
+
+function onStageChange(stageId: number | null) {
+  if (stageId !== null) {
+    const selectedStage = selectedSpecies.value?.plant_stages.find(
+      (stage) => stage.id === stageId
+    );
+    plantStageName.value = selectedStage?.name || null;
+  }
 }
 
 </script>
