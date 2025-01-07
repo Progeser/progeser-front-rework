@@ -3,8 +3,9 @@ import {BenchStore} from "@/store/BenchStore";
 import {RequestDistributionStore} from "@/store/RequestDistribution";
 import {PlantStore} from "@/store/PlantStore";
 import {RequestStore} from "@/store/RequestStore";
+import {RequestModel} from "@/model/RequestModel";
 
-const BENCH_CORNER_SIZE = 10;
+const CORNER_SIZE = 10;
 const METRE_TO_PIXEL = 120;
 const MOVE_STEP = 15;
 
@@ -100,7 +101,31 @@ function CursorPointerWhenOverBenchCorner(container: Ref<HTMLElement | undefined
   const selectedBench = benchStore.getBenchById(selectedBenchId)
   if (!selectedBench) return;
 
-  const overCornerId = mouseOverBenchCorner(mousePos.x, mousePos.y, offset, selectedBench, cornerSize);
+  const pos = {x: selectedBench.positions[0], y: selectedBench.positions[1]};
+  const dim = {w: selectedBench.dimensions[0], h: selectedBench.dimensions[1]};
+  const overCornerId = mouseOverCorner(mousePos, offset, pos, dim, cornerSize);
+  if (overCornerId === null) return;
+
+  container.value.style.cursor = 'nwse-resize';
+}
+
+function CursorPointerWhenOverDistributionCorner(container: Ref<HTMLElement | undefined>, event: MouseEvent, offset: Offsets, benchStore: BenchStore, distributionStore: RequestDistributionStore, selectedDistributionId: number, cornerSize: number) {
+  const mousePos = GetCursorPositionInContainer(container, event)
+
+  if (!container.value) return;
+
+  const selectedDistribution = distributionStore.getDistributionById(selectedDistributionId)
+  if (!selectedDistribution) return;
+
+  const selectedBench = benchStore.getBenchById(selectedDistribution.bench_id)
+  if (!selectedBench) return;
+
+  const pos = {
+    x: selectedBench.positions[0] + selectedDistribution.positions_on_bench[0],
+    y: selectedBench.positions[1] + selectedDistribution.positions_on_bench[1]
+  };
+  const dim = {w: selectedDistribution.dimensions[0], h: selectedDistribution.dimensions[1]};
+  const overCornerId = mouseOverCorner(mousePos, offset, pos, dim, cornerSize);
   if (overCornerId === null) return;
 
   container.value.style.cursor = 'nwse-resize';
@@ -151,7 +176,9 @@ function BenchCornerUnderCursor(container: Ref<HTMLElement | undefined>, event: 
   const selectedBench = benchStore.getBenchById(selectedBenchId);
   if (!selectedBench) return null;
 
-  const overCornerId = mouseOverBenchCorner(mousePos.x, mousePos.y, offset, selectedBench, cornerSize);
+  const pos = {x: selectedBench.positions[0], y: selectedBench.positions[1]};
+  const dim = {w: selectedBench.dimensions[0], h: selectedBench.dimensions[1]};
+  const overCornerId = mouseOverCorner(mousePos, offset, pos, dim, cornerSize);
   if (overCornerId === null) return null;
 
   return overCornerId;
@@ -172,6 +199,28 @@ function DistributionUnderCursor(container: Ref<HTMLElement | undefined>, event:
   if (overDistributionId === -1) return null
 
   return overDistributionId;
+}
+
+function DistributionCornerUnderCursor(container: Ref<HTMLElement | undefined>, event: MouseEvent, offset: Offsets, benchStore: BenchStore, distributionStore: RequestDistributionStore, selectedDistributionId: number | null, cornerSize: number): Corner | null {
+  const mousePos = GetCursorPositionInContainer(container, event)
+
+  if (!selectedDistributionId) return null;
+
+  const selectedDistribution = distributionStore.getDistributionById(selectedDistributionId);
+  if (!selectedDistribution) return null;
+
+  const selectedBench = benchStore.getBenchById(selectedDistribution.bench_id);
+  if (!selectedBench) return null;
+
+  const pos = {
+    x: selectedBench.positions[0] + selectedDistribution.positions_on_bench[0],
+    y: selectedBench.positions[1] + selectedDistribution.positions_on_bench[1]
+  };
+  const dim = {w: selectedDistribution.dimensions[0], h: selectedDistribution.dimensions[1]};
+  const overCornerId = mouseOverCorner(mousePos, offset, pos, dim, cornerSize);
+  if (overCornerId === null) return null;
+
+  return overCornerId;
 }
 
 function ApplyMouseMoveOnOffset(event: MouseEvent, offset: Ref<Offsets>, startMousePosition: Position, startOffset: Offsets) {
@@ -214,6 +263,35 @@ function ApplyMouseMoveOnBenchResize(event: MouseEvent, benchStore: BenchStore, 
   }
 }
 
+function ApplyMouseMoveOnDistributionResize(event: MouseEvent, distributionStore: RequestDistributionStore, selectedCorner: Corner, selectedDistributionId: number, startMousePosition: Position, startDistributionPosition: Position, startDistributionDimension: Dimension) {
+  const distribution = distributionStore.getDistributionById(selectedDistributionId);
+  if (!distribution) return;
+
+  const deltaX = normalizesMoveStep(event.clientX - startMousePosition.x);
+  const deltaY = normalizesMoveStep(event.clientY - startMousePosition.y);
+
+  switch (selectedCorner) {
+    case Corner.TopLeft:
+      distributionStore.updateDistributionPositions(selectedDistributionId, startDistributionPosition.x + deltaX, startDistributionPosition.y + deltaY);
+      distributionStore.updateDistributionDimensions(selectedDistributionId, startDistributionDimension.w - deltaX, startDistributionDimension.h - deltaY);
+      break;
+
+    case Corner.TopRight:
+      distributionStore.updateDistributionPositions(selectedDistributionId, startDistributionPosition.x, startDistributionPosition.y + deltaY);
+      distributionStore.updateDistributionDimensions(selectedDistributionId, startDistributionDimension.w + deltaX, startDistributionDimension.h - deltaY);
+      break;
+
+    case Corner.BottomLeft:
+      distributionStore.updateDistributionPositions(selectedDistributionId, startDistributionPosition.x + deltaX, startDistributionPosition.y);
+      distributionStore.updateDistributionDimensions(selectedDistributionId, startDistributionDimension.w - deltaX, startDistributionDimension.h + deltaY);
+      break;
+
+    case Corner.BottomRight:
+      distributionStore.updateDistributionPositions(selectedDistributionId, startDistributionPosition.x, startDistributionPosition.y);
+      distributionStore.updateDistributionDimensions(selectedDistributionId, startDistributionDimension.w + deltaX, startDistributionDimension.h + deltaY);
+      break;
+  }
+}
 
 function GetSelectedArea(container: Ref<HTMLElement | undefined>, event: MouseEvent, startMousePosition: Position): [position: Position, dimension: Dimension] {
   const mousePos = GetCursorPositionInContainer(container, event)
@@ -247,6 +325,16 @@ function ApplyMouseMoveOnBenchPositions(event: MouseEvent, benchStore: BenchStor
   benchStore.updateBenchPositions(selectedBenchId, startBenchPosition.x + deltaX, startBenchPosition.y + deltaY);
 }
 
+function ApplyMouseMoveOnDistributionPositions(event: MouseEvent, benchStore: BenchStore, distributionStore: RequestDistributionStore, selectedDistributionId: number, startMousePosition: Position, startDistributionPosition: Position) {
+  const distribution = distributionStore.getDistributionById(selectedDistributionId);
+  if (!distribution) return;
+
+  const deltaX = normalizesMoveStep(event.clientX - startMousePosition.x);
+  const deltaY = normalizesMoveStep(event.clientY - startMousePosition.y);
+
+  distributionStore.updateDistributionPositions(selectedDistributionId, startDistributionPosition.x + deltaX, startDistributionPosition.y + deltaY);
+}
+
 function GetRequestInfoFromDistribution(selectedDistributionId: number, distributionStore: RequestDistributionStore, plantStore: PlantStore, requestStore: RequestStore): RequestInfoData | null {
   const selectedDistribution = distributionStore.getDistributionById(selectedDistributionId);
   if (!selectedDistribution) return null;
@@ -266,7 +354,7 @@ function GetRequestInfoFromDistribution(selectedDistributionId: number, distribu
   }
 }
 
-function CheckOverflow(selectedBenchId: number, benchStore: BenchStore): boolean {
+function CheckBenchOverflow(selectedBenchId: number, benchStore: BenchStore): boolean {
   const selectedBench = benchStore.getBenchById(selectedBenchId);
   if (!selectedBench) return false;
 
@@ -289,6 +377,65 @@ function CheckOverflow(selectedBenchId: number, benchStore: BenchStore): boolean
   return overflow;
 }
 
+function CheckDistributionOverflow(selectedDistributionId: number, distributionStore: RequestDistributionStore, benchStore: BenchStore): boolean {
+  const selectedDistribution = distributionStore.getDistributionById(selectedDistributionId);
+  if (!selectedDistribution) return false;
+
+  const [selectedDistributionX, selectedDistributionY] = selectedDistribution.positions_on_bench;
+  const [selectedDistributionW, selectedDistributionH] = selectedDistribution.dimensions;
+
+  const selectedBench = benchStore.getBenchById(selectedDistribution.bench_id);
+  if (!selectedBench) return false;
+
+  const distributionsOnBench = distributionStore.getDistributionByBenchId(selectedDistribution.bench_id);
+  if (distributionsOnBench.length === 0) return false;
+
+  let overflow = false;
+  for (const distribution of distributionsOnBench) {
+    if (distribution.id === selectedDistributionId) continue;
+
+    const [currentX, currentY] = distribution.positions_on_bench;
+    const [currentW, currentH] = distribution.dimensions;
+
+    if (
+      selectedDistributionX < currentX + currentW &&
+      selectedDistributionX + selectedDistributionW > currentX &&
+      selectedDistributionY < currentY + currentH &&
+      selectedDistributionY + selectedDistributionH > currentY
+    ) {
+      overflow = true;
+      break;
+    }
+  }
+  return overflow;
+}
+
+function CheckDistributionIsNotOnBench(selectedDistributionId: number, distributionStore: RequestDistributionStore, benchStore: BenchStore): boolean {
+  const selectedDistribution = distributionStore.getDistributionById(selectedDistributionId);
+  if (!selectedDistribution) return false;
+
+  const [selectedDistributionX, selectedDistributionY] = selectedDistribution.positions_on_bench;
+  const [selectedDistributionW, selectedDistributionH] = selectedDistribution.dimensions;
+
+  const selectedBench = benchStore.getBenchById(selectedDistribution.bench_id);
+  if (!selectedBench) return false;
+
+  const [selectedBenchW, selectedBenchH] = selectedBench.dimensions
+
+  if (
+    (selectedDistributionX >= 0 && selectedDistributionY >= 0) &&
+    (selectedDistributionX + selectedDistributionW <= selectedBenchW) &&
+    (selectedDistributionY + selectedDistributionH <= selectedBenchH)
+  ) {
+    return false
+  } else {
+    const globalX = selectedBench.positions[0] + selectedDistributionX;
+    const globalY = selectedBench.positions[1] + selectedDistributionY;
+
+    return !attacheDistributionToBench(selectedDistributionId, benchStore, distributionStore, globalX, globalY, selectedDistributionW, selectedDistributionH);
+  }
+}
+
 function GetCursorPositionInContainer(container: Ref<HTMLElement | undefined>, event: MouseEvent): Position {
   if (!container.value) return {x: 0, y: 0};
 
@@ -306,12 +453,54 @@ function NewBenchFromArea(area: [Position, Dimension], benchStore: BenchStore, g
 
   const id = benchStore.addBench(pos, dim, greenhouseId)
 
-  if (CheckOverflow(id, benchStore)) {
+  if (CheckBenchOverflow(id, benchStore)) {
     benchStore.removeBench(id);
-    throw new Error('Bench overflow');
+    throw new Error("La table est en chevauchement avec une autre table.");
   }
 
   return id;
+}
+
+function NewDistributionFromArea(area: [Position, Dimension], request: RequestModel, potId: number, potQuantity: number, benchStore: BenchStore, distributionStore: RequestDistributionStore, offset: Offsets): number | null {
+  const [pos, dim] = area;
+  pos.x += Math.abs(offset.x);
+  pos.y += Math.abs(offset.y);
+
+  const id = distributionStore.addDistribution(request.id, pos, dim, potId, potQuantity, request.plant_stage_id)
+
+  if (!attacheDistributionToBench(id, benchStore, distributionStore, pos.x, pos.y, dim.w, dim.h)) {
+    distributionStore.removeDistribution(id)
+    throw new Error("La position de la distribution est invalide.");
+  }
+
+  const distribution = distributionStore.getDistributionById(id);
+  if (!distribution) return null;
+
+  if (CheckDistributionOverflow(id, distributionStore, benchStore)) {
+    distributionStore.removeDistribution(id)
+    throw new Error("La distribution est en chevauchement avec une autre distribution.");
+  }
+
+  return id;
+}
+
+function NormalizesUnitToMetre(d: number): number {
+  const result = d / METRE_TO_PIXEL;
+  return parseFloat(result.toFixed(2));
+}
+
+function NormalizesMetreToUnit(d: number): number {
+  const result = d * METRE_TO_PIXEL;
+  return parseFloat(result.toFixed(2));
+}
+
+function CalculateNumberOfPotsWithSpacing(dim: Dimension, potArea: number, spacing: number) {
+  const potSide = Math.sqrt(potArea);
+  const effectiveSide = potSide + spacing;
+  const potAreaWithSpacing = Math.pow(effectiveSide, 2);
+  const areaZone = dim.w * dim.h;
+
+  return Math.abs(Math.floor(areaZone / potAreaWithSpacing));
 }
 
 function mouseOverBench(mouseX: number, mouseY: number, offset: Offsets, benches: Bench[]): number {
@@ -353,9 +542,14 @@ function getBenchPositionWithOffset(offset: Offsets, bench: Bench) {
   return [x, y]
 }
 
-function mouseOverBenchCorner(mouseX: number, mouseY: number, offset: Offsets, bench: Bench, cornerSize: number): Corner | null {
-  const [x, y] = getBenchPositionWithOffset(offset, bench)
-  const [w, h] = bench.dimensions;
+function getPositionWithOffset(offset: Offsets, pos: Position): Position {
+  const [x, y] = [pos.x + offset.x, pos.y + offset.y];
+  return {x, y};
+}
+
+function mouseOverCorner(mousePos: Position, offset: Offsets, shapePos: Position, shapeDim: Dimension, cornerSize: number): Corner | null {
+  const {x, y} = getPositionWithOffset(offset, shapePos);
+  const {w, h} = shapeDim;
 
   const corners = [
     {id: Corner.TopLeft, x: x - cornerSize / 2, y: y - cornerSize / 2},
@@ -366,10 +560,10 @@ function mouseOverBenchCorner(mouseX: number, mouseY: number, offset: Offsets, b
 
   const hoveredCorner = corners.find(
     corner =>
-      mouseX >= corner.x &&
-      mouseX <= corner.x + cornerSize &&
-      mouseY >= corner.y &&
-      mouseY <= corner.y + cornerSize
+      mousePos.x >= corner.x &&
+      mousePos.x <= corner.x + cornerSize &&
+      mousePos.y >= corner.y &&
+      mousePos.y <= corner.y + cornerSize
   );
 
   return hoveredCorner ? hoveredCorner.id : null;
@@ -379,18 +573,28 @@ function normalizesMoveStep(d: number): number {
   return Math.floor(d / MOVE_STEP) * MOVE_STEP;
 }
 
-function NormalizesUnitToMetre(d: number): number {
-  const result = d / METRE_TO_PIXEL;
-  return parseFloat(result.toFixed(2));
-}
-
-function NormalizesMetreToUnit(d: number): number {
-  const result = d * METRE_TO_PIXEL;
-  return parseFloat(result.toFixed(2));
+function attacheDistributionToBench(selectedDistributionId: number, benchStore: BenchStore, distributionStore: RequestDistributionStore, globalX: number, globalY: number, w: number, h: number): boolean {
+  let onBench = false;
+  for (const bench of benchStore.benches) {
+    const [currentX, currentY] = bench.positions;
+    const [currentW, currentH] = bench.dimensions;
+    if (
+      globalX >= currentX &&
+      globalX + w <= currentX + currentW &&
+      globalY >= currentY &&
+      globalY + h <= currentY + currentH
+    ) {
+      onBench = true
+      distributionStore.updateDistributionBenchId(selectedDistributionId, bench.id)
+      distributionStore.updateDistributionPositions(selectedDistributionId, globalX - currentX, globalY - currentY)
+      break;
+    }
+  }
+  return onBench;
 }
 
 export {
-  BENCH_CORNER_SIZE,
+  CORNER_SIZE,
   METRE_TO_PIXEL,
   CreateContainerResizeObserver,
   SetupCanvas,
@@ -407,9 +611,17 @@ export {
   GetRequestInfoFromDistribution,
   NormalizesUnitToMetre,
   GetSelectedArea,
-  CheckOverflow,
+  CheckBenchOverflow,
   GetCursorPositionInContainer,
   NewBenchFromArea,
-  NormalizesMetreToUnit
+  NormalizesMetreToUnit,
+  ApplyMouseMoveOnDistributionPositions,
+  CheckDistributionOverflow,
+  CheckDistributionIsNotOnBench,
+  NewDistributionFromArea,
+  DistributionCornerUnderCursor,
+  ApplyMouseMoveOnDistributionResize,
+  CursorPointerWhenOverDistributionCorner,
+  CalculateNumberOfPotsWithSpacing
 };
 export type {Size, Offsets, Position, Dimension, RequestInfoData};

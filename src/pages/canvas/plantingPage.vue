@@ -1,565 +1,501 @@
 <template>
-  <v-container class="canvas-container" fluid>
-    <canvas ref="canvasRef"></canvas>
-
-    <div class="container">
-      <div class="pot-selector-container">
-        <v-autocomplete
-          v-model="formSelectedPot"
-          :items="potStore.pots"
-          clearable
-          item-title="name"
-          item-value="id"
-          label="Select a Pot"
-          @update:modelValue="updateSelectedPot"
-        ></v-autocomplete>
-
-        <v-text-field
-          v-model.number="formSpace"
-          :rules="[value => value >= 0 || 'L\'espacement doit être non négatif']"
-          label="Espacement"
-          min="0"
-          placeholder="Enter l'espacement"
-          type="number"
-        ></v-text-field>
-      </div>
-
-      <div v-if="requestStore.request" class="request-distribution-container">
-        <p>{{ requestStore.request.plant_name }}</p>
-        <p>{{ requestStore.seeds_left_to_plant }} / {{
-            requestStore.request.quantity
-          }}</p>
-      </div>
-      <div v-else class="request-distribution-container">
-        <p>Logging...</p>
-      </div>
-
-      <div class="distribution-container">
-        <v-list-item v-for="(item, i) in formDistributions"
-                     :key="i"
-        >
-          <div class="distribution-item">
-            <div class="distribution-position">
-              <p class="bench-name">{{ truncateText(item.bench_name, 20) }}</p>
-              <p class="greenhouse-name">{{ truncateText(item.greenhouse_name, 20) }}</p>
-            </div>
-            <p>{{ item.quantity }}</p>
-          </div>
-        </v-list-item>
-      </div>
+  <v-container class="container" fluid>
+    <div ref="containerRef" class="canvas-container">
+      <GridComponent
+        :offset="canvasOffset"
+        :size="containerSize"
+        :space="30"/>
+      <BenchesComponent
+        :benches="benchStore.benches"
+        :corner-size="0"
+        :display-labels="false"
+        :is-editing="false"
+        :offset="canvasOffset"
+        :selected-bench-id="null"
+        :size="containerSize"/>
+      <DistributionsComponent
+        :bench-store="benchStore"
+        :corner-size="CORNER_SIZE"
+        :current-request-id="requestId"
+        :display-pots-quantity="true"
+        :distribution="requestDistributionStore.requestDistributions"
+        :is-editing="selectedTool === t('canvas.tools.edit')"
+        :offset="canvasOffset"
+        :selected-distribution-id="selectedDistributionId"
+        :size="containerSize"
+        :unhighlighted-ids="unhighlightedDistributionId"/>
+      <SelectorComponent
+        :area="selectedArea"
+        :pot-quantity="potQuantityInArea"
+        :show-m2-labels="false"
+        :show-pot-quantity="true"
+        :showSizeLabels="false"
+        :size="containerSize"/>
     </div>
+    <ToolsComponent
+      :onToolSelect="handleToolSelect"
+      :selected="selectedTool"
+      :tools="toolList"
+      class="tools"
+    />
+    <div class="box-container">
+      <DistributionToolComponent
+        :distribution-store="requestDistributionStore"
+        :pots="potStore.pots"
+        :request="currentRequest"
+        :save="saveDistributions"
+        :select-pot="selectPot"
+        :update-spacing="updateSpacing"
+        class="pot-list"/>
+      <DistributionInfoBox
+        :distribution-store="requestDistributionStore"
+        :remove-distribution="removeDistribution"
+        :save-distribution="saveDistribution"
+        :selected-distribution-id="selectedDistributionId"
+        class="info-box"
+      />
+    </div>
+    <Alert
+      :error="errorMessages"
+      class="alert"
+    />
   </v-container>
 </template>
 
 <script lang="ts" setup>
-import {onBeforeUnmount, onMounted, ref, Ref, watch} from 'vue';
-import router from "@/router"
+import {onBeforeUnmount, onMounted, Ref, ref, watch} from "vue";
+import GridComponent from "@/components/canvas/GridComponent.vue";
+import BenchesComponent from "@/components/canvas/BenchesComponent.vue";
+import ToolsComponent from "@/components/canvas/ToolsComponent.vue";
+import DistributionsComponent from "@/components/canvas/DistributionsComponent.vue";
 import {useBenchStore} from "@/store/BenchStore";
 import {useRequestDistributionStore} from "@/store/RequestDistribution";
+import {
+  ApplyMouseMoveOnDistributionPositions,
+  ApplyMouseMoveOnDistributionResize,
+  ApplyMouseMoveOnOffset,
+  CalculateNumberOfPotsWithSpacing,
+  CheckDistributionIsNotOnBench,
+  CheckDistributionOverflow,
+  Corner,
+  CORNER_SIZE,
+  CreateContainerResizeObserver,
+  CursorPointerWhenOverDistributionCorner,
+  CursorPointerWhenOverDistributions,
+  Dimension,
+  DistributionCornerUnderCursor,
+  DistributionUnderCursor,
+  GetCursorPositionInContainer,
+  GetSelectedArea,
+  NewDistributionFromArea,
+  NormalizesMetreToUnit,
+  Offsets,
+  Position,
+  Size
+} from "@/utils/canvas";
+import {usePlantStore} from "@/store/PlantStore";
 import {useRequestStore} from "@/store/RequestStore";
 import {useRoute} from "vue-router";
-import {usePot} from "@/store/usePot";
-import {useGreenhouse} from "@/store/useGreenhouse";
+import SelectorComponent from "@/components/canvas/SelectorComponent.vue";
+import Alert from "@/components/canvas/AlertComponent.vue";
+import DistributionInfoBox from "@/components/canvas/DistributionInfoBoxComponent.vue";
+import {usePotStore} from "@/store/PotStore";
+import {RequestModel} from "@/model/RequestModel";
+import DistributionToolComponent from "@/components/canvas/DistributionToolComponent.vue";
 import RequestRepository from "@/repository/requestRepository";
+import router from "@/router";
+import {useI18n} from "vue-i18n";
 
-const canvasRef: Ref<HTMLCanvasElement | undefined> = ref();
-const canvasContext: Ref<CanvasRenderingContext2D | undefined> = ref();
+const {t} = useI18n();
 
+const containerRef: Ref<HTMLElement | undefined> = ref();
+const containerSize: Ref<Size> = ref({width: 0, height: 0});
+let containerResizeObserver: ResizeObserver | null = null;
+
+const toolList = [t('canvas.tools.add'), t('canvas.tools.edit'), t('canvas.tools.move')];
+const selectedTool = ref<string>(t('canvas.tools.edit'));
+const selectedCorner = ref<Corner | null>(null);
+
+let potSpacing = 0
+const selectedDistributionId = ref<number | null>(null);
+const selectedPot = ref<number | null>(null)
+const unhighlightedDistributionId = ref<number[]>([]);
+const currentRequest = ref<RequestModel | null>(null);
+
+const canvasOffset: Ref<Offsets> = ref({x: 0, y: 0});
+
+const errorMessages = ref<Error | null>(null);
+
+let isMouseDown = false;
+let startMousePosition: Position = {x: 0, y: 0};
+let startOffset: Offsets = {x: 0, y: 0};
+let startDistributionPosition: Position = {x: 0, y: 0};
+let startDistributionDimension: Dimension = {w: 0, h: 0};
+let startDistributionBenchId = 0;
+let startDistributionPotQuantity = 0;
+
+const selectedArea = ref<[position: Position, dimension: Dimension] | null>(null);
+const potQuantityInArea = ref<number>(0);
+
+const benchStore = useBenchStore();
 const requestDistributionStore = useRequestDistributionStore();
 const requestStore = useRequestStore();
-const benchStore = useBenchStore();
-const potStore = usePot()
-const greenhouseStore = useGreenhouse();
+const plantStore = usePlantStore();
+const potStore = usePotStore()
 
 const route = useRoute();
-const requestId = Number(route.params.idRequest);
-const buildingId = Number(route.params.idBuilding);
 const greenhouseId = Number(route.params.idCompartiment);
+const requestId = Number(route.params.idRequest);
 
-let clickIsMaintained = false;
-let clickIsOnBench: null | Bench = null;
-let clickOnX = 0;
-let clickOnY = 0;
-let animationFrameId: number | null = null;
-
-const formSelectedPot = ref<number | null>(null);
-const formSpace = ref<number>(0);
-const formDistributions = ref<{ bench_name: string, greenhouse_name: string, quantity: number }[]>([]);
-
-watch(
-  () => benchStore.benches,
-  renderCanvas,
-  {immediate: true}
-);
-
-watch(
-  () => requestDistributionStore.requestDistributions,
-  renderCanvas,
-  {immediate: true}
-);
-
-watch(
-  () => requestDistributionStore.selectedDistribution,
-  renderCanvas,
-  {immediate: true}
-);
-
-
-// Lifecycle hooks
 onMounted(async () => {
   addEventListeners();
-  resizeCanvas();
-
-  await Promise.all([
-    requestStore.loadRequest(requestId.toString()),
-    requestDistributionStore.loadDistributions(),
-    benchStore.loadBenches(greenhouseId),
-    potStore.loadPots(),
-    greenhouseStore.loadGreenhouse(buildingId)
-  ]);
-
-  updateFormDistributions();
-
-  computeSeedLeftToPlant();
+  await loadData();
 });
 
 onBeforeUnmount(() => {
   removeEventListeners();
 });
 
-// Functions
-function resizeCanvas() {
-  if (canvasRef.value) {
-    const container = canvasRef.value.parentElement;
-    if (container) {
-      canvasRef.value.width = container.clientWidth;
-      canvasRef.value.height = container.clientHeight;
-    }
-    renderCanvas();
-  }
-}
+watch(() => [selectedArea.value], () => {
+  if (!selectedArea.value || !selectedPot.value) return;
 
-function computeSeedLeftToPlant() {
-  requestDistributionStore.requestDistributions.forEach((distribution) => {
-    if (distribution.request_id != requestId) return;
+  const pot = potStore.getPotById(selectedPot.value)
+  if (!pot) return;
 
-    requestStore.decreasesNumberOfSeedsLeftToPlant(distribution.pot_quantity)
-  })
+  const [, dim] = selectedArea.value
+
+  potQuantityInArea.value = CalculateNumberOfPotsWithSpacing(dim, pot.area, potSpacing)
+})
+
+async function loadData() {
+  await Promise.all([
+      benchStore.loadBenches(greenhouseId),
+      plantStore.loadPlants(),
+      potStore.loadPots()
+    ]
+  );
+
+  const requestDistributionIds = benchStore.getRequestDistributionIdsFromBenchesInStore();
+  await requestDistributionStore.loadDistributionByIds(requestDistributionIds);
+
+  const requestIds = requestDistributionStore.getRequestIdsFromDistributionInStore();
+  requestIds.add(requestId);
+  await requestStore.loadRequestById(requestIds)
+
+  unhighlightedDistributionId.value = requestDistributionStore.getIdsOfDistributionNotAssociatedWithRequestId(requestId);
+  currentRequest.value = requestStore.getRequestById(requestId);
 }
 
 function addEventListeners() {
-  window.addEventListener('resize', resizeCanvas);
+  containerResizeObserver = CreateContainerResizeObserver(containerRef, containerSize);
 
-  if (!canvasRef.value) return
-  canvasContext.value = canvasRef.value.getContext('2d') || undefined;
-  canvasRef.value.addEventListener('mousemove', handleMouseOverDistributions);
-  canvasRef.value.addEventListener('mousedown', handleMouseDown);
-  canvasRef.value.addEventListener('mouseup', handleMouseUp);
-  canvasRef.value.addEventListener('mousemove', handleMouseMove);
+  if (!containerRef.value) return
+  containerRef.value.addEventListener('mousemove', handleMouseMove);
+  containerRef.value.addEventListener('mousedown', handleMouseDown);
+  containerRef.value.addEventListener('mouseup', handleMouseUp);
 }
 
 function removeEventListeners() {
-  window.removeEventListener('resize', resizeCanvas);
+  if (!containerRef.value) return
+  containerRef.value.removeEventListener('mousemove', handleMouseMove);
+  containerRef.value.removeEventListener('mousedown', handleMouseDown);
+  containerRef.value.removeEventListener('mouseup', handleMouseUp);
 
-  if (!canvasRef.value) return
-  canvasRef.value.removeEventListener('mousemove', handleMouseOverDistributions);
-  canvasRef.value.removeEventListener('mousedown', handleMouseDown);
-  canvasRef.value.removeEventListener('mouseup', handleMouseUp);
-  canvasRef.value.removeEventListener('mousemove', handleMouseMove);
+  if (containerResizeObserver) {
+    containerResizeObserver.disconnect();
+  }
 }
 
-function renderCanvas() {
-  if (!canvasContext.value || !canvasRef.value) return;
+function handleToolSelect(tool: string) {
+  selectedTool.value = tool;
 
-  const {width, height} = canvasRef.value;
-  canvasContext.value.reset();
-  canvasContext.value.clearRect(0, 0, width, height);
+  if (!containerRef.value) return;
 
-  benchStore.benches.forEach((bench) => {
-    if (!canvasContext.value) return;
-
-    canvasContext.value.strokeRect(
-      bench.positions[0],
-      bench.positions[1],
-      bench.dimensions[0],
-      bench.dimensions[1]
-    );
-
-    const distributions = requestDistributionStore.getDistributionByBenchId(bench.id)
-    if (!distributions) return;
-
-    distributions.forEach((distribution) => {
-      if (!canvasContext.value) return;
-
-      if (requestDistributionStore.selectedDistribution && distribution.id === requestDistributionStore.selectedDistribution.id) {
-        distribution = requestDistributionStore.selectedDistribution;
-      }
-
-      canvasContext.value.save()
-      canvasContext.value.lineWidth = 2;
-
-      if (distribution.request_id != requestId) {
-        canvasContext.value.fillStyle = 'rgba(244,67,54,0.50)'
-        canvasContext.value.strokeStyle = requestDistributionStore.selectedDistribution && distribution.id === requestDistributionStore.selectedDistribution.id
-          ? 'rgb(253,216,53)'
-          : 'rgb(211,47,47)';
-      } else {
-        canvasContext.value.fillStyle = 'rgba(67,160,71,0.50)'
-        canvasContext.value.strokeStyle = requestDistributionStore.selectedDistribution && distribution.id === requestDistributionStore.selectedDistribution.id
-          ? 'rgb(253,216,53)'
-          : 'rgb(46,125,50)';
-      }
-
-      const centerX = distribution.positions_on_bench[0] + bench.positions[0] + distribution.dimensions[0] / 2;
-      const centerY = distribution.positions_on_bench[1] + bench.positions[1] + distribution.dimensions[1] / 2;
-
-      canvasContext.value.font = 'bold 14px Arial';
-      canvasContext.value.textAlign = 'center';
-      canvasContext.value.textBaseline = 'middle';
-      canvasContext.value.fillText(distribution.pot_quantity.toString(), centerX, centerY + 2);
-
-      canvasContext.value.fillRect(
-        distribution.positions_on_bench[0] + bench.positions[0],
-        distribution.positions_on_bench[1] + bench.positions[1],
-        distribution.dimensions[0],
-        distribution.dimensions[1]
-      );
-
-      canvasContext.value.strokeRect(
-        distribution.positions_on_bench[0] + bench.positions[0] + 1,
-        distribution.positions_on_bench[1] + bench.positions[1] + 1,
-        distribution.dimensions[0] - 1,
-        distribution.dimensions[1] - 1
-      );
-
-      canvasContext.value.restore()
-    })
-  });
-}
-
-function handleMouseOverDistributions(event: MouseEvent) {
-  if (!canvasRef.value) return;
-
-  const rect = canvasRef.value.getBoundingClientRect();
-  const mouseX = event.clientX - rect.left;
-  const mouseY = event.clientY - rect.top;
-  let cursor = 'default';
-
-  for (const distribution of requestDistributionStore.requestDistributions) {
-    const bench = benchStore.getBenchById(distribution.bench_id);
-
-    if (bench === undefined) continue;
-
-    if (mouseIsOverDistribution(distribution, bench, mouseX, mouseY)) {
-      cursor = 'pointer';
+  switch (tool) {
+    case t('canvas.tools.move'):
+      containerRef.value.style.cursor = 'move';
       break;
-    }
-  }
 
-  canvasRef.value.style.cursor = cursor;
-}
-
-function handleMouseDown(event: MouseEvent) {
-  if (!canvasRef.value) return;
-
-  const rect = canvasRef.value.getBoundingClientRect();
-  const mouseX = event.clientX - rect.left;
-  const mouseY = event.clientY - rect.top;
-  let isOverBench = false;
-  let isOverDistribution = false;
-
-  for (const bench of benchStore.benches) {
-    if (mouseIsOverBench(bench, mouseX, mouseY)) {
-      const distributions = requestDistributionStore.getDistributionByBenchId(bench.id)
-
-      if (!distributions) continue;
-
-      for (const distribution of distributions) {
-        if (mouseIsOverDistribution(distribution, bench, mouseX, mouseY)) {
-          requestDistributionStore.selectDistribution(distribution);
-
-          clickOnX = mouseX - distribution.positions_on_bench[0];
-          clickOnY = mouseY - distribution.positions_on_bench[1];
-
-          isOverDistribution = true;
-          break;
-        }
-      }
-
-      isOverBench = true;
-      clickIsOnBench = bench;
+    case t('canvas.tools.add'):
+      containerRef.value.style.cursor = 'crosshair';
+      selectedDistributionId.value = null;
       break;
-    }
-  }
 
-  if (!isOverBench) {
-    clickIsOnBench = null;
-  }
-
-  if (!isOverDistribution) {
-    clickOnX = mouseX;
-    clickOnY = mouseY;
-
-    requestDistributionStore.selectDistribution(null);
-  }
-
-  if (isOverBench || isOverDistribution) {
-    clickIsMaintained = true;
-  }
-}
-
-function handleMouseUp(event: MouseEvent) {
-  clickIsMaintained = false;
-
-  if (requestDistributionStore.selectedDistribution) {
-    requestDistributionStore.updateDistribution(requestDistributionStore.selectedDistribution)
-  } else {
-    createNewDistribution(event);
+    default:
+      containerRef.value.style.cursor = 'default';
+      break;
   }
 }
 
 function handleMouseMove(event: MouseEvent) {
-  if (!clickIsMaintained) return;
+  switch (selectedTool.value) {
+    case t('canvas.tools.move'):
+      if (!isMouseDown) return;
+      ApplyMouseMoveOnOffset(event, canvasOffset, startMousePosition, startOffset)
+      break;
 
-  if (requestDistributionStore.selectedDistribution) {
-    dragDistribution(event);
-  } else {
-    drawNewDistributionSelectionArea(event);
+    case t('canvas.tools.add'):
+      if (!isMouseDown) return;
+      selectedArea.value = GetSelectedArea(containerRef, event, startMousePosition)
+      break;
+
+    case t('canvas.tools.edit'):
+      if (isMouseDown && selectedDistributionId.value && selectedCorner.value) {
+        ApplyMouseMoveOnDistributionResize(event, requestDistributionStore, selectedCorner.value, selectedDistributionId.value, startMousePosition, startDistributionPosition, startDistributionDimension)
+
+        if (!selectedPot.value) return;
+        const pot = potStore.getPotById(selectedPot.value);
+        if (!pot) return;
+
+        const distribution = requestDistributionStore.getDistributionById(selectedDistributionId.value);
+        if (!distribution) return;
+        const dim = {w: distribution.dimensions[0], h: distribution.dimensions[1]};
+
+        requestDistributionStore.updateDistributionPotQuantity(selectedDistributionId.value, CalculateNumberOfPotsWithSpacing(dim, pot.area, potSpacing));
+        return;
+      }
+
+      if (isMouseDown && selectedDistributionId.value && !selectedCorner.value) {
+        ApplyMouseMoveOnDistributionPositions(event, benchStore, requestDistributionStore, selectedDistributionId.value, startMousePosition, startDistributionPosition)
+        return
+      }
+
+      CursorPointerWhenOverDistributions(containerRef, event, canvasOffset.value, benchStore, requestDistributionStore);
+
+
+      if (!selectedDistributionId.value) return;
+      CursorPointerWhenOverDistributionCorner(containerRef, event, canvasOffset.value, benchStore, requestDistributionStore, selectedDistributionId.value, CORNER_SIZE)
+      break;
   }
 }
 
-function dragDistribution(event: MouseEvent) {
-  if (!requestDistributionStore.selectedDistribution || !canvasRef.value) return;
+function handleMouseUp() {
+  isMouseDown = false;
 
-  if (animationFrameId) {
-    cancelAnimationFrame(animationFrameId);
+  switch (selectedTool.value) {
+    case t('canvas.tools.edit'):
+      if (selectedDistributionId.value) {
+        if (CheckDistributionIsNotOnBench(selectedDistributionId.value, requestDistributionStore, benchStore)) {
+          requestDistributionStore.updateDistributionBenchId(selectedDistributionId.value, startDistributionBenchId)
+          requestDistributionStore.updateDistributionPositions(selectedDistributionId.value, startDistributionPosition.x, startDistributionPosition.y)
+          if (selectedCorner.value) {
+            requestDistributionStore.updateDistributionDimensions(selectedDistributionId.value, startDistributionDimension.w, startDistributionDimension.h)
+            requestDistributionStore.updateDistributionPotQuantity(selectedDistributionId.value, startDistributionPotQuantity)
+          }
+          errorMessages.value = new Error(t('canvas.error.distributionOutside'));
+        }
+
+        if (CheckDistributionOverflow(selectedDistributionId.value, requestDistributionStore, benchStore)) {
+          requestDistributionStore.updateDistributionBenchId(selectedDistributionId.value, startDistributionBenchId)
+          requestDistributionStore.updateDistributionPositions(selectedDistributionId.value, startDistributionPosition.x, startDistributionPosition.y)
+          if (selectedCorner.value) {
+            requestDistributionStore.updateDistributionDimensions(selectedDistributionId.value, startDistributionDimension.w, startDistributionDimension.h)
+            requestDistributionStore.updateDistributionPotQuantity(selectedDistributionId.value, startDistributionPotQuantity)
+          }
+          errorMessages.value = new Error(t('canvas.error.distributionOverlap'));
+        }
+      }
+
+      startMousePosition = {x: 0, y: 0};
+      startDistributionPosition = {x: 0, y: 0};
+      startDistributionDimension = {w: 0, h: 0};
+      startDistributionPotQuantity = 0;
+      startDistributionBenchId = 0;
+      selectedCorner.value = null;
+      break;
+
+    case t('canvas.tools.add'):
+      if (!selectedArea.value || !selectedPot.value || !currentRequest.value) return
+
+      try {
+        selectedDistributionId.value = NewDistributionFromArea(selectedArea.value, currentRequest.value, selectedPot.value, potQuantityInArea.value, benchStore, requestDistributionStore, canvasOffset.value)
+      } catch (e) {
+        if (e instanceof Error)
+          errorMessages.value = e;
+      }
+
+      selectedArea.value = null;
+      startMousePosition = {x: 0, y: 0};
+      break;
   }
-
-  animationFrameId = requestAnimationFrame(() => {
-    if (!canvasRef.value || !requestDistributionStore.selectedDistribution) return;
-
-    const rect = canvasRef.value.getBoundingClientRect();
-    const mouseX = event.clientX - rect.left;
-    const mouseY = event.clientY - rect.top;
-    const newPosX = mouseX - clickOnX;
-    const newPosY = mouseY - clickOnY;
-
-    requestDistributionStore.updateDistributionPositions([newPosX, newPosY]);
-    animationFrameId = null;
-  });
 }
 
-function updateSelectedPot(value: number) {
-  potStore.selectPot(value);
-}
+function handleMouseDown(event: MouseEvent) {
+  isMouseDown = true;
 
-function updateFormDistributions() {
-  formDistributions.value = [];
+  switch (selectedTool.value) {
+    case t('canvas.tools.move'):
+      startMousePosition = {x: event.clientX, y: event.clientY};
+      startOffset = {x: canvasOffset.value.x, y: canvasOffset.value.y};
+      break;
 
-  const distributions = requestDistributionStore.getDistributionByRequestId(requestId)
-  if (!distributions) return
+    case t('canvas.tools.add'):
+      if (!selectedPot.value) {
+        isMouseDown = false
+        errorMessages.value = new Error(t('canvas.error.unselectPot'));
+      } else
+        startMousePosition = GetCursorPositionInContainer(containerRef, event);
+      break;
 
-  distributions.forEach((distribution) => {
-    const seed_quantity = distribution.pot_quantity
-    const bench = benchStore.getBenchById(distribution.bench_id)
-    const greenhouseName = bench ? greenhouseStore.getGreenhouseById(bench.greenhouse_id)?.name : undefined
+    case t('canvas.tools.edit'):
+      if (!selectedCorner.value)
+        selectedCorner.value = DistributionCornerUnderCursor(containerRef, event, canvasOffset.value, benchStore, requestDistributionStore, selectedDistributionId.value, CORNER_SIZE);
 
-    formDistributions.value.push({
-      bench_name: bench ? bench.name : "",
-      greenhouse_name: greenhouseName || "",
-      quantity: seed_quantity
-    })
-  })
-}
+      if (!selectedCorner.value)
+        selectedDistributionId.value = DistributionUnderCursor(containerRef, event, canvasOffset.value, benchStore, requestDistributionStore);
 
-function truncateText(text: string, maxLength: number) {
-  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
-}
+      if (selectedDistributionId.value) {
+        startMousePosition = {x: event.clientX, y: event.clientY};
 
-function drawNewDistributionSelectionArea(event: MouseEvent) {
-  if (!canvasContext.value || !canvasRef.value) return;
+        const distribution = requestDistributionStore.getDistributionById(selectedDistributionId.value)
+        if (!distribution) return;
+        startDistributionPosition = {x: distribution.positions_on_bench[0], y: distribution.positions_on_bench[1]};
+        startDistributionBenchId = distribution.bench_id;
 
-  renderCanvas();
-
-  const rect = canvasRef.value.getBoundingClientRect();
-  const mouseX = event.clientX - rect.left;
-  const mouseY = event.clientY - rect.top;
-  const newWidth = mouseX - clickOnX;
-  const newHeight = mouseY - clickOnY;
-
-  canvasContext.value.setLineDash([4, 2]);
-  canvasContext.value.strokeRect(clickOnX, clickOnY, newWidth, newHeight);
-
-  const centerX = clickOnX + newWidth / 2;
-  const centerY = clickOnY + newHeight / 2;
-
-  const pot = potStore.selectedPot
-  if (!pot) return;
-
-  const zoneArea = newWidth * newHeight;
-  const seed_quantity = calculateNumberOfPotsWithSpacing(zoneArea, pot.area, formSpace.value)
-
-  canvasContext.value.font = 'bold 14px Arial';
-  canvasContext.value.textAlign = 'center';
-  canvasContext.value.textBaseline = 'middle';
-  canvasContext.value.fillText(seed_quantity.toString(), centerX, centerY + 2);
-}
-
-async function createNewDistribution(event: MouseEvent) {
-  if (!canvasRef.value || !clickIsOnBench) return;
-
-  const rect = canvasRef.value.getBoundingClientRect();
-  const mouseX = event.clientX - rect.left;
-  const mouseY = event.clientY - rect.top;
-  const newWidth = Math.abs(mouseX - clickOnX);
-  const newHeight = Math.abs(mouseY - clickOnY);
-
-  if (newWidth < 10 || newHeight < 10) {
-    renderCanvas();
-    return
+        if (selectedCorner.value) {
+          startDistributionDimension = {w: distribution.dimensions[0], h: distribution.dimensions[1]};
+          startDistributionPotQuantity = distribution.pot_quantity;
+        }
+      }
+      break;
   }
+}
 
-  const pot = potStore.selectedPot
-  if (!pot) {
-    alert('Please select a pot');
-    renderCanvas();
+function removeDistribution() {
+  if (!selectedDistributionId.value) return;
+
+  const distribution = requestDistributionStore.getDistributionById(selectedDistributionId.value);
+  if (!distribution) return;
+
+  if (distribution.request_id !== requestId) {
+    errorMessages.value = new Error(t('canvas.error.unableToDeleteDistributionIfIsNotAssociatedWithRequest'));
     return;
   }
 
-  const zoneArea = newWidth * newHeight;
-  const seed_quantity = calculateNumberOfPotsWithSpacing(zoneArea, pot.area, formSpace.value)
-  const distribution = {
-    request_id: requestId,
-    bench_id: clickIsOnBench.id,
-    positions_on_bench: normalizingPosition(mouseX, mouseY, clickIsOnBench),
-    dimensions: [newWidth, newHeight],
-    pot_id: pot.id,
-    pot_quantity: seed_quantity,
-    plant_stage_id: requestStore.plantStageId,
-  };
+  requestDistributionStore.removeDistribution(selectedDistributionId.value);
+  selectedDistributionId.value = null;
+}
 
-  await requestDistributionStore
-    .addDistribution(requestId, distribution)
+function saveDistribution(x: number, y: number, w: number, h: number, potQuantity: number) {
+  if (!selectedDistributionId.value) return;
+
+  const distribution = requestDistributionStore.getDistributionById(selectedDistributionId.value);
+  if (!distribution) return;
+
+  const [oldX, oldY] = distribution.positions_on_bench;
+  const [oldW, oldH] = distribution.dimensions;
+
+  requestDistributionStore.updateDistributionPositions(selectedDistributionId.value, x, y);
+  requestDistributionStore.updateDistributionDimensions(selectedDistributionId.value, w, h);
+
+  if (distribution.request_id === requestId) {
+    requestDistributionStore.updateDistributionPotQuantity(selectedDistributionId.value, potQuantity);
+  }
+
+  if (CheckDistributionIsNotOnBench(selectedDistributionId.value, requestDistributionStore, benchStore)) {
+    requestDistributionStore.updateDistributionPositions(selectedDistributionId.value, oldX, oldY);
+    requestDistributionStore.updateDistributionDimensions(selectedDistributionId.value, oldW, oldH);
+    errorMessages.value = new Error(t('canvas.error.distributionOutside'));
+    return;
+  }
+
+  if (CheckDistributionOverflow(selectedDistributionId.value, requestDistributionStore, benchStore)) {
+    requestDistributionStore.updateDistributionPositions(selectedDistributionId.value, oldX, oldY);
+    requestDistributionStore.updateDistributionDimensions(selectedDistributionId.value, oldW, oldH);
+    errorMessages.value = new Error(t('canvas.error.distributionOverlap'));
+    return;
+  }
+}
+
+async function saveDistributions() {
+  const errors = await requestDistributionStore.save()
+
+  if (errors.length > 0) {
+    errorMessages.value = new Error(t('canvas.error.failedToSave'));
+    await loadData();
+    return;
+  }
+
+  RequestRepository.acceptRequest(requestId.toString())
     .then(() => {
-      if (requestDistributionStore.selectedDistribution === null) return;
-
-      requestStore.decreasesNumberOfSeedsLeftToPlant(seed_quantity);
-      updateFormDistributions();
-
-      if (requestStore.seeds_left_to_plant === 0) {
-        RequestRepository.acceptRequest(requestId.toString())
-          .then(() => {
-            router.push({
-              name: 'requestsAccepted',
-            })
-          })
-      }
+      router.push({
+        name: 'requestsAccepted',
+      })
     })
-    .catch(renderCanvas);
+    .catch(() => {
+      errorMessages.value = new Error(t('canvas.error.failedToAccept'));
+    });
 }
 
-function normalizingPosition(mouseX: number, mouseY: number, clickIsOnBench: Bench) {
-  const x = ((mouseX > clickOnX) ? clickOnX : mouseX) - clickIsOnBench.positions[0]
-  const y = ((mouseY > clickOnY) ? clickOnY : mouseY) - clickIsOnBench.positions[1]
-
-  return [x, y]
+function selectPot(id: number) {
+  console.log(id)
+  selectedPot.value = id
 }
 
-function calculateNumberOfPotsWithSpacing(areaZone: number, potArea: number, spacing: number) {
-  const potSide = Math.sqrt(potArea);
-  const effectiveSide = potSide + 2 * spacing;
-  const potAreaWithSpacing = Math.pow(effectiveSide, 2);
-
-  return Math.abs(Math.floor(areaZone / potAreaWithSpacing));
-}
-
-function mouseIsOverBench(bench: Bench, mouseX: number, mouseY: number) {
-  return mouseX >= bench.positions[0] &&
-    mouseX <= bench.positions[0] + bench.dimensions[0] &&
-    mouseY >= bench.positions[1] &&
-    mouseY <= bench.positions[1] + bench.dimensions[1]
-}
-
-function mouseIsOverDistribution(distribution: RequestDistribution, bench: Bench, mouseX: number, mouseY: number) {
-  return mouseX >= distribution.positions_on_bench[0] + bench.positions[0] &&
-    mouseX <= distribution.positions_on_bench[0] + bench.positions[0] + distribution.dimensions[0] &&
-    mouseY >= distribution.positions_on_bench[1] + bench.positions[1] &&
-    mouseY <= distribution.positions_on_bench[1] + bench.positions[1] + distribution.dimensions[1]
+function updateSpacing(value: string) {
+  const spacing = NormalizesMetreToUnit(Number(value) / 100)
+  potSpacing = Math.round(spacing)
 }
 </script>
-
-<style scoped>
-.canvas-container {
+<style scoped>.container {
   position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.canvas-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  z-index: 10;
+}
+
+.canvas-container > * {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
 }
 
-.container {
+.tools {
+  position: absolute;
+  bottom: 15px;
+  right: 50%;
+  transform: translate(50%, 0%);
+  z-index: 100;
+}
+
+.box-container {
   position: absolute;
   top: 50%;
-  right: 20px;
-  transform: translate(0%, -50%);
-  width: 300px;
+  right: 15px;
+  transform: translate(0, -50%);
+  z-index: 100;
+
+  width: 30%;
+  max-width: 300px;
+  max-height: 80%;
 
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-.request-distribution-container {
-  display: flex;
-  justify-content: space-between;
-
-  padding: 16px;
-  background: #f9f9f9;
+.info-box {
+  flex: 1;
+  min-height: 100px;
 }
 
-.pot-selector-container {
-  display: block;
-
-  padding: 16px;
-  background: #f9f9f9;
+.pot-list {
+  flex-shrink: 0;
 }
 
-.distribution-container {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  padding: 16px;
-  background: #f9f9f9;
-
-  max-height: 300px;
-  overflow-y: auto;
-}
-
-.v-list-item {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-}
-
-.distribution-item {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  border: 1px solid #ccc;
-  padding: 6px 16px;
-  border-radius: 4px;
-  background: #fff;
-}
-
-.bench-name {
-  font-weight: bold;
-  text-transform: capitalize;
-  font-size: 14px;
-}
-
-.greenhouse-name {
-  font-size: 12px;
-  text-transform: capitalize;
+.alert {
+  z-index: 100;
 }
 </style>

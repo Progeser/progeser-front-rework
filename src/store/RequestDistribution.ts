@@ -1,22 +1,23 @@
 // src/stores/useBenchStore.ts
 import {defineStore} from 'pinia';
 import RequestDistributionRepository from "@/repository/requestDistributionRepository";
+import {Dimension, Position} from "@/utils/canvas";
 
 interface RequestDistributionStoreState {
   requestDistributions: RequestDistribution[];
-  _selectedDistribution: RequestDistribution | null;
+
+  newDistributionsNotSaved: Set<number>;
+  updatedDistributionsNotSaved: Set<number>;
+  deletedDistributionsNotSaved: Set<number>;
 }
 
 export const useRequestDistributionStore = defineStore('requestDistribution', {
   state: (): RequestDistributionStoreState => ({
     requestDistributions: [],
-    _selectedDistribution: null,
+    newDistributionsNotSaved: new Set(),
+    updatedDistributionsNotSaved: new Set(),
+    deletedDistributionsNotSaved: new Set(),
   }),
-
-
-  getters: {
-    selectedDistribution: (state): RequestDistribution | null => state._selectedDistribution,
-  },
 
   actions: {
     async loadDistributions() {
@@ -36,40 +37,27 @@ export const useRequestDistributionStore = defineStore('requestDistribution', {
       return this.requestDistributions.find(rd => rd.id === id) || null;
     },
 
+    gedPlantedSeedsForRequest(requestId: number): number {
+      let seedQuantity = 0
+      for (const distribution of this.requestDistributions) {
+        if (distribution.request_id !== requestId) continue;
+        seedQuantity += distribution.pot_quantity
+      }
+      return seedQuantity;
+    },
+
     getDistributionByBenchId(benchId: number): RequestDistribution[] {
       return this.requestDistributions.filter(rd => rd.bench_id === benchId);
     },
 
-    selectDistribution(distribution: RequestDistribution | null) {
-      this._selectedDistribution = distribution;
-    },
+    getIdsOfDistributionNotAssociatedWithRequestId(request_id: number): number[] {
+      const ids: number[] = []
 
-    async updateDistribution(distribution: RequestDistribution) {
-      try {
-        const updateDistribution = await RequestDistributionRepository.updateDistribution(distribution);
-        this.requestDistributions = this.requestDistributions.map(d => d.id === updateDistribution.id ? updateDistribution : d);
-        this._selectedDistribution = updateDistribution;
-      } catch (error) {
-        this._selectedDistribution = this.requestDistributions.find(d => d.id === distribution.id) || null;
-      }
-    },
+      this.requestDistributions.forEach(rd => {
+        rd.request_id !== request_id && ids.push(rd.id)
+      })
 
-    updateDistributionPositions(positions: number[]) {
-      if (!this._selectedDistribution) {
-        return;
-      }
-
-      this._selectedDistribution = {...this._selectedDistribution, positions_on_bench: positions};
-    },
-
-    getDistributionByRequestId(requestId: number): RequestDistribution[] | null {
-      return this.requestDistributions.filter(rd => rd.request_id === requestId) || null;
-    },
-
-    async addDistribution(requestId: number, distribution: Partial<RequestDistribution>) {
-      const newDistribution = await RequestDistributionRepository.addDistribution(requestId, distribution);
-      this.requestDistributions.push(newDistribution);
-      this._selectedDistribution = newDistribution;
+      return ids;
     },
 
     idsOfDistributionNotAssociatedWithPlantStageList(plantStageIds: Set<number>): number[] {
@@ -90,7 +78,126 @@ export const useRequestDistributionStore = defineStore('requestDistribution', {
       })
 
       return ids;
-    }
+    },
+
+    updateDistributionPositions(distributionId: number, x: number, y: number) {
+      const distribution = this.requestDistributions.find(distribution => distribution.id === distributionId);
+      if (!distribution) return;
+
+      distribution.positions_on_bench = [x, y];
+      distribution.updated_at = new Date();
+
+      this.requestDistributions = [...this.requestDistributions.filter(distribution => distribution.id !== distributionId), distribution];
+      !this.newDistributionsNotSaved.has(distributionId) && this.updatedDistributionsNotSaved.add(distribution.id);
+    },
+
+    updateDistributionDimensions(distributionId: number, w: number, h: number) {
+      const distribution = this.requestDistributions.find(distribution => distribution.id === distributionId);
+      if (!distribution) return;
+
+      if (w < 0) {
+        distribution.positions_on_bench[0] += w;
+      }
+      if (h < 0) {
+        distribution.positions_on_bench[1] += h;
+      }
+
+      distribution.dimensions = [Math.abs(w), Math.abs(h)];
+      distribution.updated_at = new Date();
+
+      this.requestDistributions = [...this.requestDistributions.filter(distribution => distribution.id !== distributionId), distribution];
+      !this.newDistributionsNotSaved.has(distributionId) && this.updatedDistributionsNotSaved.add(distribution.id);
+    },
+
+    updateDistributionPotQuantity(distributionId: number, quantity: number) {
+      const distribution = this.requestDistributions.find(distribution => distribution.id === distributionId);
+      if (!distribution) return;
+
+      distribution.pot_quantity = quantity;
+      distribution.updated_at = new Date();
+
+      this.requestDistributions = [...this.requestDistributions.filter(distribution => distribution.id !== distributionId), distribution];
+      !this.newDistributionsNotSaved.has(distributionId) && this.updatedDistributionsNotSaved.add(distribution.id);
+    },
+
+    updateDistributionBenchId(distributionId: number, bench_id: number) {
+      const distribution = this.requestDistributions.find(distribution => distribution.id === distributionId);
+      if (!distribution) return;
+
+      distribution.bench_id = bench_id
+      distribution.updated_at = new Date();
+
+      this.requestDistributions = [...this.requestDistributions.filter(distribution => distribution.id !== distributionId), distribution];
+      !this.newDistributionsNotSaved.has(distributionId) && this.updatedDistributionsNotSaved.add(distribution.id);
+    },
+
+    nextBenchId(): number {
+      const ids = this.requestDistributions.map(distribution => distribution.id);
+      return Math.max(...ids, 0) + 1;
+    },
+
+    addDistribution(requestId: number, pos: Position, dim: Dimension, potId: number, potQuantity: number, plantStageId: number): number {
+      const id = this.nextBenchId();
+      this.requestDistributions = [...this.requestDistributions, {
+        id: id,
+        request_id: requestId,
+        bench_id: -1,
+        positions_on_bench: [pos.x, pos.y],
+        dimensions: [dim.w, dim.h],
+        pot_id: potId,
+        pot_quantity: potQuantity,
+        plant_stage_id: plantStageId,
+        created_at: new Date(),
+        updated_at: new Date(),
+      }];
+      this.newDistributionsNotSaved.add(id);
+      return id;
+    },
+
+    removeDistribution(distributionId: number) {
+      this.requestDistributions = this.requestDistributions.filter(distribution => distribution.id !== distributionId);
+      this.deletedDistributionsNotSaved.add(distributionId);
+    },
+
+
+    async save(): Promise<any[]> {
+      const errors = []
+
+      for (const distributionId of this.deletedDistributionsNotSaved) {
+        try {
+          await RequestDistributionRepository.removeDistributionById(distributionId)
+        } catch (e) {
+          errors.push(e)
+        }
+      }
+      this.deletedDistributionsNotSaved.clear();
+
+      for (const distributionId of this.updatedDistributionsNotSaved) {
+        const distribution = this.getDistributionById(distributionId)
+        if (!distribution) continue;
+        try {
+          const updatedBench = await RequestDistributionRepository.updateDistribution(distribution)
+          this.requestDistributions = [...this.requestDistributions.filter(rd => rd.id !== distributionId), updatedBench]
+        } catch (e) {
+          errors.push(e)
+        }
+      }
+      this.updatedDistributionsNotSaved.clear();
+
+      for (const distributionId of this.newDistributionsNotSaved) {
+        const distribution = this.getDistributionById(distributionId)
+        if (!distribution) continue;
+        try {
+          const newBench = await RequestDistributionRepository.addDistribution(distribution.request_id, distribution)
+          this.requestDistributions = [...this.requestDistributions.filter(rd => distributionId !== rd.id), newBench]
+        } catch (e) {
+          errors.push(e)
+        }
+      }
+      this.newDistributionsNotSaved.clear();
+
+      return errors
+    },
   }
 });
 

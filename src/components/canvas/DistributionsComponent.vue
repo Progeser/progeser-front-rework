@@ -7,6 +7,7 @@
 <script lang="ts" setup>
 import {onMounted, ref, Ref, watch} from "vue";
 import {Offsets, ResizeCanvas, SetupCanvas, Size} from "@/utils/canvas";
+import {BenchStore} from "@/store/BenchStore";
 
 const canvasRef: Ref<HTMLCanvasElement | undefined> = ref();
 const canvasContext: Ref<CanvasRenderingContext2D | undefined> = ref();
@@ -14,9 +15,13 @@ const canvasContext: Ref<CanvasRenderingContext2D | undefined> = ref();
 const props = defineProps<{
   size: Size;
   offset: Offsets;
-  benches: Bench[];
+  benchStore: BenchStore;
+  currentRequestId: number | null;
   distribution: RequestDistribution[];
   selectedDistributionId: number | null;
+  isEditing: boolean;
+  cornerSize: number;
+  displayPotsQuantity: boolean;
   unhighlightedIds: number[];
 }>();
 
@@ -29,11 +34,15 @@ watch(() => [props.offset], () => {
   renderCanvas();
 });
 
-watch(() => [props.benches, props.distribution], () => {
+watch(() => [props.benchStore.benches, props.distribution], () => {
   renderCanvas();
 })
 
 watch(() => [props.selectedDistributionId, props.unhighlightedIds], () => {
+  renderCanvas();
+})
+
+watch(() => [props.isEditing], () => {
   renderCanvas();
 })
 
@@ -53,13 +62,21 @@ function renderCanvas() {
 
   props.distribution?.forEach(distribution => {
     drawDistribution(distribution)
+    const bench = props.benchStore.getBenchById(distribution.bench_id)
+    if (!bench) return;
+    props.displayPotsQuantity && drawLabel(bench, distribution)
+    if (!props.isEditing) return;
+    props.isEditing &&
+    props.selectedDistributionId == distribution.id &&
+    props.currentRequestId == distribution.request_id &&
+    drawResize(bench, distribution)
   })
 }
 
 function drawDistribution(distribution: RequestDistribution) {
   if (!canvasContext.value) return;
 
-  const benchOfDistribution = props.benches.find(b => b.id === distribution.bench_id)
+  const benchOfDistribution = props.benchStore.getBenchById(distribution.bench_id);
   if (!benchOfDistribution) return;
 
   const [x, y] = calGlobalPositionOfDistribution(distribution, benchOfDistribution)
@@ -77,6 +94,21 @@ function drawDistribution(distribution: RequestDistribution) {
   canvasContext.value.restore();
 }
 
+function drawLabel(bench: Bench, distribution: RequestDistribution) {
+  if (!canvasContext.value) return;
+
+  const centerX = (bench.positions[0] + distribution.positions_on_bench[0]) + (distribution.dimensions[0] / 2);
+  const centerY = (bench.positions[1] + distribution.positions_on_bench[1]) + (distribution.dimensions[1] / 2);
+
+  canvasContext.value.save()
+  canvasContext.value.textAlign = 'center';
+  canvasContext.value.textBaseline = 'middle';
+  canvasContext.value.fillStyle = 'black';
+  canvasContext.value.font = 'bold 12px Arial';
+  canvasContext.value.fillText(distribution.pot_quantity.toString(), centerX, centerY);
+  canvasContext.value.restore();
+}
+
 function calGlobalPositionOfDistribution(distribution: RequestDistribution, bench: Bench) {
   const [bx, by] = bench.positions
   const [dx, dy] = distribution.positions_on_bench
@@ -84,7 +116,27 @@ function calGlobalPositionOfDistribution(distribution: RequestDistribution, benc
   return [bx + dx, by + dy]
 }
 
+function drawResize(benchOfDistribution: Bench, distribution: RequestDistribution) {
+  if (!canvasContext.value) return;
 
+  const [x, y] = calGlobalPositionOfDistribution(distribution, benchOfDistribution)
+  const [w, h] = distribution.dimensions
+  const cornerSize = props.cornerSize;
+
+  canvasContext.value.save();
+  canvasContext.value.fillStyle = "rgb(253,216,53)";
+
+  // Upper left corner
+  canvasContext.value.fillRect(x - cornerSize / 2, y - cornerSize / 2, cornerSize, cornerSize);
+  // Upper right corner
+  canvasContext.value.fillRect(x + w - cornerSize / 2, y - cornerSize / 2, cornerSize, cornerSize);
+  // Lower left corner
+  canvasContext.value.fillRect(x - cornerSize / 2, y + h - cornerSize / 2, cornerSize, cornerSize);
+  // Lower right corner
+  canvasContext.value.fillRect(x + w - cornerSize / 2, y + h - cornerSize / 2, cornerSize, cornerSize);
+
+  canvasContext.value.restore();
+}
 </script>
 
 <style scoped>
