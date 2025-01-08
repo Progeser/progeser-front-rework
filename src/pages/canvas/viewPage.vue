@@ -111,9 +111,11 @@ onMounted(async () => {
     ]
   );
 
-  const requestDistributionIds = benchStore.getRequestDistributionIdsFromBenchesInStore();
-  await requestDistributionStore.loadDistributionByIds(requestDistributionIds);
+  //const requestDistributionIds = benchStore.getRequestDistributionIdsFromBenchesInStore();
+  //await requestDistributionStore.loadDistributionByIds(requestDistributionIds);
 
+  await requestDistributionStore.loadDistributions()
+  
   const requestIds = requestDistributionStore.getRequestIdsFromDistributionInStore();
   await requestStore.loadRequestById(requestIds)
 });
