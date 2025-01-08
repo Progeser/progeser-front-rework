@@ -386,15 +386,19 @@ function saveDistribution(x: number, y: number, w: number, h: number, potQuantit
   const distribution = requestDistributionStore.getDistributionById(selectedDistributionId.value);
   if (!distribution) return;
 
+  if (distribution.request_id === requestId) {
+    if (potQuantity <= 0) {
+      errorMessages.value = new Error(t('canvas.error.potQuantityMustGreaterThanZero'));
+      return;
+    }
+    requestDistributionStore.updateDistributionPotQuantity(selectedDistributionId.value, potQuantity);
+  }
+
   const [oldX, oldY] = distribution.positions_on_bench;
   const [oldW, oldH] = distribution.dimensions;
 
   requestDistributionStore.updateDistributionPositions(selectedDistributionId.value, x, y);
   requestDistributionStore.updateDistributionDimensions(selectedDistributionId.value, w, h);
-
-  if (distribution.request_id === requestId) {
-    requestDistributionStore.updateDistributionPotQuantity(selectedDistributionId.value, potQuantity);
-  }
 
   if (CheckDistributionIsNotOnBench(selectedDistributionId.value, requestDistributionStore, benchStore)) {
     requestDistributionStore.updateDistributionPositions(selectedDistributionId.value, oldX, oldY);

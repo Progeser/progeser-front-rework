@@ -338,7 +338,8 @@ export default {
       failedToAccept: "Erreur lors de l'acceptation.",
       unableToDeleteDistributionIfIsNotAssociatedWithRequest: "Impossible de supprimer la distribution car elle n'est pas associé à cette demande.",
       invalidDistributionPosition: "La position de la distribution est invalide.",
-      potQuantityMustGreaterThanZero: "La quantité de pot doit être supérieure à zéro"
+      potQuantityMustGreaterThanZero: "La quantité de pot doit être supérieure à zéro",
+      benchTooSmall: "La table est trop petite.",
     }
   },
 };

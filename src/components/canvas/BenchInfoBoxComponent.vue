@@ -82,7 +82,6 @@ function save() {
 
 <style scoped>
 .info-box {
-  width: 300px;
   overflow: scroll;
 }
 
