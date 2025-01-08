@@ -309,11 +309,15 @@ function handleMouseUp() {
     case t('canvas.tools.add'):
       if (!selectedArea.value || !selectedPot.value || !currentRequest.value) return
 
-      try {
-        selectedDistributionId.value = NewDistributionFromArea(selectedArea.value, currentRequest.value, selectedPot.value, potQuantityInArea.value, benchStore, requestDistributionStore, canvasOffset.value)
-      } catch (e) {
-        if (e instanceof Error)
-          errorMessages.value = e;
+      if (potQuantityInArea.value === 0) {
+        errorMessages.value = new Error(t('canvas.error.potQuantityMustGreaterThanZero'))
+      } else {
+        try {
+          selectedDistributionId.value = NewDistributionFromArea(selectedArea.value, currentRequest.value, selectedPot.value, potQuantityInArea.value, benchStore, requestDistributionStore, canvasOffset.value)
+        } catch (e) {
+          if (e instanceof Error)
+            errorMessages.value = e;
+        }
       }
 
       selectedArea.value = null;
