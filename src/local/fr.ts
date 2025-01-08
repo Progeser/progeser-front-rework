@@ -240,7 +240,8 @@ export default {
     error: {
       fetch: "Une erreur est survenue dans la récupération des requêtes.",
       finish: "Une erreur est survenue lors de la finalisation de cette requête.",
-      reject: "Une erreur est survenue lors du rejet de cette demande."
+      reject: "Une erreur est survenue lors du rejet de cette demande.",
+      accept: "La demande ne peut pas être acceptée car elle est associée à une plante non présente dans l'application, modifiez la demande pour qu'elle corresponde à une plante existante avant de l'accepter et/ou créez une nouvelle plante.",
     },
     confirmReject: "Voulez-vous refuser cette demande ?",
     confirmFinish: "Voulez-vous terminer cette demande ?",
