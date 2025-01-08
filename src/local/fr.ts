@@ -45,7 +45,8 @@ export default {
     no_data: 'Pas de données disponibles.',
     loading: 'Chargement',
     not_assigned: 'Non assigné',
-    update: "Mettre à jour"
+    update: "Mettre à jour",
+    modelled: "Modeliser"
   },
   form: {
     species: {

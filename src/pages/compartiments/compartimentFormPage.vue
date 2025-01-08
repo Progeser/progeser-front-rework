@@ -35,6 +35,7 @@
       <v-btn @click="router.push({ name: 'compartiments', params: {id: props.idBuilding.valueOf()} })">
         {{ t('common.cancel') }}
       </v-btn>
+      <v-btn v-if="idCompartiment !== '0'" color="primary" class="ml-4" variant="outlined" @click="navigateToModeling">{{t('common.modelled')}}</v-btn>
       <v-btn @click="sendCompartiment()"
              color="primary"
              :disabled="compartiment.width <= 0 || compartiment.height <= 0 || compartiment.name.trim().length <= 0">
@@ -85,6 +86,13 @@ const isStriclyPositive = (value: number) => {
 
 const isNotBlanck = (value: string) => {
   return value.trim().length >= 1 || t('form.compartiment.error.name');
+}
+
+const navigateToModeling = () => {
+  router.push({
+    name: 'ModelingPage',
+    params: {idBuilding: props.idBuilding.toString(), idCompartiment: props.idCompartiment.toString()},
+  });
 }
 
 onBeforeMount(async () => {

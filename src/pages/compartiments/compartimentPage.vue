@@ -9,8 +9,7 @@
     <v-divider class="my-2"/>
     <v-row class="justify-md">
       <div v-for="compartiment in compartimentList" :key="compartiment.id!" class="ma-5">
-        <card :description="makeDescription(compartiment)"
-              :exec="() => navigateToCompartimentForm(compartiment.id!)"
+        <card :exec="() => navigateToCompartimentForm(compartiment.id!)"
               :title="compartiment.name"
               img-source="https://serres.univ-lille.fr/fileadmin/_processed_/4/f/csm_33656_IMG_1477_cellule_e31e62c32f.jpg"
               @click.capture="navigateToView(parseInt(idBuilding),compartiment.id!)"
@@ -60,13 +59,9 @@ const navigateToNewCompartimentForm = () => {
   });
 }
 
-const makeDescription = (compartiment: Compartiment) => {
-  return `${t(`form.compartiment.occupation`)}${compartiment.occupancy.toString()} %`
-}
-
 const navigateToView = (buildingId: number, compartimentId: number) => {
   router.push({
-    name: 'ModelingPage',
+    name: 'ViewSeedsPage',
     params: {idBuilding: buildingId.toString(), idCompartiment: compartimentId},
   });
 }
