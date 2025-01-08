@@ -213,12 +213,18 @@ function handleMouseUp() {
 
     case t('canvas.tools.add'):
       if (!selectedArea.value) return
-      try {
-        selectedBenchId.value = NewBenchFromArea(selectedArea.value, benchStore, greenhouseId, canvasOffset.value)
-      } catch (e) {
-        if (e instanceof Error)
-          errorMessages.value = e;
+
+      if ((selectedArea.value[1].w < (METRE_TO_PIXEL / 2) || selectedArea.value[1].h < (METRE_TO_PIXEL / 2))) {
+        errorMessages.value = errorMessages.value = new Error(t("canvas.error.benchTooSmall"));
+      } else {
+        try {
+          selectedBenchId.value = NewBenchFromArea(selectedArea.value, benchStore, greenhouseId, canvasOffset.value)
+        } catch (e) {
+          if (e instanceof Error)
+            errorMessages.value = e;
+        }
       }
+
       selectedArea.value = null;
       startMousePosition = {x: 0, y: 0};
       break;
