@@ -75,6 +75,7 @@ import SelectorComponent from "@/components/canvas/SelectorComponent.vue";
 import BenchInfoBox from "@/components/canvas/BenchInfoBoxComponent.vue";
 import Alert from "@/components/canvas/AlertComponent.vue";
 import {useI18n} from "vue-i18n";
+import router from "@/router";
 
 const {t} = useI18n();
 
@@ -264,6 +265,10 @@ async function saveBenches() {
   if (errors.length > 0) {
     errorMessages.value = new Error(t("canvas.error.failedToSave"));
     await loadData();
+  } else {
+    router.push({
+      name: 'compartiments',
+    })
   }
 }
 
