@@ -96,7 +96,9 @@ export const useBenchStore = defineStore('bench', {
       }
 
       if (this.updatedBenchesNotSaved.has(benchId)) this.updatedBenchesNotSaved.delete(benchId);
-      this.deletedBenchesNotSaved.add(benchId);
+      if (!this.newBenchesNotSaved.has(benchId)) {
+        this.deletedBenchesNotSaved.add(benchId);
+      }
     },
 
     updateBenchDimensions(benchId: number, w: number, h: number) {
