@@ -73,8 +73,11 @@ import UserRepository from "@/repository/userRepository";
 import { MeOutput } from "@/model/output/MeOutput";
 import {useUserStore} from "@/store/UserStore";
 import {useAuthStore} from "@/store/AuthStore";
+import {useSnackbarStore} from "@/store/snackbarStore";
+
 const AuthStore = useAuthStore()
 const userStore = useUserStore();
+const snackbarStore = useSnackbarStore();
 const userRepository = new UserRepository();
 const router = useRouter();
 const { t } = useI18n();
@@ -107,11 +110,11 @@ const email = computed(() => userStore.currentUser?.email);
 const updateUser = async () => {
   try {
     await userRepository.updateUser(editableUser.value);
-    alert(t("profile.successUpdate"));
+    snackbarStore.showMessage(t("profile.successUpdate"));
     await fetchCurrentUser();
   } catch (error) {
     console.error(error);
-    alert(t("profile.errorUpdate"));
+    snackbarStore.showMessage(t("profile.errorUpdate"));
   }
 };
 
@@ -122,7 +125,7 @@ const deleteUser = async () => {
       logout()
     } catch (error) {
       console.error(error);
-      alert(t("profile.errorDelete"));
+      snackbarStore.showMessage(t("profile.errorDelete"));
     }
   }
 };
