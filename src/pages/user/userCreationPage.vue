@@ -94,9 +94,11 @@ import router from "@/router";
 import { useI18n } from "vue-i18n";
 import { UserOutput } from "@/model/output/UserOutput";
 import UserRepository from "@/repository/userRepository";
+import {useSnackbarStore} from "@/store/snackbarStore";
 
 const userRepository = new UserRepository();
 const { t } = useI18n();
+const snackbarStore = useSnackbarStore();
 
 const user = ref<UserOutput>({
   first_name: "",
@@ -131,7 +133,7 @@ const createUser = async () => {
     router.push({ name: "users" });
   } catch (error) {
     console.error(error);
-    alert(t("form.user.error.creationFailed"));
+    snackbarStore.showMessage(t("form.user.error.creationFailed"));
   }
 };
 

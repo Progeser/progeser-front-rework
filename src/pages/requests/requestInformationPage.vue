@@ -181,6 +181,7 @@ import SpeciesRepository from "@/repository/speciesRepository";
 import RequestRepository from "@/repository/requestRepository";
 import {RequestOutput} from "@/model/output/RequestOutput";
 import router from "@/router";
+import {useSnackbarStore} from "@/store/snackbarStore";
 
 const speciesRepository = new SpeciesRepository();
 const {t} = useI18n();
@@ -202,6 +203,7 @@ const quantity = ref(0);
 const temperature = ref<string | null>(null);
 const photoperiod = ref<number | null>(null);
 const date = ref<Date | null>(null);
+const snackbarStore = useSnackbarStore();
 
 const isRequired = (value: string) =>
   value.trim().length > 0 || t("form.edit.error.required");
@@ -243,7 +245,7 @@ const fetchSpecies = async () => {
   try {
     species.value = await speciesRepository.getAllSpecies();
   } catch (error) {
-    alert(t('form.edit.error.fetchSpecies'));
+    snackbarStore.showMessage(t('form.edit.error.fetchSpecies'));
   } finally {
     isLoading.value = false;
   }
@@ -276,7 +278,7 @@ const loadRequestData = async () => {
     temperature.value = request.temperature || null;
     photoperiod.value = request.photoperiod || null;
   } catch (error) {
-    alert(t('form.edit.error.loadRequest'));
+    snackbarStore.showMessage(t('form.edit.error.loadRequest'));
   } finally {
     isLoading.value = false;
   }
@@ -304,7 +306,7 @@ const handleSubmit = async () => {
     await RequestRepository.putRequest(props.idRequest, requestOutput);
     router.push({ name: "requestsNew" });
   } catch (error) {
-    alert(t("form.edit.error.update"));
+    snackbarStore.showMessage(t("form.edit.error.update"));
     router.push({ name: "requestsNew" });
   } finally {
     isLoading.value = false;

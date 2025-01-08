@@ -64,7 +64,7 @@ export const useRequestDistributionStore = defineStore('requestDistribution', {
       const ids: number[] = []
 
       this.requestDistributions.forEach(rd => {
-        plantStageIds.has(rd.plant_stage_id) && ids.push(rd.id)
+        !plantStageIds.has(rd.plant_stage_id) && ids.push(rd.id)
       })
 
       return ids
@@ -156,7 +156,10 @@ export const useRequestDistributionStore = defineStore('requestDistribution', {
 
     removeDistribution(distributionId: number) {
       this.requestDistributions = this.requestDistributions.filter(distribution => distribution.id !== distributionId);
-      this.deletedDistributionsNotSaved.add(distributionId);
+
+      if (!this.newDistributionsNotSaved.has(distributionId)) {
+        this.deletedDistributionsNotSaved.add(distributionId);
+      }
     },
 
 

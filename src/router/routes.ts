@@ -95,6 +95,7 @@ const routes: RouteRecordRaw[] = [
     name: 'ViewSeedsPage',
     props: true,
     component: () => import('@/pages/canvas/viewPage.vue'),
+    meta: {previousStep: ['buildings', 'compartiments']}
   }
 ];
 

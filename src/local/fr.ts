@@ -45,7 +45,8 @@ export default {
     no_data: 'Pas de données disponibles.',
     loading: 'Chargement',
     not_assigned: 'Non assigné',
-    update: "Mettre à jour"
+    update: "Mettre à jour",
+    modelled: "Modeliser"
   },
   form: {
     species: {
@@ -239,7 +240,8 @@ export default {
     error: {
       fetch: "Une erreur est survenue dans la récupération des requêtes.",
       finish: "Une erreur est survenue lors de la finalisation de cette requête.",
-      reject: "Une erreur est survenue lors du rejet de cette demande."
+      reject: "Une erreur est survenue lors du rejet de cette demande.",
+      accept: "La demande ne peut pas être acceptée car elle est associée à une plante non présente dans l'application, modifiez la demande pour qu'elle corresponde à une plante existante avant de l'accepter et/ou créez une nouvelle plante.",
     },
     confirmReject: "Voulez-vous refuser cette demande ?",
     confirmFinish: "Voulez-vous terminer cette demande ?",
@@ -339,7 +341,7 @@ export default {
       unableToDeleteDistributionIfIsNotAssociatedWithRequest: "Impossible de supprimer la distribution car elle n'est pas associé à cette demande.",
       invalidDistributionPosition: "La position de la distribution est invalide.",
       potQuantityMustGreaterThanZero: "La quantité de pot doit être supérieure à zéro",
-      benchTooSmall: "La table est trop petite.",
+      benchTooSmall: "La table est trop petite."
     }
   },
 };
