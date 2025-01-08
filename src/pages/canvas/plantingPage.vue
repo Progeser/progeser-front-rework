@@ -113,7 +113,7 @@ const containerSize: Ref<Size> = ref({width: 0, height: 0});
 let containerResizeObserver: ResizeObserver | null = null;
 
 const toolList = [t('canvas.tools.add'), t('canvas.tools.edit'), t('canvas.tools.move')];
-const selectedTool = ref<string>(t('canvas.tools.edit'));
+const selectedTool = ref<string>(t('canvas.tools.add'));
 const selectedCorner = ref<Corner | null>(null);
 
 let potSpacing = 0
@@ -175,8 +175,10 @@ async function loadData() {
     ]
   );
 
-  const requestDistributionIds = benchStore.getRequestDistributionIdsFromBenchesInStore();
-  await requestDistributionStore.loadDistributionByIds(requestDistributionIds);
+  // const requestDistributionIds = benchStore.getRequestDistributionIdsFromBenchesInStore();
+  // await requestDistributionStore.loadDistributionByIds(requestDistributionIds);
+
+  await requestDistributionStore.loadDistributions()
 
   const requestIds = requestDistributionStore.getRequestIdsFromDistributionInStore();
   requestIds.add(requestId);
