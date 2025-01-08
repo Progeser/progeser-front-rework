@@ -65,7 +65,7 @@ watch(() => [props.distributionStore.requestDistributions, props.request], () =>
 }
 
 .darker-btn {
-  background-color: #43a047; /* Couleur plus sombre */
-  color: white; /* Text du bouton lisible */
+  background-color: #43a047;
+  color: white;
 }
 </style>

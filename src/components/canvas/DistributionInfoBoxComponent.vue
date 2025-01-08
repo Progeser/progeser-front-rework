@@ -6,19 +6,17 @@
     <v-card-text>
       <v-form ref="form">
         <v-text-field v-model.number="formData.x" :label="t('canvas.distributionInfoBox.positionX')" outlined
-                      type="number"></v-text-field>
+                      type="number"/>
         <v-text-field v-model.number="formData.y" :label="t('canvas.distributionInfoBox.positionY')" outlined
-                      type="number"></v-text-field>
+                      type="number"/>
         <v-text-field v-model.number="formData.width" :label="t('canvas.distributionInfoBox.width')" outlined
-                      type="number"></v-text-field>
+                      type="number"/>
         <v-text-field v-model.number="formData.height" :label="t('canvas.distributionInfoBox.height')" outlined
-                      type="number"></v-text-field>
+                      type="number"/>
         <v-text-field v-model.number="formData.potQuantity" :label="t('canvas.distributionInfoBox.potQuantity')"
-                      outlined
-                      type="number"></v-text-field>
+                      outlined type="number"/>
         <v-text-field v-model.number="area" :label="t('canvas.distributionInfoBox.area')" outlined
-                      readonly></v-text-field>
-
+                      readonly/>
       </v-form>
     </v-card-text>
     <v-card-actions>
