@@ -4,20 +4,20 @@
       <GridComponent
         :offset="canvasOffset"
         :size="containerSize"
-        :space="METRE_TO_PIXEL/4"
-      />
+        :space="METRE_TO_PIXEL/4"/>
       <BenchesComponent
         :benches="benchStore.benches"
-        :corner-size="BENCH_CORNER_SIZE"
+        :corner-size="CORNER_SIZE"
         :display-labels="true"
-        :is-editing="selectedTool === 'Edit'"
+        :is-editing="selectedTool === t('canvas.tools.edit')"
         :offset="canvasOffset"
         :selected-bench-id="selectedBenchId"
-        :size="containerSize"
-      />
+        :size="containerSize"/>
       <SelectorComponent
         :area="selectedArea"
+        :pot-quantity="0"
         :show-m2-labels="true"
+        :show-pot-quantity="false"
         :showSizeLabels="true"
         :size="containerSize"/>
     </div>
@@ -25,22 +25,21 @@
       :onToolSelect="handleToolSelect"
       :selected="selectedTool"
       :tools="toolList"
-      class="tools"
-    />
+      class="tools"/>
     <v-btn class="save-button" color="primary" @click="saveBenches">
-      Save
+      {{ t('canvas.modeling.save') }}
     </v-btn>
-    <BenchInfoBox
-      :benchStore="benchStore"
-      :remove-bench="removeBench"
-      :save-bench="saveBench"
-      :selected-bench-id="selectedBenchId"
-      class="info-box"
-    />
+    <div class="box-container">
+      <BenchInfoBox
+        :benchStore="benchStore"
+        :remove-bench="removeBench"
+        :save-bench="saveBench"
+        :selected-bench-id="selectedBenchId"
+        class="info-box"/>
+    </div>
     <Alert
       :error="errorMessages"
-      class="alert"
-    />
+      class="alert"/>
   </v-container>
 </template>
 
@@ -51,11 +50,11 @@ import {
   ApplyMouseMoveOnBenchPositions,
   ApplyMouseMoveOnBenchResize,
   ApplyMouseMoveOnOffset,
-  BENCH_CORNER_SIZE,
   BenchCornerUnderCursor,
   BenchUnderCursor,
-  CheckOverflow,
+  CheckBenchOverflow,
   Corner,
+  CORNER_SIZE,
   CreateContainerResizeObserver,
   CursorPointerWhenOverBench,
   CursorPointerWhenOverBenchCorner,
@@ -73,15 +72,18 @@ import BenchesComponent from "@/components/canvas/BenchesComponent.vue";
 import {useBenchStore} from "@/store/BenchStore";
 import {useRoute} from "vue-router";
 import SelectorComponent from "@/components/canvas/SelectorComponent.vue";
-import BenchInfoBox from "@/components/canvas/BenchInfoBox.vue";
-import Alert from "@/components/canvas/Alert.vue";
+import BenchInfoBox from "@/components/canvas/BenchInfoBoxComponent.vue";
+import Alert from "@/components/canvas/AlertComponent.vue";
+import {useI18n} from "vue-i18n";
+
+const {t} = useI18n();
 
 const containerRef: Ref<HTMLElement | undefined> = ref();
 const containerSize: Ref<Size> = ref({width: 0, height: 0});
 let containerResizeObserver: ResizeObserver | null = null;
 
-const toolList = ['Add', 'Edit', 'Move'];
-const selectedTool = ref<string>('Edit');
+const toolList = [t('canvas.tools.add'), t('canvas.tools.edit'), t('canvas.tools.move')];
+const selectedTool = ref<string>(t('canvas.tools.edit'));
 
 const selectedBenchId = ref<number | null>(null);
 const selectedCorner = ref<Corner | null>(null);
@@ -142,11 +144,11 @@ function handleToolSelect(tool: string) {
   if (!containerRef.value) return;
 
   switch (tool) {
-    case 'Move':
+    case t('canvas.tools.move'):
       containerRef.value.style.cursor = 'move';
       break;
 
-    case 'Add':
+    case t('canvas.tools.add'):
       containerRef.value.style.cursor = 'crosshair';
       selectedBenchId.value = null;
       break;
@@ -159,17 +161,17 @@ function handleToolSelect(tool: string) {
 
 function handleMouseMove(event: MouseEvent) {
   switch (selectedTool.value) {
-    case 'Move':
+    case t('canvas.tools.move'):
       if (!isMouseDown) return;
       ApplyMouseMoveOnOffset(event, canvasOffset, startMousePosition, startOffset)
       break;
 
-    case 'Add':
+    case t('canvas.tools.add'):
       if (!isMouseDown) return;
       selectedArea.value = GetSelectedArea(containerRef, event, startMousePosition)
       break;
 
-    case 'Edit':
+    case t('canvas.tools.edit'):
       if (isMouseDown && selectedBenchId.value && selectedCorner.value) {
         ApplyMouseMoveOnBenchResize(event, benchStore, selectedCorner.value, selectedBenchId.value, startMousePosition, startBenchPosition, startBenchDimension)
         return;
@@ -183,7 +185,7 @@ function handleMouseMove(event: MouseEvent) {
       CursorPointerWhenOverBench(containerRef, event, canvasOffset.value, benchStore);
 
       if (!selectedBenchId.value) return;
-      CursorPointerWhenOverBenchCorner(containerRef, event, canvasOffset.value, benchStore, selectedBenchId.value, BENCH_CORNER_SIZE)
+      CursorPointerWhenOverBenchCorner(containerRef, event, canvasOffset.value, benchStore, selectedBenchId.value, CORNER_SIZE)
       break;
   }
 }
@@ -192,14 +194,14 @@ function handleMouseUp() {
   isMouseDown = false;
 
   switch (selectedTool.value) {
-    case 'Edit':
-      if (selectedBenchId.value && CheckOverflow(selectedBenchId.value, benchStore)) {
+    case t('canvas.tools.edit'):
+      if (selectedBenchId.value && CheckBenchOverflow(selectedBenchId.value, benchStore)) {
         benchStore.updateBenchPositions(selectedBenchId.value, startBenchPosition.x, startBenchPosition.y)
 
         if (selectedCorner.value)
           benchStore.updateBenchDimensions(selectedBenchId.value, startBenchDimension.w, startBenchDimension.h)
 
-        errorMessages.value = new Error("Bench overflow");
+        errorMessages.value = new Error(t("canvas.error.benchOverlap"));
       }
 
       selectedCorner.value = null;
@@ -208,7 +210,7 @@ function handleMouseUp() {
       startBenchDimension = {w: 0, h: 0};
       break;
 
-    case 'Add':
+    case t('canvas.tools.add'):
       if (!selectedArea.value) return
       try {
         selectedBenchId.value = NewBenchFromArea(selectedArea.value, benchStore, greenhouseId, canvasOffset.value)
@@ -226,14 +228,14 @@ function handleMouseDown(event: MouseEvent) {
   isMouseDown = true;
 
   switch (selectedTool.value) {
-    case 'Move':
+    case t('canvas.tools.move'):
       startMousePosition = {x: event.clientX, y: event.clientY};
       startOffset = {x: canvasOffset.value.x, y: canvasOffset.value.y};
       break;
 
-    case 'Edit':
+    case t('canvas.tools.edit'):
       if (selectedBenchId.value)
-        selectedCorner.value = BenchCornerUnderCursor(containerRef, event, canvasOffset.value, benchStore, selectedBenchId.value, BENCH_CORNER_SIZE);
+        selectedCorner.value = BenchCornerUnderCursor(containerRef, event, canvasOffset.value, benchStore, selectedBenchId.value, CORNER_SIZE);
 
       if (!selectedCorner.value)
         selectedBenchId.value = BenchUnderCursor(containerRef, event, canvasOffset.value, benchStore);
@@ -250,7 +252,7 @@ function handleMouseDown(event: MouseEvent) {
       }
       break;
 
-    case 'Add':
+    case t('canvas.tools.add'):
       startMousePosition = GetCursorPositionInContainer(containerRef, event);
       break;
   }
@@ -260,7 +262,7 @@ async function saveBenches() {
   const errors = await benchStore.save();
 
   if (errors.length > 0) {
-    errorMessages.value = new Error('Failed to save benches');
+    errorMessages.value = new Error(t("canvas.error.failedToSave"));
     await loadData();
   }
 }
@@ -278,10 +280,10 @@ async function saveBench(name: string, x: number, y: number, w: number, h: numbe
   benchStore.updateBenchPositions(selectedBenchId.value, x, y);
   benchStore.updateBenchDimensions(selectedBenchId.value, w, h);
 
-  if (CheckOverflow(selectedBenchId.value, benchStore)) {
+  if (CheckBenchOverflow(selectedBenchId.value, benchStore)) {
     benchStore.updateBenchPositions(selectedBenchId.value, oldX, oldY);
     benchStore.updateBenchDimensions(selectedBenchId.value, oldW, oldH);
-    errorMessages.value = new Error("Bench overflow");
+    errorMessages.value = new Error(t("canvas.error.benchOverlap"));
   }
 }
 
@@ -329,25 +331,25 @@ function removeBench() {
 
 .save-button {
   position: absolute;
-  top: 15px;
+  bottom: 15px;
   right: 15px;
   z-index: 100;
 }
 
-.info-box {
+.box-container {
   position: absolute;
-  top: 100px;
-  right: 20px;
-  width: 300px;
+  top: 50%;
+  right: 15px;
+  transform: translate(0, -50%);
   z-index: 100;
-}
 
-.info-box {
-  position: absolute;
-  top: 100px;
-  right: 20px;
-  width: 300px;
-  z-index: 100;
+  width: 30%;
+  max-width: 300px;
+  max-height: 80%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .alert {

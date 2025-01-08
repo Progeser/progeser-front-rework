@@ -12,6 +12,10 @@ class RequestDistributionRepository {
     return await this.fetchService.get<RequestDistribution>(`request_distributions/${id}`)
   }
 
+  public async removeDistributionById(id: number): Promise<RequestDistribution> {
+    return await this.fetchService.delete<RequestDistribution>(`request_distributions/${id}`)
+  }
+
   public async updateDistribution(distribution: Partial<RequestDistribution>): Promise<RequestDistribution> {
     return await this.fetchService.put<RequestDistribution, Partial<RequestDistribution>>(`request_distributions/${distribution.id}`, distribution)
   }

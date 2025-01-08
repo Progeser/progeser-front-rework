@@ -4,8 +4,7 @@
       <GridComponent
         :offset="canvasOffset"
         :size="containerSize"
-        :space="30"
-      />
+        :space="30"/>
       <BenchesComponent
         :benches="benchStore.benches"
         :corner-size="0"
@@ -15,13 +14,16 @@
         :selected-bench-id="null"
         :size="containerSize"/>
       <DistributionComponent
-        :benches="benchStore.benches"
+        :bench-store="benchStore"
+        :corner-size="0"
+        :current-request-id="null"
+        :display-pots-quantity="true"
         :distribution="requestDistributionStore.requestDistributions"
+        :is-editing="false"
         :offset="canvasOffset"
         :selected-distribution-id="selectedDistributionId"
         :size="containerSize"
-        :unhighlighted-ids="unhighlightedDistributionId"
-      />
+        :unhighlighted-ids="unhighlightedDistributionId"/>
     </div>
     <ToolsComponent
       :onToolSelect="handleToolSelect"
@@ -50,7 +52,7 @@ import RequestInfoComponent from "@/components/canvas/RequestInfoComponent.vue";
 import GridComponent from "@/components/canvas/GridComponent.vue";
 import BenchesComponent from "@/components/canvas/BenchesComponent.vue";
 import ToolsComponent from "@/components/canvas/ToolsComponent.vue";
-import DistributionComponent from "@/components/canvas/DistributionComponent.vue";
+import DistributionComponent from "@/components/canvas/DistributionsComponent.vue";
 import PlantListComponent from "@/components/canvas/PlantListComponent.vue";
 import {useBenchStore} from "@/store/BenchStore";
 import {useRequestDistributionStore} from "@/store/RequestDistribution";
@@ -68,13 +70,16 @@ import {
 import {usePlantStore} from "@/store/PlantStore";
 import {useRequestStore} from "@/store/RequestStore";
 import {useRoute} from "vue-router";
+import {useI18n} from "vue-i18n";
+
+const {t} = useI18n();
 
 const containerRef: Ref<HTMLElement | undefined> = ref();
 const containerSize: Ref<Size> = ref({width: 0, height: 0});
 let containerResizeObserver: ResizeObserver | null = null;
 
-const toolList = ['Select', 'Move'];
-const selectedTool = ref<string>('Select');
+const toolList = [t('canvas.tools.select'), t('canvas.tools.move')];
+const selectedTool = ref<string>(t('canvas.tools.select'));
 
 const selectedDistributionId = ref<number | null>(null);
 
@@ -143,7 +148,7 @@ function handleToolSelect(tool: string) {
   if (!containerRef.value) return;
 
   switch (tool) {
-    case 'Move':
+    case t('canvas.tools.move'):
       containerRef.value.style.cursor = 'move';
       break;
 
@@ -171,12 +176,12 @@ function handlePlantSelect(plantId: number) {
 
 function handleMouseMove(event: MouseEvent) {
   switch (selectedTool.value) {
-    case 'Move':
+    case t('canvas.tools.move'):
       if (!isMouseDown) return;
       ApplyMouseMoveOnOffset(event, canvasOffset, startMousePosition, startOffset)
       break;
 
-    case 'Select':
+    case t('canvas.tools.select'):
       if (isMouseDown) return;
       CursorPointerWhenOverDistributions(containerRef, event, canvasOffset.value, benchStore, requestDistributionStore);
       break;
@@ -191,12 +196,12 @@ function handleMouseDown(event: MouseEvent) {
   isMouseDown = true;
 
   switch (selectedTool.value) {
-    case 'Move':
+    case t('canvas.tools.move'):
       startMousePosition = {x: event.clientX, y: event.clientY};
       startOffset = {x: canvasOffset.value.x, y: canvasOffset.value.y};
       break;
 
-    case 'Select':
+    case t('canvas.tools.select'):
       selectedDistributionId.value = DistributionUnderCursor(containerRef, event, canvasOffset.value, benchStore, requestDistributionStore);
       if (!selectedDistributionId.value) {
         requestInfo.value = null;
@@ -255,7 +260,6 @@ function handleMouseDown(event: MouseEvent) {
   display: flex;
   flex-direction: column;
   gap: 16px;
-
 }
 
 .plant-list-box {

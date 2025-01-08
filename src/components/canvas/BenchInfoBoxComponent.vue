@@ -1,32 +1,37 @@
 <template>
-  <div v-if="props.selectedBenchId" class="info-box">
-    <v-card outlined>
-      <v-card-title>
-        <span>Edit Bench Info</span>
-      </v-card-title>
-      <v-card-text>
-        <v-form ref="form">
-          <v-text-field v-model="formData.name" label="Name" outlined></v-text-field>
-          <v-text-field v-model.number="formData.x" label="Position X (m)" outlined type="number"></v-text-field>
-          <v-text-field v-model.number="formData.y" label="Position Y (m)" outlined type="number"></v-text-field>
-          <v-text-field v-model.number="formData.width" label="Width (m)" outlined type="number"></v-text-field>
-          <v-text-field v-model.number="formData.height" label="Height (m)" outlined type="number"></v-text-field>
-          <v-text-field v-model.number="area" label="Area (m²)" outlined readonly></v-text-field>
-        </v-form>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="primary" @click="save">Save</v-btn>
-        <v-btn color="red darken-1" @click="props.removeBench()">Remove</v-btn>
-      </v-card-actions>
-    </v-card>
-  </div>
+  <v-card v-if="props.selectedBenchId" class="info-box" outlined>
+    <v-card-title>
+      <span>{{ t('canvas.benchInfoBox.title') }}</span>
+    </v-card-title>
+    <v-card-text>
+      <v-form ref="form">
+        <v-text-field v-model="formData.name" :label="t('canvas.benchInfoBox.name')" outlined></v-text-field>
+        <v-text-field v-model.number="formData.x" :label="t('canvas.benchInfoBox.positionX')" outlined
+                      type="number"></v-text-field>
+        <v-text-field v-model.number="formData.y" :label="t('canvas.benchInfoBox.positionY')" outlined
+                      type="number"></v-text-field>
+        <v-text-field v-model.number="formData.width" :label="t('canvas.benchInfoBox.width')" outlined
+                      type="number"></v-text-field>
+        <v-text-field v-model.number="formData.height" :label="t('canvas.benchInfoBox.height')" outlined
+                      type="number"></v-text-field>
+        <v-text-field v-model.number="area" :label="t('canvas.benchInfoBox.area')" outlined readonly></v-text-field>
+      </v-form>
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn color="primary" @click="save">{{ t('canvas.benchInfoBox.save') }}</v-btn>
+      <v-btn color="red darken-1" @click="props.removeBench()">{{ t('canvas.benchInfoBox.remove') }}</v-btn>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script lang="ts" setup>
 import {computed, defineProps, reactive, watch} from "vue";
 import {BenchStore} from "@/store/BenchStore";
 import {NormalizesMetreToUnit, NormalizesUnitToMetre} from "@/utils/canvas";
+import {useI18n} from "vue-i18n";
+
+const {t} = useI18n();
 
 const formData = reactive({
   name: "",
@@ -78,6 +83,7 @@ function save() {
 <style scoped>
 .info-box {
   width: 300px;
+  overflow: scroll;
 }
 
 .info-box v-card {

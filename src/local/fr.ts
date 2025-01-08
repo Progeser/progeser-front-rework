@@ -280,5 +280,64 @@ export default {
     errorUpdate: "Erreur lors de la mise à jour du mot de passe.",
     minLength: "Le mot de passe doit contenir au moins {length} caractères.",
     passwordMismatch: "Les mots de passe ne correspondent pas.",
-  }
+  },
+  canvas: {
+    benchInfoBox: {
+      title: "Modifier la table",
+      name: "Nom",
+      positionX: "Position X (m)",
+      positionY: "Position Y (m)",
+      width: "Largeur (m)",
+      height: "Hauteur (m)",
+      area: "Aire (m²)",
+      save: "Enregistrer",
+      remove: "Supprimer",
+    },
+    distributionInfoBox: {
+      title: "Modifier la distribution",
+      name: "Nom",
+      positionX: "Position X (m)",
+      positionY: "Position Y (m)",
+      width: "Largeur (m)",
+      height: "Hauteur (m)",
+      potQuantity: "Nombre de plantes",
+      area: "Aire (m²)",
+      save: "Enregistrer",
+      remove: "Supprimer",
+    },
+    distributionTool: {
+      selectPot: "Sélectionner un pot",
+      spacings: "Espacement (cm)",
+      save: "Enregistrer",
+    },
+    plantList: {
+      title: "Liste des plantes",
+    },
+    requestInfo: {
+      title: "Informations de la demande",
+      plantName: "🌱 Nom plante:",
+      plantStage: "🔄 Stade plante:",
+      plantedAt: "📅 Planté à:",
+      requester: "👤 Demandeur:",
+    },
+    tools: {
+      add: "Ajouter",
+      edit: "Modifier",
+      move: "Déplacer",
+      select: "Sélectionner",
+    },
+    modeling: {
+      save: "Enregistrer",
+    },
+    error: {
+      benchOverlap: "La table est en chevauchement avec une autre table.",
+      distributionOverlap: "La distribution est en chevauchement avec une autre distribution.",
+      distributionOutside: "La distribution est en dehors de la table.",
+      unselectPot: "Veuillez sélectionner le pot avant d'ajouter la distribution",
+      failedToSave: "Erreur lors de l'enregistrement.",
+      failedToAccept: "Erreur lors de l'acceptation.",
+      unableToDeleteDistributionIfIsNotAssociatedWithRequest: "Impossible de supprimer la distribution car elle n'est pas associé à cette demande.",
+      invalidDistributionPosition: "La position de la distribution est invalide.",
+    }
+  },
 };

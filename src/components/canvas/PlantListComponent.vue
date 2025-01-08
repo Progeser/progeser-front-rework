@@ -1,6 +1,6 @@
 <template>
   <v-card class="plant-card" outlined>
-    <v-card-title class="plant-card__title">Plants</v-card-title>
+    <v-card-title class="plant-card__title">{{ t('canvas.plantList.title') }}</v-card-title>
     <div class="plant-card__plant-list">
       <div
         v-for="item in plant"
@@ -15,6 +15,10 @@
 </template>
 
 <script lang="ts" setup>
+import {useI18n} from "vue-i18n";
+
+const {t} = useI18n();
+
 const props = defineProps<{
   plant: { id: number; name: string }[];
   selected: number[];

@@ -15,6 +15,8 @@ const props = defineProps<{
   size: Size;
   showSizeLabels: boolean;
   showM2Labels: boolean;
+  showPotQuantity: boolean;
+  potQuantity: number
   area: [position: Position, dimension: Dimension] | null
 }>();
 
@@ -45,6 +47,7 @@ function renderCanvas() {
   drawSelector(props.area)
   props.showSizeLabels && drawSizeLabels(props.area)
   props.showM2Labels && drawM2Labels(props.area)
+  props.showPotQuantity && drawPotQuantityLabels(props.area, props.potQuantity)
 }
 
 function drawSelector(area: [position: Position, dimension: Dimension]) {
@@ -112,6 +115,24 @@ function drawM2Labels(area: [position: Position, dimension: Dimension]) {
   const heightInMeter = NormalizesUnitToMetre(dimension.h);
   const m2 = (widthInMeter * heightInMeter)
   const message = m2.toFixed(2) + "m2"
+
+  canvasContext.value.save()
+  canvasContext.value.textAlign = 'center';
+  canvasContext.value.textBaseline = 'middle';
+  canvasContext.value.fillStyle = 'black';
+  canvasContext.value.fillText(message, centerX, centerY);
+  canvasContext.value.restore();
+}
+
+function drawPotQuantityLabels(area: [position: Position, dimension: Dimension], quantity: number) {
+  if (!canvasContext.value) return;
+
+  const [position, dimension] = area;
+
+  const centerX = position.x + dimension.w / 2;
+  const centerY = position.y + dimension.h / 2;
+
+  const message = quantity.toString();
 
   canvasContext.value.save()
   canvasContext.value.textAlign = 'center';
