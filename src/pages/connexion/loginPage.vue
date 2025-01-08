@@ -60,11 +60,13 @@ import { useAuthStore } from "@/store/AuthStore";
 import {computed, ref} from "vue";
 import router from "@/router"
 import {useI18n} from "vue-i18n";
+import {useSnackbarStore} from "@/store/snackbarStore";
 
 const email = ref("");
 const password = ref("");
 const isLoading = ref(false);
 const authStore = useAuthStore();
+const snackbarStore = useSnackbarStore();
 const {t} = useI18n();
 
 
@@ -82,7 +84,7 @@ const handleLogin = async () => {
     await authStore.login(email.value, password.value);
     router.push({name: "requestsNew"});
   } catch (error) {
-    alert(t("form.login.error"));
+    snackbarStore.showMessage(t("form.login.error"));
   } finally {
     isLoading.value = false;
   }

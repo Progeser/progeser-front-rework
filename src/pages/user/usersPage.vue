@@ -45,10 +45,12 @@ import { UserModel } from "@/model/UserModel";
 import UserRepository from "@/repository/userRepository";
 import { useUserStore } from "@/store/UserStore";
 import router from "@/router";
+import {useSnackbarStore} from "@/store/snackbarStore";
 
 // Références
 const userRepository = new UserRepository();
 const { t } = useI18n();
+const snackbarStore = useSnackbarStore();
 
 const usersList = ref<UserModel[]>([]);
 const loading = ref(false);
@@ -76,7 +78,7 @@ const updateUsers = async (page: number, itemsPerPage: number) => {
       name: `${user.first_name} ${user.last_name}`,
     }));
   } catch (error) {
-    alert(t('form.user.error.fetchUsers'));
+    snackbarStore.showMessage(t('form.user.error.fetchUsers'));
   } finally {
     loading.value = false;
   }
@@ -99,7 +101,7 @@ const deleteUser = async (item: UserModel) => {
       await userRepository.deleteUser(item.id!);
       await updateUsers(pageNumber.value, itemsPerPage.value);
     } catch (error) {
-      alert(t('form.user.deleteError'));
+      snackbarStore.showMessage(t('form.user.deleteError'));
     }
   }
 };

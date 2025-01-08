@@ -181,6 +181,7 @@ import {Species} from "@/model/Species";
 import SpeciesRepository from "@/repository/speciesRepository";
 import {RequestOutput} from "@/model/output/RequestOutput";
 import RequestRepository from "@/repository/requestRepository";
+import {useSnackbarStore} from "@/store/snackbarStore";
 
 const {t} = useI18n();
 const speciesRepository = new SpeciesRepository();
@@ -201,6 +202,7 @@ const quantity = ref(0);
 const temperature = ref(null);
 const photoperiod = ref(0);
 const date = ref<Date | null>(null);
+const snackbarStore = useSnackbarStore();
 
 const temperatureField = ["Chaud", "Froid", "Extérieur", "Autre"];
 
@@ -240,7 +242,7 @@ const fetchSpecies = async () => {
   try {
     species.value = await speciesRepository.getAllSpecies();
   } catch (error) {
-    alert(t('form.request.error.fetchSpecies'));
+    snackbarStore.showMessage(t('form.request.error.fetchSpecies'));
   } finally {
     isLoading.value = false;
   }
@@ -280,10 +282,10 @@ const handleSubmit = async () => {
       photoperiod.value
     );
     await RequestRepository.postRequest(requestOutput);
-    alert(t('form.request.success'));
+    snackbarStore.showMessage(t('form.request.success'));
     resetForm();
   } catch (error) {
-    alert(t('form.request.error.sending'));
+    snackbarStore.showMessage(t('form.request.error.sending'));
   } finally {
     isLoading.value = false;
   }

@@ -96,6 +96,7 @@ import BuildingRepository from "@/repository/buildingRepository";
 import {Compartiment} from "@/model/Compartiment";
 import CompartimentRepository from "@/repository/compartimentRepository";
 import UserRepository from "@/repository/userRepository";
+import {useSnackbarStore} from "@/store/snackbarStore";
 
 const buildingRepository = new BuildingRepository()
 const compartimentRepository = new CompartimentRepository()
@@ -115,6 +116,7 @@ const selectedRequest = ref<number | null>(null);
 const selectedBuilding = ref<number | null>(null);
 const selectedCompartement = ref<number | null>(null);
 const sortOption: Ref<[]> = ref([]);
+const snackbarStore = useSnackbarStore();
 
 const headers: Ref<any> = ref<any>([
   {title: t('form.request.table.requesterName'), key: 'requester_name', align: 'center', sortable: false},
@@ -183,7 +185,7 @@ const updateRequests = async (page: number, itemsPerPage: number) => {
     }));
 
   } catch (error) {
-    alert(t('request.error.fetch'));
+    snackbarStore.showMessage(t('request.error.fetch'));
   } finally {
     loading.value = false;
   }
@@ -202,7 +204,7 @@ const rejectRequest = async (item: RequestModel) => {
       await RequestRepository.rejectRequest(item.id.toString());
       updateRequests(pageNumber.value, itemsPerPage.value);
     } catch (error) {
-      alert(t('request.error.reject'));
+      snackbarStore.showMessage(t('request.error.reject'));
     }
   }
 }
@@ -213,7 +215,7 @@ const finishRequest = async (item: RequestModel) => {
       await RequestRepository.finishRequest(item.id.toString());
       updateRequests(pageNumber.value, itemsPerPage.value);
     } catch (error) {
-      alert(t('request.error.finish'));
+      snackbarStore.showMessage(t('request.error.finish'));
     }
   }
 }
