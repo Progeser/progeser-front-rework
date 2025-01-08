@@ -323,7 +323,7 @@ export default {
     tools: {
       add: "Ajouter",
       edit: "Modifier",
-      move: "Déplacer",
+      move: "Se déplacer",
       select: "Sélectionner",
     },
     modeling: {
