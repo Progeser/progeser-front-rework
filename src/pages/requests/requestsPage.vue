@@ -98,6 +98,7 @@ import CompartimentRepository from "@/repository/compartimentRepository";
 import UserRepository from "@/repository/userRepository";
 import {useSnackbarStore} from "@/store/snackbarStore";
 
+const useSnackbar = useSnackbarStore();
 const buildingRepository = new BuildingRepository()
 const compartimentRepository = new CompartimentRepository()
 const userRepository = new UserRepository()
@@ -221,6 +222,10 @@ const finishRequest = async (item: RequestModel) => {
 }
 
 const acceptRequest = (item: RequestModel) => {
+  if (item.plant_id === null || item.plant_stage_id === null) {
+    useSnackbar.showMessage(t('request.error.accept'));
+    return;
+  }
   showDialog.value = true;
   selectedRequest.value = item.id
 }
