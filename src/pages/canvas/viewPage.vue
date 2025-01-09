@@ -34,7 +34,7 @@
     <div class="box-container">
       <PlantListComponent
         :on-selected-plant="handlePlantSelect"
-        :plant="plantStore.plants"
+        :plant="plantList"
         :selected="selectedPlantId"
         class="plant-list-box"
       />
@@ -85,6 +85,7 @@ const selectedDistributionId = ref<number | null>(null);
 
 const selectedPlantId = ref<number[]>([]);
 const unhighlightedDistributionId = ref<number[]>([]);
+const plantList = ref<Plant[]>([]);
 
 const requestInfo = ref<RequestInfoData | null>(null);
 
@@ -114,10 +115,12 @@ onMounted(async () => {
   //const requestDistributionIds = benchStore.getRequestDistributionIdsFromBenchesInStore();
   //await requestDistributionStore.loadDistributionByIds(requestDistributionIds);
 
-  await requestDistributionStore.loadDistributions()
-  
+  await requestDistributionStore.loadDistributions();
+
   const requestIds = requestDistributionStore.getRequestIdsFromDistributionInStore();
-  await requestStore.loadRequestById(requestIds)
+  await requestStore.loadRequestById(requestIds);
+
+  plantList.value = getOnlyPlantShowInCanvas();
 });
 
 onBeforeUnmount(() => {
@@ -213,6 +216,30 @@ function handleMouseDown(event: MouseEvent) {
       requestInfo.value = GetRequestInfoFromDistribution(selectedDistributionId.value, requestDistributionStore, plantStore, requestStore);
       break;
   }
+}
+
+function getOnlyPlantShowInCanvas(): Plant[] {
+  const plants: Plant[] = [];
+
+  const distributionIds = new Set<number>()
+  benchStore.benches.forEach(bench => {
+    bench.request_distribution_ids.forEach(id => distributionIds.add(id))
+  })
+
+  const plantIds = new Set<number>();
+  for (const distributionId of distributionIds) {
+    const distribution = requestDistributionStore.getDistributionById(distributionId);
+    if (!distribution) continue;
+
+    const plant = plantStore.getPlantByPlantStageId(distribution.plant_stage_id);
+    if (!plant) continue;
+
+    if (plantIds.has(plant.id)) continue;
+    plantIds.add(plant.id);
+    plants.push(plant);
+  }
+
+  return plants;
 }
 </script>
 <style scoped>.container {
