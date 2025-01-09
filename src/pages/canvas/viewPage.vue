@@ -225,7 +225,6 @@ function getOnlyPlantShowInCanvas(): Plant[] {
   benchStore.benches.forEach(bench => {
     bench.request_distribution_ids.forEach(id => distributionIds.add(id))
   })
-  console.log(distributionIds)
 
   const plantIds = new Set<number>();
   for (const distributionId of distributionIds) {
