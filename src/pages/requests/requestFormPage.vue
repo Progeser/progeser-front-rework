@@ -282,7 +282,7 @@ const handleSubmit = async () => {
       photoperiod.value
     );
     await RequestRepository.postRequest(requestOutput);
-    snackbarStore.showMessage(t('form.request.success'));
+    snackbarStore.showMessage(t('form.request.success'),"success");
     resetForm();
   } catch (error) {
     snackbarStore.showMessage(t('form.request.error.sending'));
