@@ -86,16 +86,16 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/pages/profile/passwordUpdatePage.vue'),
     meta: {previousStep: ['Profile']}
   },
-  { //AT THE END
-    path: '/:catchAll(.*)*',
-    component: () => import('@/pages/connexion/loginPage.vue'),
-  },
   {
     path: '/buildings/:idBuilding/compartiments/:idCompartiment/view',
     name: 'ViewSeedsPage',
     props: true,
     component: () => import('@/pages/canvas/viewPage.vue'),
     meta: {previousStep: ['buildings', 'compartiments']}
+  },
+  { //AT THE END
+    path: '/:catchAll(.*)*',
+    component: () => import('@/pages/connexion/loginPage.vue'),
   }
 ];
 
